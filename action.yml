@@ -52,20 +52,89 @@ runs:
       run: |
         echo "teste_input: '${{ inputs.teste_input }}'"
 
+    - name: Definir a função send_telegram_message no script temporário
+      shell: bash
+      env:
+        TELEGRAM_TOKEN: "${{ inputs.telegram_token }}"
+        TELEGRAM_CHAT_ID: "${{ inputs.telegram_chat_id }}"
+      run: |
+        #Definir a função send_telegram_message no script temporário
+        cat << 'EOF' > /tmp/send_telegram_message.sh
+        export TERM=${TERM:-xterm}
+        export TERM=${TERM:-xterm-256color}
+
+        #Definindo variáveis de cores
+        export green="\033[01;32m"
+        export red="\033[01;31m"
+        export blue="\033[01;34m"
+        export cyan="\033[01;36m"
+        export pink="\033[01;35m"
+        export yellow="\033[01;33m"
+        export reset="\033[0m"
+
+        msg() {
+          local msg="$1"
+          msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
+          echo -e "build-iso=>${cyan}running: ${yellow}${msg}${reset}"
+        }
+
+        msg_info() {
+          local msg="$1"
+          msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
+          echo -e "build-iso=>${yellow}info   : ${cyan}${msg}${reset}"
+        }
+
+        msg_warning() {
+          local msg="$1"
+          msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
+          echo -e "build-iso=>${red}warning: ${orange}${msg}${reset}"
+        }
+
+        replicate() {
+          local char=${1:-'#'}
+          local nsize=${2:-$(tput cols)}
+          local line
+          #printf -v line "%*s" "$nsize" && echo "${line// /$char}"
+          #printf -v line "%*s" "$nsize" && echo -e "\033[31m${line// /$char}\033[0m"
+          printf -v line "%*s" "$nsize" && echo -e "${blue}${line// /$char}${reset}"
+        }
+        export -f replicate
+
+        send_telegram_message() {
+          local message="$1"
+          local parse_mode="$2"
+
+          # Define parse_mode como "MarkdownV2" se não for especificado
+          [[ -z $parse_mode ]] && parse_mode="HTML"
+
+          # Remove as tags HTML e exibe o resultado no terminal
+          echo -e "${red}$(sed 's/<[^>]*>//g' <<< "$message")${reset}"
+          # Envia a mensagem original com HTML para o Telegram
+          curl -s -X POST "https://api.telegram.org/bot${{ inputs.telegram_token }}/sendMessage" \
+            -d chat_id="${{ inputs.telegram_chat_id }}" \
+            -d text="$message" \
+            -d parse_mode="$parse_mode"
+        }
+        export -f send_telegram_message
+        EOF
+
     - name: Display the current user in CONTAINER
       shell: bash
       run: |
-        # Display the current user in CONTAINER
-        echo "##########################################################################"
-        echo "Current host is     : $(hostname)"
-        echo "Current user is     : $(whoami)"
-        echo "Current user ID is  : $(id -u)"
-        echo "Current user details: $(id)"
-        echo "##########################################################################"
+        #Display the current user in CONTAINER
+        source /tmp/send_telegram_message.sh
+        replicate '='
+        echo -e "${cyan}Current host is     : ${yellow}$(hostname)${reset}"
+        echo -e "${cyan}Current user is     : ${yellow}$(whoami)${reset}"
+        echo -e "${cyan}Current user ID is  : ${yellow}$(id -u)${reset}"
+        echo -e "${cyan}Current user details: ${yellow}$(id)${reset}"
+        replicate '='
+        echo 'df -hT || true'
         df -hT || true
-        echo "##########################################################################"
+        replicate '='
+        echo 'ls -la /mnt || true'
         ls -la /mnt || true
-        echo "##########################################################################"
+        replicate '='
 
     - name: Setup build environment
       shell: bash
@@ -86,6 +155,7 @@ runs:
     - name: Configurar o ambiente
       shell: bash
       run: |
+        #Configurar o ambiente
         #WORK_PATH='/__w/build-iso-void/build-iso-void'
         #PROFILE_PATH='/__w/build-iso-void/build-iso-void/chili-void-mklive'
         WORK_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}"
@@ -99,7 +169,7 @@ runs:
       if: ${{ inputs.teste_input != true }}
       shell: bash
       run: |
-        # Cloning chili-void-mklive repository
+        #Checkout chili-void-mklive
         #REPO="${{ inputs.iso_profiles_repo }}"
         REPO="https://github.com/chililinux/chili-void-mklive"
         echo "Repository: $REPO"
@@ -119,7 +189,7 @@ runs:
       if: ${{ inputs.teste_input != true }}
       shell: bash
       run: |
-        # Cloning chili-void-bashrc repository
+        #Checkout chili-void-bashrc
         #REPO="${{ inputs.iso_profiles_repo }}"
         REPO="https://github.com/chililinux/chili-void-bashrc"
         echo "Repository: $REPO"
@@ -135,7 +205,7 @@ runs:
     - name: Ajustar ambiente
       shell: bash
       run: |
-        # Ajustar ambiente
+        #Ajustar ambiente
         ln -sfv  "$WORK_PATH" /work_path         || true
         cp -Rpva "$BASHRC_PATH"/etc/skel/. /etc/ || true
 
@@ -182,8 +252,7 @@ runs:
         EDITION: ${{ inputs.edition || github.event.client_payload.edition || 'xfce' }}
         RELEASE_TAG: ${{ inputs.release_tag }}
       run: |
-        # BUILD ISO Image
-
+        #BUILD ISO Image
         # Check if directory exists before proceeding
         if [[ ! -d "$PROFILE_PATH" ]]; then
           echo "ERRO(L427): Diretório $PROFILE_PATH não encontrado!"
