@@ -84,10 +84,10 @@ MostraErro() {
 trap 'MostraErro "$APP[$FUresetNAME][$LINENO]" "$BASH_COMMAND" "$?"; exit 1' ERR
 
 get_repo_root_path() {
-  local repo_path
-  repo_path=$(git rev-parse --show-toplevel 2>/dev/null)
-  [[ -z "$repo_path" ]] && repo_path="$PWD"
-  echo "$repo_path"
+	local repo_path
+	repo_path=$(git rev-parse --show-toplevel 2>/dev/null)
+	[[ -z "$repo_path" ]] && repo_path="$PWD"
+	echo "$repo_path"
 }
 
 create_menu() {
@@ -129,9 +129,9 @@ create_menu() {
 		for i in "${!options[@]}"; do
 			if [[ "$i" -eq $selected ]]; then
 				if [[ "${options[$i]}" =~ ^(Sair|Voltar)$ ]]; then
-  				echo -e "${red}${bold}${reverse}> ${options[$i]^^}${reset}"
+					echo -e "${red}${bold}${reverse}> ${options[$i]^^}${reset}"
 				else
-	  			echo -e "${green}${bold}> ${reverse}${options[$i]^^}${reset}"
+					echo -e "${green}${bold}> ${reverse}${options[$i]^^}${reset}"
 				fi
 			else
 				if [[ "${options[$i]}" =~ ^(Sair|Voltar)$ ]]; then
@@ -225,43 +225,43 @@ ${yellow}all${reset}"
 }
 
 menu() {
-  ORGANIZATION='chililinux'
-  REPO_NAME=$(git config --get remote.origin.url | sed 's/.*[:/]\([^/]*\/[^.]*\).*/\1/')
-  REPO='chililinux/build-iso-void'
-  REPO_PATH="$(get_repo_root_path)"
+	ORGANIZATION='chililinux'
+	REPO_NAME=$(git config --get remote.origin.url | sed 's/.*[:/]\([^/]*\/[^.]*\).*/\1/')
+	REPO='chililinux/build-iso-void'
+	REPO_PATH="$(get_repo_root_path)"
 
 	while true; do
 		# Menu priresetipal
-    create_menu "${branco_azul}Escolha a DE da ISO:${reset}" base xfce awesome enlightnment fluxbox gnome kde all Sair
+		create_menu "${branco_azul}Escolha a DE da ISO:${reset}" base xfce awesome enlightnment fluxbox gnome kde all Sair
 		edition=$MENU_RESULT
 		if [[ "$edition" == "Sair" ]]; then
 			echo "$yellow" "Saindo do script. Nenhuma ação foi realizada."
 			return
 		fi
 
-    create_menu 'Escolha nome do volume da iso:' "VOID_LIVE" "${edition^^}_LIVE" "Voltar"
+		create_menu 'Escolha nome do volume da iso:' "VOID_LIVE" "${edition^^}_LIVE" "Voltar"
 		vol_id=$MENU_RESULT
 		if [[ "$vol_id" == "Voltar" ]]; then
-		  continue
+			continue
 		fi
 
-    create_menu 'Ativar Debug Tmate?' "sim" "não" "Voltar"
+		create_menu 'Ativar Debug Tmate?' "sim" "não" "Voltar"
 		debug_tmate=$MENU_RESULT
 		if [[ "$debug_tmate" == "Voltar" ]]; then
-		  continue
+			continue
 		fi
 		[[ "$debug_tmate" == 'sim' ]] && debug_tmate='true'
 		[[ "$debug_tmate" == 'não' ]] && debug_tmate='false'
 
-    create_menu 'Rodar somente teste:' "sim" "não" "Voltar"
+		create_menu 'Rodar somente teste:' "sim" "não" "Voltar"
 		teste_input=$MENU_RESULT
 		if [[ "$teste_input" == "Voltar" ]]; then
-		  continue
+			continue
 		fi
 		[[ "$teste_input" == 'sim' ]] && teste_input='true'
 		[[ "$teste_input" == 'não' ]] && teste_input='false'
 
-    main "$edition" "$vol_id" "$debug_tmate" "$teste_input"
+		main "$edition" "$vol_id" "$debug_tmate" "$teste_input"
 	done
 }
 

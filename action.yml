@@ -1,6 +1,9 @@
 name: "VoidLinux ISO Builder"
 description: "Action to build a custom ISO for VoidLinux"
 
+Unexpected input(s) 'release_tag', 'github_token', valid inputs are ['teste_input', 'vol_id', 'edition', 'tmate']
+
+
 inputs:
   teste_input:
     type: boolean
@@ -29,6 +32,12 @@ inputs:
     description: "Enable debugging with tmate"
     required: false
     default: false
+  release_tag:
+    description: "Release tag for the ISO"
+    required: false
+ github_token:
+    description: "GitHub token for authentication"
+    required: true
 
 outputs:
   iso_path:

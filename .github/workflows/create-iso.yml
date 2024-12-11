@@ -1,4 +1,4 @@
-name: Build ISO VoidLinux
+name: 💿 Build ISO ISO VoidLinux
 
 # Gatilhos para o workflow
 on:
@@ -38,6 +38,10 @@ on:
         description: "Enable debugging with tmate"
         required: false
         default: false
+      release_tag:
+        type: string
+        description: "Release tag for the ISO"
+        required: false
 
   schedule:
     #- cron: "0 6 * * *" # Roda todo dia às 06:00 UTC
@@ -55,6 +59,31 @@ jobs:
         id: time
         #run: echo "::set-output name=time::$(date +'%Y.%m.%d-%H%M')"
         run: echo "time=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+
+  capturar-hora-inicio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Capturar hora de início do workflow
+        id: start-time
+        shell: bash
+        run: |
+          START_TIME=$(date +"%Y-%m-%d %H:%M:%S")  # Hora completa
+          START_TIMESTAMP=$(date +%s)  # Timestamp em segundos
+          echo "Início do Workflow: $START_TIME"
+          echo "START_TIME=$START_TIME"             >> $GITHUB_ENV
+          echo "START_TIMESTAMP=$START_TIMESTAMP"   >> $GITHUB_ENV
+          echo "START_TIME='$START_TIME'"           >> shared_file.txt
+          echo "START_TIMESTAMP='$START_TIMESTAMP'" >> shared_file.txt
+
+  install-depends:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies on HOST
+        shell: bash
+        run: |
+          #sudo apt-get update
+          sudo apt-get autoremove
+          sudo apt-get install -y inetutils-tools
 
   # Job para definir o nome do repositório
   set-repo-name:
@@ -161,7 +190,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Build ISO
+      - name: Start Building ISO
         if: ${{ inputs.teste_input != true }}
         uses: ./
         id: build
@@ -232,7 +261,9 @@ jobs:
 
       - name: Verificar arquivo .iso
         if: ${{ inputs.teste_input != true }}
-        run: ls -lah --color=auto ${{ env.ISO_FULLNAME }} # Verifique se o arquivo .iso foi gerado corretamente
+        run: |
+          #Verificar arquivo .iso
+          ls -lah --color=auto ${{ env.ISO_FULLNAME }} # Verifique se o arquivo .iso foi gerado corretamente
 
       - name: Upload FILES as artifact
         if: ${{ inputs.teste_input != true }}
@@ -268,6 +299,7 @@ jobs:
       - name: Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
         if: ${{ inputs.teste_input != true }}
         run: |
+          #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
           chmod 600 /root/.ssh/id_rsa
@@ -277,6 +309,7 @@ jobs:
       - name: Enviar arquivo ISO para o servidor via SCP com porta customizada
         if: ${{ inputs.teste_input != true }}
         run: |
+          #Enviar arquivo ISO para o servidor via SCP com porta customizada
           scp -P 65002 \
               -v \
               -o StrictHostKeyChecking=no \
