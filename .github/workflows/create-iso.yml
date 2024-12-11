@@ -130,7 +130,7 @@ jobs:
           <b>Build dir:</b> <code>${iso_build_dir}</code>
           <b>Release:</b> <code>${iso_release_tag}</code>
           <b>Kernel:</b> <code>${iso_kernel}</code>
-          <b>ISO Name:</b> <code>void-live-${iso_edition}-x86_64_${iso_release_tag}"</code>"
+          <b>ISO Name:</b> <code>void-live-${iso_edition}-x86_64_${iso_release_tag}</code>"
           # Remove as tags HTML e exibe o resultado no terminal
           echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
           # Envia a mensagem original com HTML para o Telegram
