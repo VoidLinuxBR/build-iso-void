@@ -1,4 +1,31 @@
-name: 💿 Build ISO ISO VoidLinux
+#  create-iso.yml
+#  Created: 2024/09/15 - 08:10
+#  Altered: qua 20 nov 2024 10:00:22 -04
+#
+#  Copyright (c) 2024-2024, Vilmar Catafesta <vcatafesta@gmail.com>
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
+#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+#  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+#  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+#  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+#  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+#  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+#  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+#  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+##############################################################################
+name: 💿 Build ISO
 
 # Gatilhos para o workflow
 on:
@@ -8,7 +35,7 @@ on:
   repository_dispatch: # aguarda um evento externo para iniciar o workflow (útil para automações externas que acionam o GitHub Actions).
     types:
       - "ISO-*"
-  workflow_dispatch: # Permite a execução manual do workflow via interface do GitHub, e você definiu inputs como name, edition, e tmate
+  workflow_dispatch:
     inputs:
       teste_input:
         type: boolean
@@ -50,7 +77,8 @@ on:
 env:
   TELEGRAM_TOKEN: "${{ secrets.TOKEN_BOT }}"
   #GITHUB_TOKEN: "${{ secrets.TOKEN_RELEASE }}"
-  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  #GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+  GITHUB_TOKEN: "${{ secrets.ORGANIZATION_TOKEN }}"
   CHAT_ID: "${{ secrets.CHAT_ID }}"
   started_by_user: "${{ github.actor }}"
   triggered_by_user: "${{ github.triggering_actor }}"
@@ -160,10 +188,25 @@ jobs:
           name: shared-file
           path: shared_file.txt
 
+      - name: Display the current user in host
+        run: |
+          # Display the current user in host
+          echo "#########################################"
+          echo "Current host is: $(hostname)"
+          echo "Current user is: $(whoami)"
+          echo "Current user ID is: $(id -u)"
+          echo "Current user details:"
+          id
+          echo "#########################################"
+          df -hT
+          echo "#########################################"
+          ls -lah --color=auto /mnt
+          echo "#########################################"
+
   build:
-    name: Build ${{ github.event.client_payload.edition || github.event.inputs.edition || 'xfce' }}
+    name: Build ISO ${{ github.event.client_payload.distroname || inputs.distroname }} ${{ github.event.client_payload.edition || inputs.edition }}
     runs-on: ubuntu-latest
-    needs: [setup] # Depende do job get-time para obter a hora atual e do job set-repo-name para obter o nome do repositório
+    needs: [setup] # Espera o job "setup" terminar
     env:
       #REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
       REPO_NAME: "${{ github.repository }}"
@@ -171,9 +214,35 @@ jobs:
       image: vcatafesta/voidlinux-docker:latest
       options: --privileged
       volumes:
+        - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
+        - /mnt/var_cache_manjaro_tools_iso:/var/cache/manjaro-tools/iso
         - /mnt/lfs:/mnt/lfs
 
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-file
+
+      - name: Exibir conteúdo do arquivo e carregar variáveis
+        shell: bash
+        run: |
+          #Exibir conteúdo do arquivo e carregar variáveis
+          cat shared_file.txt
+          # Atribuir o conteúdo do arquivo à variável START_TIME
+          #START_TIME="$(<shared_file.txt)"
+          source shared_file.txt
+          # Definir a variável START_TIME para outros jobs
+          echo "START_TIME=$START_TIME"           >> $GITHUB_ENV
+          echo "START_TIMESTAMP=$START_TIMESTAMP" >> $GITHUB_ENV
+          echo "ISO_BRANCH=$ISO_BRANCH"           >> $GITHUB_ENV
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          #fetch-depth: 0    # All commit history is downloaded
+          fetch-depth: 1 # Only the most recent commit of the branch will be downloaded
+
       - name: Set up volume directory on HOST
         run: |
           #Set up volume directory on HOST
@@ -228,7 +297,17 @@ jobs:
           #Create user builduser in container
           useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser
 
-      - name: Display the current user in container
+      - name: Initial Debug
+        run: |
+          echo "Workflow started"
+      #          echo "Event Name: ${{ github.event_name }}"
+      #          echo "Event Action: ${{ github.event.action }}"
+      #          echo "Edition: ${{ github.event.client_payload.edition || inputs.edition }}"
+      #          echo "Tmate from payload: ${{ github.event.client_payload.tmate }}"
+      #          echo "Full github event: ${{ toJson(github.event) }}"
+
+      - name: Display the current user in CONTAINER
+        shell: bash
         run: |
           #Display the current user in container
           echo "#########################################"
@@ -240,22 +319,18 @@ jobs:
           echo "#########################################"
           df -hT
           echo "#########################################"
-          ls -la /mnt
+          ls -lah --color=auto /mnt
+          echo "#########################################"
+          tree -d /mnt
           echo "#########################################"
 
-      - name: Initial Debug
+      - name: Set release tag manually
+        id: date
         run: |
-          #Initial Debug
-          echo "Workflow started"
-          echo "Event Name: ${{ github.event_name }}"
-          echo "Event Action: ${{ github.event.action }}"
+          # Set release tag manually
+          echo "RELEASE_TAG=$(date '+%Y-%m-%d_%H-%M')" >> "$GITHUB_ENV"
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Start Building ISO
+      - name: Build ISO
         if: ${{ inputs.teste_input != true }}
         uses: ./
         id: build
@@ -267,6 +342,22 @@ jobs:
           tmate: ${{ github.event.client_payload.tmate || 'false' }}
           # Tokens e segredos
           github_token: ${{ secrets.ORGANIZATION_TOKEN }}
+
+      - name: Set ISO path
+        shell: bash
+        run: |
+          # Set ISO path
+          #temporario - para testes
+          #WORK_PATH='/__w/build-iso/build-iso'
+          #ISO_BASENAME="${iso_distroname}_${ISO_BRANCH^^}_${iso_edition}_${iso_release_tag}.iso"
+          #{
+          #  echo "WORK_PATH=$WORK_PATH"
+          #  echo "ISO_BASENAME=$ISO_BASENAME"
+          #} >> $GITHUB_ENV
+          #echo "ISO_PATH=${WORK_PATH}/${ISO_BASENAME}" >> $GITHUB_ENV
+          #touch "${WORK_PATH}/${ISO_BASENAME}"
+          #temporario - para testes
+          echo "ISO_PATH=${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" >> $GITHUB_ENV
 
       - name: Calculate MD5 Hash of files
         if: ${{ inputs.teste_input != true }}
@@ -332,9 +423,7 @@ jobs:
 
       - name: Upload FILES as artifact
         if: ${{ inputs.teste_input != true }}
-        uses: actions/upload-artifact@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ISO_BASENAME }}
           path: |
@@ -343,23 +432,6 @@ jobs:
             ${{ env.ISO_FULLNAME }}.md5
           if-no-files-found: warn
           include-hidden-files: false
-
-      - name: Criar release iso
-        if: ${{ inputs.teste_input != true }}
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
-        with:
-          tag_name: ${{ env.ISO_TAG_NAME }}
-          release_name: Release ${{ env.ISO_TAG_NAME }}
-          body: |
-            - **Data e Hora        :** ${{ needs.get-time.outputs.time }}
-            - **Arquivo ISO        :** ${{ env.ISO_BASENAME }}
-            - **Arquivo MD5        :** ${{ env.ISO_FULLNAME }}.md5
-            - **Nome do Repositório:** ${{ env.REPO_NAME }}
-          draft: false
-          prerelease: false
 
       - name: Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
         if: ${{ inputs.teste_input != true }}
@@ -383,14 +455,133 @@ jobs:
               ${{ env.ISO_FULLNAME }}.md5 \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
 
+      - name: Criar release iso
+        if: ${{ inputs.teste_input != true }}
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.ISO_TAG_NAME }}
+          release_name: Release ${{ env.ISO_TAG_NAME }}
+          body: |
+            - **Data e Hora        :** ${{ needs.get-time.outputs.time }}
+            - **Arquivo ISO        :** ${{ env.ISO_BASENAME }}
+            - **Arquivo MD5        :** ${{ env.ISO_FULLNAME }}.md5
+            - **Nome do Repositório:** ${{ env.REPO_NAME }}
+          draft: false
+          prerelease: false
+
       - name: Fazer upload do arquivo .zip no release
         if: ${{ inputs.teste_input != true }}
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # URL gerada no passo da criação da release
           asset_path: ${{ env.ZIP_BASENAME }} # Caminho do arquivo .iso
           asset_name: ${{ env.ZIP_BASENAME }}.zip
           asset_content_type: application/zip # Tipo correto para arquivos .z
+
+      - name: Telegram Alert Fail
+        if: failure()
+        shell: bash
+        run: |
+          #Telegram Alert Fail - Send a Telegram alert if the build fails
+          link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          MESSAGE="🚨 <b>FALHA ao criar ISO:</b>
+          <b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          <b>Iso:</b> <code>${{ github.event.action }}</code>
+          <b>URL erro:</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>"
+
+          # Remove as tags HTML e exibe o resultado no terminal
+          echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
+
+          # Envia a mensagem para o Telegram com formatação HTML
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" \
+            -d text="${MESSAGE}" \
+            -d parse_mode="HTML"
+
+      - name: Capturar hora de término e calcular duração
+        shell: bash
+        run: |
+          #Capturar hora de término e calcular duração
+          sh_calc_duration_via_normal() {
+            # Configurações
+            START_TIME="${{ env.START_TIME }}"
+            START_TIMESTAMP="${{ env.START_TIMESTAMP }}"
+            END_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+            END_TIMESTAMP=$(date +%s)
+            # Calcula a duração em segundos, horas, minutos e segundos
+            duration=$((END_TIMESTAMP - START_TIMESTAMP))
+            hours=$((duration / 3600))
+            minutes=$(( (duration % 3600) / 60 ))
+            seconds=$((duration % 60))
+          }
+
+          sh_calc_duration_via_api() {
+            # Endpoint da API
+            API_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs"
+
+            # Fazendo a requisição para obter o último workflow run
+            response=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+                              -H "Accept: application/vnd.github+json" \
+                              "$API_URL")
+
+            # Extraindo os horários (created_at e updated_at) do último workflow
+            created_at=$(echo "$response" | jq -r '.workflow_runs[0].created_at')
+            updated_at=$(echo "$response" | jq -r '.workflow_runs[0].updated_at')
+
+            # Verificando se os valores foram obtidos
+            if [[ -z "$created_at" || -z "$updated_at" ]]; then
+              echo "Erro: Não foi possível obter os dados do workflow."
+              exit 1
+            fi
+
+            # Convertendo horários para timestamps
+            start_ts=$(date -d "$created_at" +%s)
+            end_ts=$(date -d "$updated_at" +%s)
+
+            START_TIME="$created_at"
+            END_TIME="$updated_at"
+
+            # Calculando a duração em segundos
+            duration=$((end_ts - start_ts))
+
+            # Convertendo para formato legível (HH:MM:SS)
+            hours=$((duration / 3600))
+            minutes=$(((duration % 3600) / 60))
+            seconds=$((duration % 60))
+
+            # Exibindo o tempo total
+            printf "Tempo total da execução: %02d:%02d:%02d\n" "$hours" "$minutes" "$seconds"
+          }
+
+          sh_calc_duration_via_normal
+          #sh_calc_duration_via_api
+
+          # Obtém o ID do run e o URL do artefato a partir das variáveis de ambiente
+          RUN_ID="${{ github.run_id }}"
+          link_action="${{ env.artifact_url }}"
+          file_name="${{ steps.prepare-iso.outputs.release_name }}"
+
+          # Converte o tamanho do artefato para um formato legível
+          iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}")
+
+          # Prepara a mensagem
+          MESSAGE="⏳ <b>[step 3/3] Job <code>#${GITHUB_RUN_NUMBER}</code> finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
+          <b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          <b>Workflow:</b> <code>build-iso/edition.yml</code>
+          <b>Inicio:</b> <code>${START_TIME}</code>
+          <b>Fim:</b> <code>${END_TIME}</code>
+          <b>Nome ISO:</b> <code>${ISO_BASENAME}</code>
+          <b>Tam ISO:</b> <code>${iso_size}</code>
+          <b>Download:</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
+
+          # Remove as tags HTML e exibe o resultado no terminal
+          echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
+
+          # Envia a mensagem para o Telegram com formatação HTML
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+            -d chat_id="${CHAT_ID}" \
+            -d text="${MESSAGE}" \
+            -d parse_mode="HTML"
