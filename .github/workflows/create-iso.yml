@@ -50,19 +50,17 @@ on:
 # Jobs do workflow
 jobs:
   # Job para obter a hora atual
-  get-time:
+  setup:
     runs-on: ubuntu-latest
     outputs:
       time: ${{ steps.time.outputs.time }} # Saída do job
+      REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
     steps:
       - name: Obter a hora atual
         id: time
         #run: echo "::set-output name=time::$(date +'%Y.%m.%d-%H%M')"
         run: echo "time=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
 
-  capturar-hora-inicio:
-    runs-on: ubuntu-latest
-    steps:
       - name: Capturar hora de início do workflow
         id: start-time
         shell: bash
@@ -75,26 +73,20 @@ jobs:
           echo "START_TIME='$START_TIME'"           >> shared_file.txt
           echo "START_TIMESTAMP='$START_TIMESTAMP'" >> shared_file.txt
 
-  install-depends:
-    runs-on: ubuntu-latest
-    steps:
       - name: Install dependencies on HOST
         shell: bash
         run: |
+          #Install dependencies on HOST
           #sudo apt-get update
           sudo apt-get autoremove
           sudo apt-get install -y inetutils-tools
 
-  # Job para definir o nome do repositório
-  set-repo-name:
-    runs-on: ubuntu-latest
-    outputs:
-      REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
-    steps:
       - name: Obter nome do repositório
         id: get-repo-name
-        #run: echo "::set-output name=repo_name::$(basename $GITHUB_REPOSITORY)"
-        run: echo "repo_name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
+        run: |
+          #Obter nome do repositório
+          #echo "::set-output name=repo_name::$(basename $GITHUB_REPOSITORY)"
+          echo "repo_name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
 
   build:
     name: Build ${{ github.event.client_payload.edition || github.event.inputs.edition || 'xfce' }}
