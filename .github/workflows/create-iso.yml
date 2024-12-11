@@ -82,10 +82,12 @@ jobs:
     steps:
       - name: Set up volume directory on HOST
         run: |
+          #Set up volume directory on HOST
           mkdir -p /mnt/lfs
 
       - name: Install Required Packages and Libraries
         run: |
+          #Install Required Packages and Libraries
           #{
           #echo 'repository=https://repo-fastly.voidlinux.org/current'
           #echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
@@ -127,12 +129,14 @@ jobs:
             dosfstools \
             xfsprogs
 
-      - name: Create user builduser
+      - name: Create user builduser in container
         run: |
+          #Create user builduser in container
           useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser
 
       - name: Display the current user in container
         run: |
+          #Display the current user in container
           echo "#########################################"
           echo "Current container is: $(hostname)"
           echo "Current user is: $(whoami)"
@@ -147,6 +151,7 @@ jobs:
 
       - name: Initial Debug
         run: |
+          #Initial Debug
           echo "Workflow started"
           echo "Event Name: ${{ github.event_name }}"
           echo "Event Action: ${{ github.event.action }}"
@@ -173,6 +178,7 @@ jobs:
         if: ${{ inputs.teste_input != true }}
         shell: bash
         run: |
+          #Calculate MD5 Hash of files
           pushd "${{ env.WORK_PATH }}" || true
           echo "Calculating MD5 hash for: ${{ env.ISO_BASENAME }} file..."
           echo "ISO_BASENAME is: '${{ env.ISO_BASENAME }}'"
@@ -191,6 +197,7 @@ jobs:
         id: prepare-iso
         shell: bash
         run: |
+          #Prepare ISO file for release
           pushd "${{ env.WORK_PATH }}" || true
           ls -lha
           release=${{ env.ISO_BASENAME }} # Apenas obtém o nome do arquivo com extensão
@@ -217,6 +224,7 @@ jobs:
       - name: Debug environment variables and List Files
         if: ${{ inputs.teste_input != true }}
         run: |
+          #Debug environment variables and List Files
           echo "ISO_BASENAME=${{ env.ISO_BASENAME }}"
           echo "ISO_FULLNAME=${{ env.ISO_FULLNAME }}"
           echo "ISO Path from output=${{ steps.define-paths.outputs.iso_path }}"
