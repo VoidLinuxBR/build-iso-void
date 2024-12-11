@@ -55,7 +55,7 @@ env:
   started_by_user: "${{ github.actor }}"
   triggered_by_user: "${{ github.triggering_actor }}"
   repo_path: "${{ secrets.PKGBUILD_DIR }}"
-  #iso_distroname: "${{ github.event.client_payload.distroname || inputs.distroname || 'chililinux' }}"
+  iso_distroname: "${{ github.event.client_payload.distroname || inputs.distroname || 'voidlinux' }}"
   #iso_manjaro_branch: "${{ github.event.client_payload.manjaro_branch || inputs.manjaro_branch}}"
   #iso_biglinux_branch: "${{ github.event.client_payload.biglinux_branch || inputs.biglinux_branch}}"
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
@@ -130,7 +130,7 @@ jobs:
           <b>Build dir:</b> <code>${iso_build_dir}</code>
           <b>Release:</b> <code>${iso_release_tag}</code>
           <b>Kernel:</b> <code>${iso_kernel}</code>
-          <b>ISO Name:</b> <code>${iso_basename}</code>"
+          <b>ISO Name:</b> <code>void-live-${iso_edition}-x86_64_${iso_release_tag}"</code>"
           # Remove as tags HTML e exibe o resultado no terminal
           echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
           # Envia a mensagem original com HTML para o Telegram
