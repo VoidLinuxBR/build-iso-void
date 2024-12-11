@@ -91,7 +91,7 @@ jobs:
   build:
     name: Build ${{ github.event.client_payload.edition || github.event.inputs.edition || 'xfce' }}
     runs-on: ubuntu-latest
-    needs: [get-time, set-repo-name] # Depende do job get-time para obter a hora atual e do job set-repo-name para obter o nome do repositório
+    needs: [setup] # Depende do job get-time para obter a hora atual e do job set-repo-name para obter o nome do repositório
     env:
       REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
     container:
