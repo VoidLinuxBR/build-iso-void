@@ -9,24 +9,24 @@
 #  Copyright (c) 2024-2024, Vilmar Catafesta <vcatafesta@gmail.com>
 #  All rights reserved.
 #
-#  Redistribution and use in source and binary forms, with or without
+#  redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions
 #  are met:
-#  1. Redistributions of source code must retain the above copyright
+#  1. redistributions of source code must retain the above copyright
 #     notice, this list of conditions and the following disclaimer.
-#  2. Redistributions in binary form must reproduce the above copyright
+#  2. redistributions in binary form must reproduce the above copyright
 #     notice, this list of conditions and the following disclaimer in the
 #     documentation and/or other materials provided with the distribution.
 #
 #  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
-#  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+#  IMPLIED WARRANTIES, IresetLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 #  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 #  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-#  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+#  IresetIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (IresetLUDING, BUT
 #  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 #  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 #  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-#  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+#  (IresetLUDING NEGLIGEresetE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##############################################################################
 #export LANGUAGE=pt_BR
@@ -63,9 +63,10 @@ light_blue=$(tput setaf 12)
 light_magenta=$(tput setaf 13)
 light_cyan=$(tput setaf 14)
 bright_white=$(tput setaf 15)
+branco_azul=$(tput setaf 7)$(tput setab 4)
 
 #debug
-export PS4='${red}${0##*/}${green}[$FUNCNAME]${pink}[$LINENO]${reset}'
+export PS4='${red}${0##*/}${green}[$FUresetNAME]${pink}[$LINENO]${reset}'
 #set -x
 #set -e
 shopt -s extglob
@@ -74,17 +75,95 @@ shopt -s extglob
 declare APP="${0##*/}"
 declare _VERSION_="1.0.0-20240922"
 declare distro="$(uname -n)"
-declare DEPENDENCIES=(tput)
+declare DEPENDEresetIES=(tput)
 source /usr/share/fetch/core.sh
 
 MostraErro() {
 	echo "erro: ${red}$1${reset} => comando: ${cyan}'$2'${reset} => result=${yellow}$3${reset}"
 }
-trap 'MostraErro "$APP[$FUNCNAME][$LINENO]" "$BASH_COMMAND" "$?"; exit 1' ERR
+trap 'MostraErro "$APP[$FUresetNAME][$LINENO]" "$BASH_COMMAND" "$?"; exit 1' ERR
+
+get_repo_root_path() {
+  local repo_path
+  repo_path=$(git rev-parse --show-toplevel 2>/dev/null)
+  [[ -z "$repo_path" ]] && repo_path="$PWD"
+  echo "$repo_path"
+}
+
+create_menu() {
+	local title=$1
+	shift
+	#	local options=("$@" "Sair")
+	local options=("$@")
+	local selected=0
+	local key
+
+	tput civis # Esconde o cursor
+
+	while true; do
+		tput clear # Limpa a tela
+		if $IS_GIT_REPO; then
+			echo '---------------------------------------------------------------------------------'
+			echo -e "Organization  : ${cyan}$ORGANIZATION${reset}"
+			echo -e "Repo Name     : ${cyan}$REPO_NAME${reset}"
+			echo -e "Repo Workflow : ${cyan}$REPO${reset}"
+			echo -e "Local Path    : ${cyan}$REPO_PATH${reset}"
+			echo
+			git remote -v 2>/dev/null
+			echo '---------------------------------------------------------------------------------'
+		elif $IS_AUR_PACKAGE; then
+			echo '---------------------------------------------------------------------------------'
+			echo -e "Organization  : ${cyan}$ORGANIZATION${reset}"
+			echo -e "Repo Workflow : ${cyan}$REPO${reset}"
+			echo -e "Local Path    : ${cyan}$REPO_PATH${reset}"
+			echo '---------------------------------------------------------------------------------'
+		elif $IS_BUILD_ISO; then
+			echo '---------------------------------------------------------------------------------'
+			echo -e "Organization  : ${cyan}$ORGANIZATION${reset}"
+			echo -e "Repo Workflow : ${cyan}$REPO${reset}"
+			echo -e "Local Path    : ${cyan}$REPO_PATH${reset}"
+			echo '---------------------------------------------------------------------------------'
+		fi
+		echo -e "${BLUE}${bold}$title${reset}\n"
+
+		for i in "${!options[@]}"; do
+			if [[ "$i" -eq $selected ]]; then
+				if [[ "${options[$i]}" =~ ^(Sair|Voltar)$ ]]; then
+  				echo -e "${red}${bold}${reverse}> ${options[$i]^^}${reset}"
+				else
+	  			echo -e "${green}${bold}> ${reverse}${options[$i]^^}${reset}"
+				fi
+			else
+				if [[ "${options[$i]}" =~ ^(Sair|Voltar)$ ]]; then
+					echo -e "${red}  ${options[$i]}${reset}"
+				else
+					echo "  ${bold}${options[$i]} ${reset}"
+				fi
+			fi
+		done
+
+		read -rsn1 key
+		case "$key" in
+		A)
+			((selected--))
+			[ $selected -lt 0 ] && selected=$((${#options[@]} - 1))
+			;;
+		B)
+			((selected++))
+			[ $selected -eq ${#options[@]} ] && selected=0
+			;;
+		'') break ;;
+		esac
+	done
+
+	tput cnorm # Mostra o cursor novamente
+	echo -e "\nVocê selecionou: ${GREEN}${bold}${options[$selected]}${reset}"
+	MENU_RESULT=${options[$selected]}
+	#	return $((selected+1))
+}
 
 gettokengithub_by_key() {
 	local CFILETOKEN=$HOME/.GITHUB_TOKEN
-	local ORGANIZATION='chililinux'
 	#sed -n "/^$ORGANIZATION=/s/.*=//p" "$CFILETOKEN"
 	#sed -n "/^$ORGANIZATION=/s/^[^=]*=\(.*\)$/\1/p" "$CFILETOKEN" | head -n 1
 	sed -n "/^$ORGANIZATION=/s/.*=//p" "$CFILETOKEN" | awk 'NR==1'
@@ -140,17 +219,50 @@ ${yellow}all${reset}"
 		--data "$data" \
 		-w "%{http_code}" \
 		-o /dev/null \
-		"https://api.github.com/repos/chililinux/build-iso-void/actions/workflows/create-iso.yml/dispatches")
-
+		"https://api.github.com/repos/$REPO/actions/workflows/create-iso.yml/dispatches")
 	echo "Response Code: $response"
+	sleep 5
 }
 
-if test $# -lt 1; then
-	echo "uso: ${cyan}${APP} <edition> <vol_id> [<tmate>] [<teste_input>]${reset}"
-	echo "     ${cyan}${APP} live-xfce-custom VOID_LIVE true false ${reset}"
-	echo "     ${cyan}${APP} live-xfce-custom VOID_LIVE ${reset}"
-	echo "     ${cyan}${APP} live-base-custom ${reset}"
-	exit 1
-fi
+menu() {
+  ORGANIZATION='chililinux'
+  REPO_NAME=$(git config --get remote.origin.url | sed 's/.*[:/]\([^/]*\/[^.]*\).*/\1/')
+  REPO='chililinux/build-iso-void'
+  REPO_PATH="$(get_repo_root_path)"
 
-main "$@"
+	while true; do
+		# Menu priresetipal
+    create_menu "${branco_azul}Escolha a DE da ISO:${reset}" base xfce awesome enlightnment fluxbox gnome kde all Sair
+		edition=$MENU_RESULT
+		if [[ "$edition" == "Sair" ]]; then
+			echo "$yellow" "Saindo do script. Nenhuma ação foi realizada."
+			return
+		fi
+
+    create_menu 'Escolha nome do volume da iso:' "VOID_LIVE" "${edition^^}_LIVE" "Voltar"
+		vol_id=$MENU_RESULT
+		if [[ "$vol_id" == "Voltar" ]]; then
+		  continue
+		fi
+
+    create_menu 'Ativar Debug Tmate?' "sim" "não" "Voltar"
+		debug_tmate=$MENU_RESULT
+		if [[ "$debug_tmate" == "Voltar" ]]; then
+		  continue
+		fi
+		[[ "$debug_tmate" == 'sim' ]] && debug_tmate='true'
+		[[ "$debug_tmate" == 'não' ]] && debug_tmate='false'
+
+    create_menu 'Rodar somente teste:' "sim" "não" "Voltar"
+		teste_input=$MENU_RESULT
+		if [[ "$teste_input" == "Voltar" ]]; then
+		  continue
+		fi
+		[[ "$teste_input" == 'sim' ]] && teste_input='true'
+		[[ "$teste_input" == 'não' ]] && teste_input='false'
+
+    main "$edition" "$vol_id" "$debug_tmate" "$teste_input"
+	done
+}
+
+menu
