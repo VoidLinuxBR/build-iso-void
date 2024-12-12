@@ -368,6 +368,7 @@ jobs:
           ls -lah
           replicate '='
           msg "Calculating MD5 hash for ISO file ${ISO_PATH}"
+          pushd "${{ env.WORK_PATH }}" || true
           if [[ -f "${ISO_PATH}" ]]; then
             md5sum "${ISO_PATH}" > "${ISO_PATH}.md5"
             msg_info "MD5 hash calculated and saved:"
@@ -378,6 +379,7 @@ jobs:
           fi
           ls -lah
           replicate '='
+          popd || true
 
       - name: Prepare ISO for release (7z)
         id: prepare-iso
