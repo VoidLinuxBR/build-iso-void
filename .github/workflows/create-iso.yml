@@ -478,7 +478,7 @@ jobs:
             echo "artifact_id=$artifact_id" >> $GITHUB_ENV
             echo "Artifact ID: $artifact_id"
 
-            artifact_size_in_bytes=$(echo "$artifacts" | jq -r --arg file_name "$FILE_NAME" '.artifacts[] | select(.name==$file_name) |>
+            artifact_size_in_bytes=$(echo "$artifacts" | jq -r --arg file_name "$FILE_NAME" '.artifacts[] | select(.name==$file_name) | .size_in_bytes')
             echo "artifact_size_in_bytes=$artifact_size_in_bytes" >> $GITHUB_ENV
             echo "Artifact SiZE: $artifact_size_in_bytes"
 
