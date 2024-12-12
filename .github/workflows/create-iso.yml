@@ -594,7 +594,7 @@ jobs:
           file_name="${{ steps.prepare-iso.outputs.release_name }}"
 
           # Converte o tamanho do artefato para um formato legível
-          iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}")
+          iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}") || true
 
           # Prepara a mensagem
           MESSAGE="⏳ <b>[step 3/3] Job <code>#${GITHUB_RUN_NUMBER}</code> finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
