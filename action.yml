@@ -71,6 +71,8 @@ runs:
         export pink="\033[01;35m"
         export yellow="\033[01;33m"
         export reset="\033[0m"
+        alias ls='ls -lha --color=auto'
+        alias dir='ls -lha --color=auto'
 
         msg() {
           local msg="$1"
