@@ -595,6 +595,12 @@ jobs:
 
           # Converte o tamanho do artefato para um formato legível
           iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}") || true
+          if [[ -z "$iso_size" ]]; then
+            file_size_bytes=$(stat -c%s "${{ env.ISO_FULLNAME }}")
+            file_size_kb=$((file_size_bytes / 1024))
+            file_size_mb=$((file_size_kb / 1024))
+            iso_size=$file_size_mb
+          fi
 
           # Prepara a mensagem
           MESSAGE="⏳ <b>[step 3/3] Job <code>#${GITHUB_RUN_NUMBER}</code> finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
