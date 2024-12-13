@@ -339,7 +339,7 @@ jobs:
           RELEASE_TAG="${iso_release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
 
-      - name: Build ISO "${{iso_basename}}"
+      - name: Build ISO "${iso_basename}"
         if: ${{ inputs.teste_input != true }}
         uses: ./
         id: build
