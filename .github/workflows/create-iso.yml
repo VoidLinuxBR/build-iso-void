@@ -42,11 +42,6 @@ on:
         description: "Enable only test"
         required: false
         default: false
-      vol_id:
-        type: string
-        description: "Nome do VOLUME da ISO"
-        required: true
-        default: "VOID_LIVE"
       edition:
         type: choice
         description: "Edition"
@@ -61,6 +56,11 @@ on:
           - xfce
           - all
         default: "xfce"
+      vol_id:
+        type: string
+        description: "Nome do VOLUME da ISO"
+        required: true
+        default: "VOID_LIVE"
       tmate:
         type: boolean
         description: "Enable debugging with tmate"
@@ -350,11 +350,11 @@ jobs:
           #release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
           #tmate: ${{ github.event.client_payload.tmate || 'false' }}
           #github_token: ${{ secrets.ORGANIZATION_TOKEN }}
-          vol_id: "$vol_id"
-          edition: "$iso_edition"
-          release_tag: "$RELEASE_TAG"
-          tmate: "$DEBUG"
-          github_token: "$GITHUB_TOKEN"
+          vol_id: "${{env.vol_id}}"
+          edition: "${{env.iso_edition}}"
+          release_tag: "${{env.RELEASE_TAG}}"
+          tmate: "${{env.DEBUG}}"
+          github_token: "${{env.GITHUB_TOKEN}}"
 
       #ponto de retorno do action.yml
       - name: Set ISO path
