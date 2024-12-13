@@ -69,6 +69,7 @@ on:
         type: string
         description: "Release tag for the ISO"
         required: false
+        default: "$(date '+%Y-%m-%d_%H-%M')"
 
   schedule:
     #- cron: "0 6 * * *" # Roda todo dia às 06:00 UTC
