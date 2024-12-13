@@ -92,11 +92,11 @@ env:
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition}}"
   iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
-  iso_basename: "void-live-${iso_edition}-x86_64_${iso_release_tag}"
+  iso_basename: "void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
+  vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
+  DEBUG: "${{ github.event.client_payload.tmate || 'false' }}"
 
-# Jobs do workflow
 jobs:
-  # Job para obter a hora atual
   setup:
     runs-on: ubuntu-latest
     outputs:
@@ -188,7 +188,7 @@ jobs:
           name: shared-file
           path: shared_file.txt
 
-      - name: Display the current user in host
+      - name: Display the current user in HOST
         run: |
           # Display the current user in host
           echo "#########################################"
@@ -205,7 +205,7 @@ jobs:
           echo "#########################################"
 
   build:
-    name: Build ISO ${{ github.event.client_payload.distroname || inputs.distroname }} ${{ github.event.client_payload.edition || inputs.edition }}
+    name: Build ISO "$iso_basename"
     runs-on: ubuntu-latest
     needs: [setup] # Espera o job "setup" terminar
     env:
@@ -217,18 +217,19 @@ jobs:
       volumes:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
         - /mnt/var_cache_manjaro_tools_iso:/var/cache/manjaro-tools/iso
-        - /mnt/lfs:/mnt/lfs
+        #- /mnt/lfs:/mnt/lfs
+        - /mnt/lfs:/lfs
 
     steps:
-      - name: Download artifact
+      - name: Download artifact shared-file
         uses: actions/download-artifact@v4
         with:
           name: shared-file
 
-      - name: Exibir conteúdo do arquivo e carregar variáveis
+      - name: Exibir e carregar variáveis do arquivo shared_file.txt no CONTAINER
         shell: bash
         run: |
-          #Exibir conteúdo do arquivo e carregar variáveis
+          #Exibir e carregar variáveis do arquivo shared_file.txt no CONTAINER
           cat shared_file.txt
           # Atribuir o conteúdo do arquivo à variável START_TIME
           #START_TIME="$(<shared_file.txt)"
@@ -244,12 +245,12 @@ jobs:
           #fetch-depth: 0    # All commit history is downloaded
           fetch-depth: 1 # Only the most recent commit of the branch will be downloaded
 
-      - name: Set up volume directory on HOST
-        run: |
-          #Set up volume directory on HOST
-          mkdir -p /mnt/lfs
+      #- name: Set up volume directory on CONTAINER
+      #  run: |
+      #    #Set up volume directory on HOST
+      #    mkdir -p /mnt/lfs
 
-      - name: Install Required Packages and Libraries
+      - name: Install Required Packages and Libraries no CONTAINER
         run: |
           #Install Required Packages and Libraries
           #{
@@ -296,12 +297,12 @@ jobs:
             dosfstools \
             xfsprogs
 
-      - name: Create user builduser in container
+      - name: Create user builduser on CONTAINER
         run: |
           #Create user builduser in container
           useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser
 
-      - name: Initial Debug
+      - name: Initial Debug on CONTAINER
         run: |
           #Initial Debug
           echo "Workflow started"
@@ -311,7 +312,7 @@ jobs:
           echo "Tmate from payload: ${{ github.event.client_payload.tmate || inputs.tmate }}"
           echo "Full github event: ${{ toJson(github.event) }}"
 
-      - name: Display the current user in CONTAINER
+      - name: Display the current user on CONTAINER
         shell: bash
         run: |
           #Display the current user in container
@@ -334,21 +335,26 @@ jobs:
         id: date
         run: |
           # Set release tag manually
-          echo "RELEASE_TAG=$(date '+%Y-%m-%d_%H-%M')" >> "$GITHUB_ENV"
+          RELEASE_TAG="${iso_release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
 
-      - name: Build ISO
+      - name: Build ISO "$iso_basename"
         if: ${{ inputs.teste_input != true }}
         uses: ./
         id: build
         with:
-          vol_id: ${{ github.event.client_payload.vol_id || inputs.vol_id }}
-          edition: ${{ github.event.client_payload.edition || inputs.edition }}
-          release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
-          # Depuração
-          tmate: ${{ github.event.client_payload.tmate || 'false' }}
-          # Tokens e segredos
-          github_token: ${{ secrets.ORGANIZATION_TOKEN }}
+          #vol_id: ${{ github.event.client_payload.vol_id || inputs.vol_id }}
+          #edition: ${{ github.event.client_payload.edition || inputs.edition }}
+          #release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
+          #tmate: ${{ github.event.client_payload.tmate || 'false' }}
+          #github_token: ${{ secrets.ORGANIZATION_TOKEN }}
+          vol_id: "$vol_id"
+          edition: "$iso_edition"
+          release_tag: "$RELEASE_TAG"
+          tmate: "$DEBUG"
+          github_token: "$GITHUB_TOKEN"
 
+      #ponto de retorno do action.yml
       - name: Set ISO path
         shell: bash
         run: |
