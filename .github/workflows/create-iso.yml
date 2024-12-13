@@ -249,6 +249,7 @@ jobs:
         run: |
           #Set up volume directory in HOST
           mkdir -p /mnt/lfs
+          ln -sf /mnt/lfs /lfs
 
       - name: Install Required Packages and Libraries no CONTAINER
         run: |
@@ -261,6 +262,7 @@ jobs:
           #echo 'repository=https://chililinux.com/void/current'
           #} > /etc/xbps.d/00-repository-main.conf
 
+          xi -u
           xbps-install -Syu -ff \
             xbps \
             xtools \
