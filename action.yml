@@ -266,12 +266,13 @@ runs:
 
           case "$EDITION" in
             base)         BUILD_COMMAND='sudo ./mkiso'    ;;
-            xfce)         BUILD_COMMAND='sudo ./mkiso -Y' ;;
             awesome)      BUILD_COMMAND='sudo ./mkiso -W' ;;
+            cinnamon)     BUILD_COMMAND='sudo ./mkiso -N' ;;
             enlightnment) BUILD_COMMAND='sudo ./mkiso -E' ;;
             fluxbox)      BUILD_COMMAND='sudo ./mkiso -F' ;;
             gnome)        BUILD_COMMAND='sudo ./mkiso -G' ;;
             kde)          BUILD_COMMAND='sudo ./mkiso -P' ;;
+            xfce)         BUILD_COMMAND='sudo ./mkiso -Y' ;;
             all)          BUILD_COMMAND='sudo ./mkiso -A' ;;
             *)            BUILD_COMMAND='sudo ./mkiso'    ;;
           esac
