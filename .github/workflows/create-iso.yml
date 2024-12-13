@@ -262,7 +262,7 @@ jobs:
           #echo 'repository=https://chililinux.com/void/current'
           #} > /etc/xbps.d/00-repository-main.conf
 
-          xi -u
+          xi -u --yes
           xbps-install -Syu -ff \
             xbps \
             xtools \
@@ -298,6 +298,7 @@ jobs:
             exfatprogs \
             dosfstools \
             xfsprogs
+          xbps-remove -oO --yes
 
       - name: Create user builduser in CONTAINER
         run: |
