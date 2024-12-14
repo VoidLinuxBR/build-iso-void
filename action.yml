@@ -244,7 +244,7 @@ runs:
         install-dependencies: false
         detached: true
 
-    - name: Build ISO Image
+    - name: Build ISO void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
       if: ${{ inputs.teste_input != true }}
       shell: bash
       env:
