@@ -269,9 +269,11 @@ runs:
         RELEASE_TAG: ${{ inputs.release_tag }}
       run: |
         #BUILD ISO Image
+        source /tmp/send_telegram_message.sh
+        msg "BUILD ISO Image"
         # Check if directory exists before proceeding
         if [[ ! -d "$PROFILE_PATH" ]]; then
-          echo "ERRO(L427): Diretório $PROFILE_PATH não encontrado!"
+          msg_warning "ERRO(L427): Diretório $PROFILE_PATH não encontrado!"
           exit 1
         fi
 
@@ -291,7 +293,7 @@ runs:
             *)            BUILD_COMMAND='sudo ./mkiso'    ;;
           esac
 
-          echo "########################## RESUMO ######################################################"
+          msg "########################## RESUMO ######################################################"
           echo "DEBUG (tmate)            : $DEBUG"
           echo "TESTE                    : ${{ inputs.teste_input }}"
           echo "VOL_ID                   : $VOL_ID"
@@ -306,7 +308,7 @@ runs:
           #echo "########################################################################################"
           #echo "ROOT_RUN_DIR             : $(< /root/.config/manjaro-tools/iso-profiles.conf)"
           #echo "BUILDUSER_RUN_DIR        : $(< /home/builduser/.config/manjaro-tools/iso-profiles.conf)"
-          echo "########################################################################################"
+          msg "########################################################################################"
 
           pushd "$PROFILE_PATH"
           #teste
