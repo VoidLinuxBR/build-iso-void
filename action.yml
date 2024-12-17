@@ -251,6 +251,7 @@ runs:
 
     - name: Check DEBUG Condition
       if: ${{ env.DEBUG == 'true' }}
+      shell: bash
       run: |
         #Check DEBUG Condition
         source /tmp/send_telegram_message.sh
