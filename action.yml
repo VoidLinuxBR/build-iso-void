@@ -220,9 +220,10 @@ runs:
         pushd /root                         || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
         #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-        for i in dot.*; do
+        for f in dot.*; do
           #remove o prefixo dot. do nome do arquivo ou diretório.
-          mv "$i" ".${i#dot.}" || true
+          new_file="${f/dot/}"
+          mv -f "${f}" "$new_file" || true
         done
         popd || true
 
@@ -230,9 +231,10 @@ runs:
         pushd /github/home                  || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
         #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-        for i in dot.*; do
+        for f in dot.*; do
           #remove o prefixo dot. do nome do arquivo ou diretório.
-          mv "$i" ".${i#dot.}" || true
+          new_file="${f/dot/}"
+          mv -f "${f}" "$new_file" || true
         done
         popd || true
 
@@ -241,9 +243,10 @@ runs:
         pushd /home/builduser/              || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
         #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-        for i in dot.*; do
+        for f in dot.*; do
           #remove o prefixo dot. do nome do arquivo ou diretório.
-          mv "$i" ".${i#dot.}" || true
+          new_file="${f/dot/}"
+          mv -f "${f}" "$new_file" || true
         done
         popd || true
         EOF
