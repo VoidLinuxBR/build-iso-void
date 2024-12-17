@@ -249,9 +249,18 @@ runs:
         EOF
         replicate '='
 
+    - name: Check DEBUG Condition
+      if: ${{ env.DEBUG == 'true' }}
+      run: |
+        #Check DEBUG Condition
+        source /tmp/send_telegram_message.sh
+        replicate '='
+        echo "DEBUG is true. Activating TMATE."
+        replicate '='
+
     - name: Setup TMATE Session in CONTAINER
       uses: mxschmitt/action-tmate@v3
-      if: "${{ inputs.tmate == true }}"
+      if: env.DEBUG == 'true'
       with:
         install-dependencies: false
         detached: true
