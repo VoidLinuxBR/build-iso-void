@@ -352,13 +352,12 @@ jobs:
           #vol_id: ${{ github.event.client_payload.vol_id || inputs.vol_id }}
           #edition: ${{ github.event.client_payload.edition || inputs.edition }}
           #release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
-          #tmate: ${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}
           #github_token: ${{ secrets.ORGANIZATION_TOKEN }}
           vol_id: "${{env.vol_id}}"
           edition: "${{env.iso_edition}}"
           release_tag: "${{env.RELEASE_TAG}}"
-          tmate: "${{env.DEBUG}}"
           github_token: "${{env.GITHUB_TOKEN}}"
+          tmate: "${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
 
       #ponto de retorno do action.yml
       - name: Set ISO path

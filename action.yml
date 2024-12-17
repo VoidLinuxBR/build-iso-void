@@ -77,19 +77,19 @@ runs:
         msg() {
           local msg="$1"
           msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
-          echo -e "build-iso=>${cyan}running: ${yellow}${msg}${reset}"
+          echo -e "build-iso-void=>${cyan}running: ${yellow}${msg}${reset}"
         }
 
         msg_info() {
           local msg="$1"
           msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
-          echo -e "build-iso=>${yellow}info   : ${cyan}${msg}${reset}"
+          echo -e "build-iso-void=>${yellow}info   : ${cyan}${msg}${reset}"
         }
 
         msg_warning() {
           local msg="$1"
           msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
-          echo -e "build-iso=>${red}warning: ${orange}${msg}${reset}"
+          echo -e "build-iso-void=>${red}warning: ${orange}${msg}${reset}"
         }
 
         replicate() {
@@ -237,9 +237,8 @@ runs:
           mv "$i" ".${i#dot.}" || true
         done
         popd || true
-        replicate '='
 
-        msg "Ajustar ambiente do user builduser"
+        msg "Ajustar ambiente do user 'builduser'"
         sudo -u builduser bash << EOF
         pushd /home/builduser/              || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
@@ -250,6 +249,7 @@ runs:
         done
         popd || true
         EOF
+        replicate '='
 
     - name: Setup TMATE Session
       uses: mxschmitt/action-tmate@v3
