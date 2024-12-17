@@ -214,29 +214,24 @@ runs:
         msg "Ajustar ambiente"
         replicate '='
         ln -sfv "$WORK_PATH" /work_path         || true
-        cp -Rpa "$BASHRC_PATH"/etc/skel/. /etc/ || true
+        cp -Rpa "$BASHRC_PATH"/etc/. /etc/ || true
+        local apaths=('/root' '/github/home' '/home/builduser')
+        local cpath
 
-        msg "Ajustar ambiente do root"
-        pushd /root                         || true
-        cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
-        #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-        for f in dot.*; do
-          #remove o prefixo dot. do nome do arquivo ou diretório.
-          new_file="${f/dot/}"
-          mv -f "${f}" "$new_file" || true
+        for cpath in "${apaths[@]}"; do
+          replicate '#'
+          msg "Ajustar ambiente de $cpath"
+          pushd "$cpath"                      || true
+          cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
+          #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
+          for f in dot.*; do
+            #remove o prefixo dot. do nome do arquivo ou diretório.
+            new_file="${f/dot/}"
+            mv -f "${f}" "$new_file" || true
+          done
+          popd || true
+          replicate '#'
         done
-        popd || true
-
-        msg "Ajustar ambiente no /github/home"
-        pushd /github/home                  || true
-        cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
-        #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-        for f in dot.*; do
-          #remove o prefixo dot. do nome do arquivo ou diretório.
-          new_file="${f/dot/}"
-          mv -f "${f}" "$new_file" || true
-        done
-        popd || true
 
         msg "Ajustar ambiente do user 'builduser'"
         sudo -u builduser bash << EOF
