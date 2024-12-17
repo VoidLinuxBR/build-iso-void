@@ -25,7 +25,6 @@ inputs:
       - kde
       - all
   tmate:
-    type: boolean
     description: "Enable debugging with tmate"
     required: false
     default: false
@@ -262,11 +261,11 @@ runs:
       if: ${{ inputs.teste_input != true }}
       shell: bash
       env:
-        DEBUG: ${{ inputs.tmate != false && inputs.tmate || github.event.client_payload.tmate || false }}
-        TESTE: ${{ inputs.teste_input != false && inputs.teste_input || github.event.client_payload.teste_input || false }}
-        VOL_ID: ${{ inputs.vol_id || github.event.client_payload.vol_id || 'VOID_LIVE' }}
-        EDITION: ${{ inputs.edition || github.event.client_payload.edition || 'xfce' }}
-        RELEASE_TAG: ${{ inputs.release_tag }}
+        DEBUG: "${{ inputs.tmate }}"
+        TESTE: "${{ inputs.teste_input }}"
+        VOL_ID: "${{ inputs.vol_id }}"
+        EDITION: "${{ inputs.edition }}"
+        RELEASE_TAG: "${{ inputs.release_tag }}"
       run: |
         #BUILD ISO Image
         source /tmp/send_telegram_message.sh

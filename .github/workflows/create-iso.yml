@@ -95,7 +95,8 @@ env:
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_basename: "void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
-  DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
+  DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
+  tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
 
 jobs:
   setup:
@@ -355,7 +356,7 @@ jobs:
           edition: "${{env.iso_edition}}"
           release_tag: "${{env.RELEASE_TAG}}"
           github_token: "${{env.GITHUB_TOKEN}}"
-          tmate: "${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
+          tmate: "${{ env.DEBUG }}"
 
       #ponto de retorno do action.yml
       - name: Set ISO path
