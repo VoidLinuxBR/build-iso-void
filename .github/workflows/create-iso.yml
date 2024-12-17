@@ -132,11 +132,11 @@ jobs:
           sudo apt-get autoremove
           sudo apt-get install -y inetutils-tools duf tree tmate
 
-      - name: Setup TMATE Session in HOST
-        uses: mxschmitt/action-tmate@v3
-        with:
-          install-dependencies: false
-          detached: true
+#      - name: Setup TMATE Session in HOST
+#        uses: mxschmitt/action-tmate@v3
+#        with:
+#          install-dependencies: false
+#          detached: true
 
       - name: Set up volume directory in HOST
         shell: bash
