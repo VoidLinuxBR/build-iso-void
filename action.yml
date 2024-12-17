@@ -192,6 +192,9 @@ runs:
       shell: bash
       run: |
         #Checkout chili-void-bashrc
+        source /tmp/send_telegram_message.sh
+        msg "Checkout chili-void-bashrc"
+        replicate '='
         #REPO="${{ inputs.iso_profiles_repo }}"
         REPO="https://github.com/chililinux/chili-void-bashrc"
         echo "Repository: $REPO"
@@ -203,35 +206,46 @@ runs:
         fi
         # ativando 'git config --global --add safe.directory'
         git config --global --add safe.directory "$BASHRC_PATH" || true
+        replicate '='
 
     - name: Ajustar ambiente
       shell: bash
       run: |
         #Ajustar ambiente
-        ln -sfv  "$WORK_PATH" /work_path         || true
-        cp -Rpva "$BASHRC_PATH"/etc/skel/. /etc/ || true
+        source /tmp/send_telegram_message.sh
+        msg "Ajustar ambiente"
+        replicate '='
+        ln -sfv "$WORK_PATH" /work_path         || true
+        cp -Rpa "$BASHRC_PATH"/etc/skel/. /etc/ || true
 
-        # Ajustar ambiente do root
+        msg "Ajustar ambiente do root"
         pushd /root                         || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
+        #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
         for i in dot.*; do
+          #remove o prefixo dot. do nome do arquivo ou diretório.
           mv "$i" ".${i#dot.}" || true
         done
         popd || true
 
-        # Ajustar ambiente no /github/home
+        msg "Ajustar ambiente no /github/home"
         pushd /github/home                  || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
+        #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
         for i in dot.*; do
+          #remove o prefixo dot. do nome do arquivo ou diretório.
           mv "$i" ".${i#dot.}" || true
         done
         popd || true
+        replicate '='
 
-        # Ajustar ambiente do builduser
+        msg "Ajustar ambiente do user builduser"
         sudo -u builduser bash << EOF
         pushd /home/builduser/              || true
         cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
+        #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
         for i in dot.*; do
+          #remove o prefixo dot. do nome do arquivo ou diretório.
           mv "$i" ".${i#dot.}" || true
         done
         popd || true
