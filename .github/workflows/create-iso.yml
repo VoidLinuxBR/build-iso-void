@@ -130,7 +130,13 @@ jobs:
           #Install dependencies in HOST
           #sudo apt-get update
           sudo apt-get autoremove
-          sudo apt-get install -y inetutils-tools duf tree
+          sudo apt-get install -y inetutils-tools duf tree tmate
+
+      - name: Setup TMATE Session in HOST
+        uses: mxschmitt/action-tmate@v3
+        with:
+          install-dependencies: false
+          detached: true
 
       - name: Set up volume directory in HOST
         shell: bash
@@ -160,6 +166,7 @@ jobs:
           <b>Build dir:</b> <code>${iso_build_dir}</code>
           <b>Release:</b> <code>${iso_release_tag}</code>
           <b>Kernel:</b> <code>${iso_kernel}</code>
+          <b>Tmate:</b> <code>${{ env.DEBUG }}</code>
           <b>ISO Name:</b> <code>void-live-${iso_edition}-x86_64_${iso_release_tag}</code>"
           # Remove as tags HTML e exibe o resultado no terminal
           echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
