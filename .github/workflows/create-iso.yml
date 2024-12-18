@@ -470,10 +470,10 @@ jobs:
           #name: ${{ env.ISO_BASENAME }}
           name: ${{ steps.prepare-iso.outputs.release_name }}
           path: |
-            #${{ env.ISO_FULLNAME }}
-            #${{ env.ISO_FULLNAME }}.md5
-            ${{ steps.prepare-iso.outputs.upload_path }}
+            ${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
+            #${{ steps.prepare-iso.outputs.upload_path }}
+            #${{ env.ISO_FULLNAME }}.md5
           if-no-files-found: warn
           include-hidden-files: false
 
@@ -485,7 +485,8 @@ jobs:
           files: |
             ${{ env.ISO_PATH }}.md5
             ${{ env.ISO_PATH }}.pkgs
-            ${{ steps.prepare-iso.outputs.release_name }}.7z.*
+            #${{ steps.prepare-iso.outputs.release_name }}.7z.*
+            ${{ steps.prepare-iso.outputs.upload_path }}
           tag_name: ${{ env.ISO_TAG_NAME }}
           name: ${{ steps.prepare-iso.outputs.release_name }}
           generate_release_notes: true
