@@ -379,7 +379,7 @@ main() {
 		EDITION=$MENU_RESULT
     DISTRONAME="void-live-${EDITION}-x86_64"
 
-		create_menu "Escolha nome do volume da iso:" "VOID_LIVE" "VOID_LIVE_${EDITION^^}" "Voltar"
+		create_menu "Escolha nome do volume da iso:" "VOID_LIVE_${EDITION^^}" "VOID_LIVE" "Voltar"
 		if [[ "$MENU_RESULT" == "Voltar" ]]; then
 			continue
 		fi
@@ -392,7 +392,7 @@ main() {
 		DEBUG_TMATE=$MENU_RESULT
     DEBUG_TMATE=$([ "$MENU_RESULT" == "Sim" ] && echo "true" || echo "false")
 
-		create_menu "Rodar somente teste:" "Sim" "Não" "Voltar"
+		create_menu "Rodar somente teste:" "Não" "Sim" "Voltar"
 		if [[ "$MENU_RESULT" == "Voltar" ]]; then
 			continue
 		fi
