@@ -461,6 +461,19 @@ jobs:
           msg_info "release_name       : ${release_name}"
           replicate '='
 
+      - name: Verificar se o arquivo .iso foi gerado corretamente
+        if: ${{ inputs.teste_input != true }}
+        shell: bash
+        run: |
+          # Verificar se o arquivo .iso foi gerado corretamente
+          source /tmp/send_telegram_message.sh
+          replicate '='
+          msg_info 'ls -lah --color=auto ${{ env.ISO_FULLNAME }}'
+          ls -lah --color=auto ${{ env.ISO_FULLNAME }}
+          msg_info 'ls -lah --color=auto ${{ env.ISO_PATH }}'
+          ls -lah --color=auto ${{ env.ISO_PATH }}
+          replicate '='
+
       - name: Upload ISO as artifact
         if: ${{ inputs.teste_input != true }}
         uses: actions/upload-artifact@v4
@@ -469,6 +482,7 @@ jobs:
           #name: ${{ steps.prepare-iso.outputs.release_name }}
           name: ${{ env.ISO_BASENAME }}
           path: |
+            ${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
             #${{ steps.prepare-iso.outputs.upload_path }}

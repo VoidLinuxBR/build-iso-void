@@ -385,7 +385,7 @@ main() {
 		fi
 		VOL_ID=$MENU_RESULT
 
-		create_menu "Ativar Debug Tmate?" "Sim" "Não" "Voltar"
+		create_menu "Ativar Debug Tmate?" "Não" "Sim" "Voltar"
 		if [[ "$MENU_RESULT" == "Voltar" ]]; then
 			continue
 		fi
