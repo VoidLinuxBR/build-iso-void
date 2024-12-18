@@ -291,7 +291,6 @@ jobs:
             which \
             vpm \
             libstdc++ \
-            vim \
             nano \
             curl \
             git \
