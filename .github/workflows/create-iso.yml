@@ -313,7 +313,7 @@ jobs:
       - name: Create user builduser in CONTAINER
         run: |
           #Create user builduser in container
-          useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser
+          useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser || true
           id builduser
 
       - name: Initial Debug in CONTAINER
