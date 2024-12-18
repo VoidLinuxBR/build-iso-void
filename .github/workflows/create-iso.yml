@@ -428,18 +428,34 @@ jobs:
 
           replicate '='
           ls -lah
+
           release=$(basename "${ISO_PATH}" .iso)
           release_name="${release}"
-          7z a -v2000m ${release}.7z "${ISO_PATH}" # Compacta e divide em partes de 2000 MB
-          echo "release=${release}"      >> "$GITHUB_OUTPUT"
-          echo "release_name=${release}" >> "$GITHUB_OUTPUT"
+
+          # Obtém o tamanho do arquivo em bytes
+          file_size=$(stat -c%s "${ISO_PATH}")
+
+          # Verifica se o tamanho é maior que 2000 MB (2000 * 1024 * 1024 bytes)
+          if (( file_size > 2000 * 1024 * 1024 )); then
+            msg_info "O arquivo é maior que 2000 MB. Compactando e dividindo..."
+            7z a -v2000m "${release}.7z" "${ISO_PATH}" # Compacta e divide em partes de 2000 MB
+            upload_path="${release}.7z*"
+          else
+            msg_info "O arquivo não é maior que 2000 MB. Não será compactado."
+            upload_path="${ISO_PATH}"
+          fi
+
+          echo "release=${release}"         >> "$GITHUB_OUTPUT"
+          echo "release_name=${release}"    >> "$GITHUB_OUTPUT"
+          echo "upload_path=${upload_path}" >> "$GITHUB_OUTPUT"
+
           msg_info "ISO ${release} prepared for release"
           replicate '='
           ls -lah
           replicate '='
           # Debug
           msg_info "ISO_PATH (original): ${ISO_PATH}"
-          msg_info "7z_PATH (7z)       : ${release}.7z*"
+          msg_info "Upload Path         : ${upload_path}"
           msg_info "ISO_PATH (md5)     : ${ISO_PATH}.md5"
           msg_info "release            : ${release}"
           msg_info "release_name       : ${release_name}"
@@ -451,9 +467,12 @@ jobs:
         with:
           #name: Full_ISO_${{ steps.prepare-iso.outputs.release_name }}
           #name: ${{ steps.prepare-iso.outputs.release_name }}
-          name: ${{ env.ISO_BASENAME }}
+          #name: ${{ env.ISO_BASENAME }}
+          name: ${{ steps.prepare-iso.outputs.release_name }}
           path: |
-            ${{ env.ISO_FULLNAME }}
+            #${{ env.ISO_FULLNAME }}
+            #${{ env.ISO_FULLNAME }}.md5
+            ${{ steps.prepare-iso.outputs.upload_path }}
             ${{ env.ISO_FULLNAME }}.md5
           if-no-files-found: warn
           include-hidden-files: false
