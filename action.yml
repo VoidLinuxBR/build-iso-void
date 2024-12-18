@@ -235,18 +235,19 @@ runs:
             replicate '#'
           done
 
-          msg "Ajustar ambiente do user 'builduser'"
-          sudo -u builduser bash << EOF
+          #msg "Ajustar ambiente do user 'builduser'"
+          #sudo -u builduser bash << EOF
           pushd /home/builduser/              || true
-          cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
+          #cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
           #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-          for f in dot.*; do
-            #remove o prefixo dot. do nome do arquivo ou diretório.
-            new_file="${f/dot/}"
-            mv -f "${f}" "$new_file" || true
-          done
+          #for f in dot.*; do
+          #  #remove o prefixo dot. do nome do arquivo ou diretório.
+          #  new_file="${f/dot/}"
+          #  mv -f "${f}" "$new_file" || true
+          #done
+          sudo chown builduser: . -R || true
           popd || true
-          EOF
+          #EOF
           replicate '='
         }
         configure_users_path
