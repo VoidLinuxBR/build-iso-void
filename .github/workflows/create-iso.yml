@@ -133,11 +133,11 @@ jobs:
           #sudo apt-get install -y inetutils-tools duf tree tmate
           sudo apt-get install -y inetutils-tools duf tree
 
-#      - name: Setup TMATE Session in HOST
-#        uses: mxschmitt/action-tmate@v3
-#        with:
-#          install-dependencies: false
-#          detached: true
+      #      - name: Setup TMATE Session in HOST
+      #        uses: mxschmitt/action-tmate@v3
+      #        with:
+      #          install-dependencies: false
+      #          detached: true
 
       - name: Set up volume directory in HOST
         shell: bash
@@ -223,8 +223,8 @@ jobs:
       REPO_NAME: "${{ github.repository }}"
     container:
       #image: vcatafesta/voidlinux-docker:latest
-      image: vcatafesta/voidlinux-docker:1.1
-      image: vcatafesta/voidlinux-docker:1.2 # ter 17 dez 2024 21:48:17 -04
+      #image: vcatafesta/voidlinux-docker:1.1
+      image: vcatafesta/voidlinux-docker:1.2 #ter 17 dez 2024 21:48:17 -04
       options: --privileged
       volumes:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
