@@ -78,6 +78,12 @@ runs:
           echo -e "build-iso-void=>${cyan}running: ${yellow}${msg}${reset}"
         }
 
+        msg_raw() {
+          local msg="$1"
+          msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
+          echo -e "${cyan}${msg}${reset}"
+        }
+
         msg_info() {
           local msg="$1"
           msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
@@ -129,8 +135,8 @@ runs:
         echo -e "${cyan}Current user ID is  : ${yellow}$(id -u)${reset}"
         echo -e "${cyan}Current user details: ${yellow}$(id)${reset}"
         replicate '='
-        echo 'df -hT || true'
-        df -hT || true
+        echo 'duf || true'
+        duf || true
         replicate '='
         echo 'ls -la /mnt || true'
         ls -la /mnt || true
@@ -232,22 +238,13 @@ runs:
               mv -f "${f}" "$new_file" || true
             done
             popd || true
-            replicate '#'
           done
+          replicate '#'
 
-          #msg "Ajustar ambiente do user 'builduser'"
-          #sudo -u builduser bash << EOF
-          pushd /home/builduser/              || true
-          #cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
-          #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-          #for f in dot.*; do
-          #  #remove o prefixo dot. do nome do arquivo ou diretório.
-          #  new_file="${f/dot/}"
-          #  mv -f "${f}" "$new_file" || true
-          #done
+          msg "Ajustar permissões do user 'builduser'"
+          pushd /home/builduser/     || true
           sudo chown builduser: . -R || true
           popd || true
-          #EOF
           replicate '='
         }
         configure_users_path
@@ -304,22 +301,22 @@ runs:
             *)            BUILD_COMMAND='sudo ./mkiso'    ;;
           esac
 
-          msg "########################## RESUMO ######################################################"
-          echo "DEBUG (tmate)            : $DEBUG"
-          echo "TESTE                    : ${{ inputs.teste_input }}"
+          msg_raw "${red}########################## RESUMO ######################################################${reset}"
+          msg_raw "DEBUG (tmate)            : $DEBUG"
+          msg_raw "TESTE                    : ${{ inputs.teste_input }}"
           echo "VOL_ID                   : $VOL_ID"
           echo "EDITION                  : $EDITION"
           echo "RELEASE_TAG              : $RELEASE_TAG"
-          echo "########################################################################################"
+          msg_raw "${red}########################################################################################${reset}"
           echo "BUILD COMMAND            : $BUILD_COMMAND"
           echo "WORK_PATH                : $WORK_PATH"
           echo "PROFILE_PATH             : $PROFILE_PATH"
           echo "ISO profiles path        : $PROFILE_PATH/$EDITION"
           echo "PATH_MANJARO_ISO_PROFILES: $PATH_MANJARO_ISO_PROFILES"
-          #echo "########################################################################################"
+          #echo -e "${red}########################################################################################${reset}"
           #echo "ROOT_RUN_DIR             : $(< /root/.config/manjaro-tools/iso-profiles.conf)"
           #echo "BUILDUSER_RUN_DIR        : $(< /home/builduser/.config/manjaro-tools/iso-profiles.conf)"
-          msg "########################################################################################"
+          msg_raw "${red}########################################################################################${reset}"
 
           pushd "$PROFILE_PATH"
           #teste
