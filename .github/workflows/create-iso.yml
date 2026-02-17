@@ -174,6 +174,7 @@ jobs:
           # Envia a mensagem original com HTML para o Telegram
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
+            -d message_thread_id="531" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
 
@@ -426,6 +427,7 @@ jobs:
           # Envia a mensagem original com HTML para o Telegram
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
+            -d message_thread_id="531" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
 
@@ -583,6 +585,7 @@ jobs:
           # Envia a mensagem para o Telegram com formatação HTML
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
+            -d message_thread_id="531" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
 
@@ -671,5 +674,6 @@ jobs:
           # Envia a mensagem para o Telegram com formatação HTML
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
+            -d message_thread_id="531" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
