@@ -215,6 +215,7 @@ runs:
     - name: Ajustar ambiente
       shell: bash
       run: |
+        echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >>"/etc/sudoers.d/wheel"
         #Ajustar ambiente
         source /tmp/send_telegram_message.sh
         msg "Ajustar ambiente"
