@@ -273,6 +273,7 @@ jobs:
           #echo 'repository=https://chililinux.com/void/current'
           #} > /etc/xbps.d/00-repository-main.conf
 
+          xbps-install -Syu xbps
           xi -u --yes
           xbps-install -Syu -ff \
             xbps \
