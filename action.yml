@@ -297,16 +297,16 @@ runs:
           local BUILD_COMMAND
 
           case "$EDITION" in
-            base)         BUILD_COMMAND='bash ./mkiso'    ;;
-            awesome)      BUILD_COMMAND='bash ./mkiso -W' ;;
-            cinnamon)     BUILD_COMMAND='bash ./mkiso -N' ;;
-            enlightnment) BUILD_COMMAND='bash ./mkiso -E' ;;
-            fluxbox)      BUILD_COMMAND='bash ./mkiso -F' ;;
-            gnome)        BUILD_COMMAND='bash ./mkiso -G' ;;
-            kde)          BUILD_COMMAND='bash ./mkiso -P' ;;
-            xfce)         BUILD_COMMAND='bash ./mkiso -Y' ;;
-            all)          BUILD_COMMAND='bash ./mkiso -A' ;;
-            *)            BUILD_COMMAND='bash ./mkiso'    ;;
+            base)         BUILD_COMMAND='bash ./mkiso --automatic'    ;;
+            awesome)      BUILD_COMMAND='bash ./mkiso --automatic -W' ;;
+            cinnamon)     BUILD_COMMAND='bash ./mkiso --automatic -N' ;;
+            enlightnment) BUILD_COMMAND='bash ./mkiso --automatic -E' ;;
+            fluxbox)      BUILD_COMMAND='bash ./mkiso --automatic -F' ;;
+            gnome)        BUILD_COMMAND='bash ./mkiso --automatic -G' ;;
+            kde)          BUILD_COMMAND='bash ./mkiso --automatic -P' ;;
+            xfce)         BUILD_COMMAND='bash ./mkiso --automatic -Y' ;;
+            all)          BUILD_COMMAND='bash ./mkiso --automatic -A' ;;
+            *)            BUILD_COMMAND='bash ./mkiso --automatic'    ;;
           esac
 
           msg_raw "${red}########################## RESUMO ######################################################${reset}"
