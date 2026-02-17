@@ -55,6 +55,7 @@ runs:
       env:
         TELEGRAM_TOKEN: "${{ inputs.telegram_token }}"
         TELEGRAM_CHAT_ID: "${{ inputs.telegram_chat_id }}"
+        TELEGRAM_MESSAGE_THREAD_ID: "${{ inputs.telegram_message_thread_id }}"
       run: |
         #Definir a função send_telegram_message no script temporário
         cat << 'EOF' > /tmp/send_telegram_message.sh

@@ -81,6 +81,7 @@ env:
   #GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
   GITHUB_TOKEN: "${{ secrets.ORGANIZATION_TOKEN }}"
   CHAT_ID: "${{ secrets.CHAT_ID }}"
+  MESSAGE_THREAD_ID: "${{ secrets.MESSAGE_THREAD_ID }}"
   started_by_user: "${{ github.actor }}"
   triggered_by_user: "${{ github.triggering_actor }}"
   repo_path: "${{ secrets.PKGBUILD_DIR }}"
@@ -174,7 +175,7 @@ jobs:
           # Envia a mensagem original com HTML para o Telegram
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="531" \
+            -d message_thread_id="${MESSAGE_THREAD_ID}" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
 
@@ -427,7 +428,7 @@ jobs:
           # Envia a mensagem original com HTML para o Telegram
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="531" \
+            -d message_thread_id="${MESSAGE_THREAD_ID}" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
 
@@ -585,7 +586,7 @@ jobs:
           # Envia a mensagem para o Telegram com formatação HTML
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="531" \
+            -d message_thread_id="${MESSAGE_THREAD_ID}" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
 
@@ -674,6 +675,6 @@ jobs:
           # Envia a mensagem para o Telegram com formatação HTML
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="531" \
+            -d message_thread_id="${MESSAGE_THREAD_ID}" \
             -d text="${MESSAGE}" \
             -d parse_mode="HTML"
