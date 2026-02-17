@@ -212,6 +212,11 @@ runs:
 #        git config --global --add safe.directory "$BASHRC_PATH" || true
 #        replicate '='
 
+    - name: Ajustar wheel
+      shell: bash
+      run: |
+        echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >>"/etc/sudoers.d/wheel"
+
     - name: Ajustar ambiente
       shell: bash
       run: |
