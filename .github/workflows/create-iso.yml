@@ -225,7 +225,8 @@ jobs:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
       #image: vcatafesta/voidlinux-docker:1.2 #ter 17 dez 2024 21:48:17 -04
-      image: vcatafesta/voidlinux-docker:1.4
+      #image: vcatafesta/voidlinux-docker:1.4
+      image: vcatafesta/voidlinux-docker:1.4  #seg 16 fev 2026 23:52:08 -04
       options: --privileged
       volumes:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
