@@ -285,8 +285,9 @@ jobs:
           #echo 'repository=https://chililinux.com/void/current'
           #} > /etc/xbps.d/00-repository-main.conf
 
-          xbps-install -Syu xbps
-          xbps-install -Syu \
+          xbps-install -Sy
+          xbps-install -yu xbps
+          xbps-install -yu \
             xtools \
             bash \
             sudo \
@@ -319,7 +320,7 @@ jobs:
             exfatprogs \
             dosfstools \
             xfsprogs
-          xbps-remove -oO --yes
+          vinstall -Scc
 
       - name: Create user builduser in CONTAINER
         shell: bash
@@ -673,7 +674,7 @@ jobs:
           # Prepara a mensagem
           MESSAGE="⏳ <b>[step 3/3] Job <code>#${GITHUB_RUN_NUMBER}</code> finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
           <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          <b>Workflow :</b> <code>build-iso/edition.yml</code>
+          <b>Workflow :</b> <code>${{ github.workflow }}</code>
           <b>Inicio   :</b> <code>${START_TIME}</code>
           <b>Fim      :</b> <code>${END_TIME}</code>
           <b>Nome ISO :</b> <code>${ISO_BASENAME}</code>
