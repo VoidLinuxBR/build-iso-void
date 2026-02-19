@@ -85,7 +85,7 @@ env:
   started_by_user: "${{ github.actor }}"
   triggered_by_user: "${{ github.triggering_actor }}"
   repo_path: "${{ secrets.PKGBUILD_DIR }}"
-  iso_distroname: "${{ github.event.client_payload.distroname || inputs.distroname || 'voidlinux' }}"
+  iso_distroname: "${{ github.event.client_payload.distroname || inputs.distroname || 'voidbr' }}"
   #iso_manjaro_branch: "${{ github.event.client_payload.manjaro_branch || inputs.manjaro_branch}}"
   #iso_biglinux_branch: "${{ github.event.client_payload.biglinux_branch || inputs.biglinux_branch}}"
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
@@ -395,13 +395,12 @@ jobs:
         if: ${{ inputs.teste_input != true }}
         shell: bash
         run: |
-          # Busca o arquivo ISO real gerado no workspace para não errar o nome
+          # Localiza a ISO no workspace sem tentar mover o arquivo
           REAL_ISO=$(find "${{ github.workspace }}" -name "*.iso" | head -n 1)
-
-          # Mantém EXATAMENTE as suas variáveis originais
           echo "ISO_PATH=$REAL_ISO" >> $GITHUB_ENV
           echo "ISO_FULLNAME=$REAL_ISO" >> $GITHUB_ENV
           echo "ISO_BASENAME=$(basename "$REAL_ISO")" >> $GITHUB_ENV
+          echo "WORK_PATH=$(dirname "$REAL_ISO")" >> $GITHUB_ENV
 
       - name: Calculate ISO MD5 Hash
         shell: bash
@@ -412,7 +411,10 @@ jobs:
           ls -lah
           replicate '='
           msg "Calculating MD5 hash for ISO file ${ISO_PATH}"
+
+          # Ajuste no pushd para usar o WORK_PATH detectado no step anterior
           pushd "${{ env.WORK_PATH }}" || true
+
           if [[ -f "${{ env.ISO_BASENAME }}" ]]; then
             md5sum "${{ env.ISO_BASENAME }}" > "${{ env.ISO_BASENAME }}.md5"
             msg_info "MD5 '$ISO_BASENAME.md5' hash calculated and saved:"
@@ -421,6 +423,7 @@ jobs:
             msg_warning "Error: ${{ env.ISO_BASENAME }} file not found at ${{ env.WORK_PATH }}"
             exit 1
           fi
+
           ls -lah --color=auto
           replicate '='
           popd || true
