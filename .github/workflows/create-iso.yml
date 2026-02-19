@@ -333,7 +333,11 @@ jobs:
           echo "Edition: ${{ github.event.client_payload.edition || inputs.edition }}"
           echo "Tmate from payload: ${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
           #echo "Full github event: ${{ toJson(github.event) }}"
-          echo "Full github event: $EVENT_JSON"
+          echo "Full github event:"
+          # O uso de 'EOF' entre aspas impede que o bash interprete o conteúdo do JSON
+          cat << 'EOF'
+          $EVENT_JSON
+          EOF
 
       - name: Display the current user in CONTAINER
         shell: bash
