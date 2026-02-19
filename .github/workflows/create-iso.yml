@@ -277,13 +277,18 @@ jobs:
         shell: bash
         run: |
           #Install Required Packages and Libraries in CONTAINER
-          #{
-          #echo 'repository=https://repo-fastly.voidlinux.org/current'
-          #echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
-          #echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
-          #echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
-          #echo 'repository=https://chililinux.com/void/current'
-          #} > /etc/xbps.d/00-repository-main.conf
+          {
+          echo 'repository=https://void.voidbr.org/voidlinux/current'
+          echo 'repository=https://void.voidbr.org/voidlinux/extra'
+          echo 'repository=https://void.voidbr.org/voidlinux/current/nonfree'
+          echo 'repository=https://void.voidbr.org/voidlinux/current/multilib'
+          echo 'repository=https://void.voidbr.org/voidlinux/current/multilib/nonfree'
+          echo 'repository=https://void.chililinux.com/voidlinux/current'
+          echo 'repository=https://repo-fastly.voidlinux.org/current'
+          echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
+          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
+          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
+          } > /etc/xbps.d/00-repository-main.conf
 
           xbps-install -Sy
           xbps-install -yu xbps
