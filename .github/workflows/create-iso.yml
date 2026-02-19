@@ -278,16 +278,16 @@ jobs:
         run: |
           #Install Required Packages and Libraries in CONTAINER
           {
+          echo 'repository=https://repo-fastly.voidlinux.org/current'
+          echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
+          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
+          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
+          echo 'repository=https://void.chililinux.com/voidlinux/current'
           echo 'repository=https://void.voidbr.org/voidlinux/current'
           echo 'repository=https://void.voidbr.org/voidlinux/extra'
           echo 'repository=https://void.voidbr.org/voidlinux/current/nonfree'
           echo 'repository=https://void.voidbr.org/voidlinux/current/multilib'
           echo 'repository=https://void.voidbr.org/voidlinux/current/multilib/nonfree'
-          echo 'repository=https://void.chililinux.com/voidlinux/current'
-          echo 'repository=https://repo-fastly.voidlinux.org/current'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
           } > /etc/xbps.d/00-repository-main.conf
 
           xbps-install -Sy
@@ -528,7 +528,6 @@ jobs:
         with:
           files: |
             ${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}*
-            ${{ env.ISO_PATH }}.md5
           tag_name: ${{ env.ISO_TAG_NAME }}
           name: ${{ steps.prepare-iso.outputs.release_name }}
           generate_release_notes: true
