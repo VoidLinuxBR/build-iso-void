@@ -529,7 +529,7 @@ jobs:
           files: |
             ${{ env.ISO_PATH }}
             ${{ env.ISO_PATH }}.md5
-            ${{ steps.prepare-iso.outputs.upload_path }}
+            #${{ steps.prepare-iso.outputs.upload_path }}
           tag_name: ${{ env.ISO_TAG_NAME }}
           name: ${{ steps.prepare-iso.outputs.release_name }}
           generate_release_notes: true
