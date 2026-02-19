@@ -386,20 +386,16 @@ jobs:
 
       #ponto de retorno do action.yml
       - name: Set ISO path
+        if: ${{ inputs.teste_input != true }}
         shell: bash
         run: |
-          # Set ISO path
-          #temporario - para testes
-          #WORK_PATH='/__w/build-iso/build-iso'
-          #ISO_BASENAME="${iso_distroname}_${ISO_BRANCH^^}_${iso_edition}_${iso_release_tag}.iso"
-          #{
-          #  echo "WORK_PATH=$WORK_PATH"
-          #  echo "ISO_BASENAME=$ISO_BASENAME"
-          #} >> $GITHUB_ENV
-          #echo "ISO_PATH=${WORK_PATH}/${ISO_BASENAME}" >> $GITHUB_ENV
-          #touch "${WORK_PATH}/${ISO_BASENAME}"
-          #temporario - para testes
-          echo "ISO_PATH=${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" >> $GITHUB_ENV
+          # Busca o arquivo ISO real gerado no workspace para não errar o nome
+          REAL_ISO=$(find "${{ github.workspace }}" -name "*.iso" | head -n 1)
+
+          # Mantém EXATAMENTE as suas variáveis originais
+          echo "ISO_PATH=$REAL_ISO" >> $GITHUB_ENV
+          echo "ISO_FULLNAME=$REAL_ISO" >> $GITHUB_ENV
+          echo "ISO_BASENAME=$(basename "$REAL_ISO")" >> $GITHUB_ENV
 
       - name: Calculate ISO MD5 Hash
         shell: bash
@@ -513,9 +509,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
+            ${{ env.ISO_PATH }}
             ${{ env.ISO_PATH }}.md5
-            ${{ env.ISO_PATH }}.pkgs
-            #${{ steps.prepare-iso.outputs.release_name }}.7z.*
             ${{ steps.prepare-iso.outputs.upload_path }}
           tag_name: ${{ env.ISO_TAG_NAME }}
           name: ${{ steps.prepare-iso.outputs.release_name }}
@@ -574,13 +569,13 @@ jobs:
         if: ${{ inputs.teste_input != true }}
         shell: bash
         run: |
-          #Enviar arquivo ISO para o servidor via SCP com porta customizada
+          # Envia a ISO e o MD5 usando os caminhos absolutos confirmados
           scp -P 65002 \
               -v \
               -o StrictHostKeyChecking=no \
               -i /root/.ssh/id_rsa \
-              ${{ env.ISO_FULLNAME }} \
-              ${{ env.ISO_FULLNAME }}.md5 \
+              "${{ env.ISO_PATH }}" \
+              "${{ env.ISO_PATH }}.md5" \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
 
       - name: Telegram Alert Fail

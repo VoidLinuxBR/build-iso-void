@@ -359,17 +359,22 @@ runs:
           popd
         }
 
+        # No action.yml
         cleanup_and_move_files() {
           OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
 
-          echo "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME" >> "$GITHUB_ENV"  # Exporta OUTPUT_ISO_PATH_NAME para outras etapas
-          echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"  # Exporta OUTPUT_ISO_PATH_NAME para outras etapas
-
           if [[ -n "$OUTPUT_ISO_PATH_NAME" ]]; then
-            mv -fv "$OUTPUT_ISO_PATH_NAME" "$WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
-            # Set environment variables
-            echo "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_ENV"
+            # Move para o diretório de trabalho padrão do GitHub
+            mv -fv "$OUTPUT_ISO_PATH_NAME" "${{ github.workspace }}/$ISO_BASENAME"
+
+            # Exporta para o ambiente do JOB atual
+            echo "ISO_FULLNAME=${{ github.workspace }}/$ISO_BASENAME" >> "$GITHUB_ENV"
+            echo "ISO_BASENAME=$ISO_BASENAME" >> "$GITHUB_ENV"
+
+            # IMPORTANTE: Define o output da Action para o script principal ler
+            echo "iso_path=${{ github.workspace }}/$ISO_BASENAME" >> "$GITHUB_OUTPUT"
+            echo "iso_basename=$ISO_BASENAME" >> "$GITHUB_OUTPUT"
           fi
         }
 
