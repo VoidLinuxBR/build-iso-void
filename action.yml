@@ -157,6 +157,7 @@ runs:
       run: |
         #Display the current user in CONTAINER
         source /tmp/send_telegram_message.sh
+        msg "Display the current user in CONTAINER"
         replicate '='
         msg_raw "${cyan}Current host is     : ${yellow}$(hostname)${reset}"
         msg_raw "${cyan}Current user is     : ${yellow}$(whoami)${reset}"
@@ -174,6 +175,8 @@ runs:
       shell: bash
       run: |
         # Setup build environment
+        source /tmp/send_telegram_message.sh
+        msg "Setup build environment"
         {
         echo 'repository=https://repo-fastly.voidlinux.org/current'
         echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
@@ -190,10 +193,12 @@ runs:
       shell: bash
       run: |
         #Configurar o ambiente
+        source /tmp/send_telegram_message.sh
+        msg "Configurar o ambiente"
         WORK_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}"
         PROFILE_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-mklive"
         BASHRC_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-bashrc"
-        msg "WORK_PATH=$WORK_PATH""
+        msg "WORK_PATH=$WORK_PATH"
         msg "PROFILE_PATH=$PROFILE_PATH"
         msg "BASHRC_PATH=$BASHRC_PATH"
         echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
