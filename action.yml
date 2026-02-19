@@ -1,4 +1,4 @@
-#  Altered: 2024/12/26 - 12:26
+ç#  Altered: 2024/12/26 - 12:26
 #  Updated: 2025/01/04 - 15:47
 #
 #  Copyright (c) 2024-2025, Vilmar Catafesta <vcatafesta@gmail.com>
@@ -190,11 +190,12 @@ runs:
       shell: bash
       run: |
         #Configurar o ambiente
-        #WORK_PATH='/__w/build-iso-void/build-iso-void'
-        #PROFILE_PATH='/__w/build-iso-void/build-iso-void/chili-void-mklive'
         WORK_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}"
         PROFILE_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-mklive"
         BASHRC_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-bashrc"
+        msg "WORK_PATH=$WORK_PATH""
+        msg "PROFILE_PATH=$PROFILE_PATH"
+        msg "BASHRC_PATH=$BASHRC_PATH"
         echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
         echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
         echo "BASHRC_PATH=$BASHRC_PATH"   >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
@@ -254,7 +255,7 @@ runs:
         msg "Ajustar ambiente"
         replicate '='
         ln -sfv "$WORK_PATH" /work_path         || true
-        cp -Rpa "$BASHRC_PATH"/etc/. /etc/ || true
+        #cp -Rpa "$BASHRC_PATH"/etc/. /etc/ || true
 
         configure_users_path() {
           local apaths=('/root' '/github/home' '/home/builduser')
@@ -265,19 +266,13 @@ runs:
             msg "Ajustar ambiente de $cpath"
             pushd "$cpath"                      || true
             cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
-            #itera sobre todos os arquivos e diretórios no diretório atual cujo nome começa com dot..
-            for f in dot.*; do
-              #remove o prefixo dot. do nome do arquivo ou diretório.
-              new_file="${f/dot/}"
-              mv -f "${f}" "$new_file" || true
-            done
             popd || true
           done
           replicate '#'
 
           msg "Ajustar permissões do user 'builduser'"
-          pushd /home/builduser/     || true
-          sudo chown builduser: . -R || true
+          pushd /home/builduser/      || true
+          sudo chown builduser: . -Rv || true
           popd || true
           replicate '='
         }
@@ -386,7 +381,10 @@ runs:
       shell: bash
       run: |
         FILENAME="$ISO_BASENAME"
-        TAG_NAME=$(echo "$FILENAME" | grep -oP '\d{8}')-$(date +%H%M)
+        TAG_NAME="$(echo "$FILENAME" | grep -oP '\d{8}')-$(date +%H%M)"
+        msg "ISO_FILENAME=$FILENAME"
+        msg "ISO_TAG_NAME=$TAG_NAME"
+        echo "ISO_FILENAME=$FILENAME" >> $GITHUB_ENV
         echo "ISO_TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
     - name: Set ISO path
