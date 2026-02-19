@@ -576,8 +576,11 @@ jobs:
         run: |
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
+          # O printf garante que quebras de linha sejam respeitadas e espaços limpos
+          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
           chmod 600 /root/.ssh/id_rsa
+
+          # Adiciona o host aos conhecidos para não travar
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts2
 
@@ -586,11 +589,23 @@ jobs:
         shell: bash
         run: |
           # Envia a ISO e o MD5 usando os caminhos absolutos confirmados
+          #scp -P 65002 \
+          #    -v \
+          #    -o StrictHostKeyChecking=no \
+          #    -i /root/.ssh/id_rsa \
+          #    "${{ env.ISO_PATH }}" \
+          #    "${{ env.ISO_PATH }}.md5" \
+          #    ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
+
+          # SCP cirúrgico:
+          # 1. Usa o curinga (*) para pegar tanto a ISO única quanto partes .7z
+          # 2. BatchMode=yes para não travar pedindo senha
           scp -P 65002 \
               -v \
               -o StrictHostKeyChecking=no \
+              -o BatchMode=yes \
               -i /root/.ssh/id_rsa \
-              "${{ env.ISO_PATH }}" \
+              ${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
               "${{ env.ISO_PATH }}.md5" \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
 
