@@ -105,6 +105,12 @@ runs:
           echo -e "BIV=>${cyan}running: ${yellow}${msg}${reset}"
         }
 
+        msg_tab() {
+          local msg="$1"
+          msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
+          echo -e "   =>${cyan}running: ${yellow}${msg}${reset}"
+        }
+
         msg_raw() {
           local msg="$1"
           msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
@@ -401,6 +407,10 @@ runs:
       shell: bash
       run: |
         source /tmp/send_telegram_message.sh
-        msg "Set ISO path"
+        replicate
+        msg "- name: Set ISO path"
+        msg_tab "iso_path=$WORK_PATH/$ISO_BASENAME"
+        msg_tab "ISO_PATH=$WORK_PATH/$ISO_BASENAME"
         echo "iso_path=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_OUTPUT
-        echo "ISO_PATH=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_ENV
+        echo "ISOPATH=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_ENV
+        replicate

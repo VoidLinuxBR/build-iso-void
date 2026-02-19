@@ -391,16 +391,25 @@ jobs:
           tmate: "${{ env.DEBUG }}"
 
       #ponto de retorno do action.yml
-      - name: Set ISO path
-        if: ${{ inputs.teste_input != true }}
+      - name: Set ISO path on create-iso
         shell: bash
         run: |
+          # Set ISO path
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Set ISO path on create-iso"
           # Localiza a ISO no workspace sem tentar mover o arquivo
-          REAL_ISO=$(find "${{ github.workspace }}" -name "*.iso" | head -n 1)
-          echo "ISO_PATH=$REAL_ISO" >> $GITHUB_ENV
-          echo "ISO_FULLNAME=$REAL_ISO" >> $GITHUB_ENV
-          echo "ISO_BASENAME=$(basename "$REAL_ISO")" >> $GITHUB_ENV
-          echo "WORK_PATH=$(dirname "$REAL_ISO")" >> $GITHUB_ENV
+          #temporario - para testes
+          #WORK_PATH='/__w/build-iso/build-iso'
+          #ISO_BASENAME="${iso_distroname}_${ISO_BRANCH^^}_${iso_edition}_${iso_release_tag}.iso"
+          #{
+          #  echo "WORK_PATH=$WORK_PATH"
+          #  echo "ISO_BASENAME=$ISO_BASENAME"
+          #} >> $GITHUB_ENV
+          #echo "ISO_PATH=${WORK_PATH}/${ISO_BASENAME}" >> $GITHUB_ENV
+          #touch "${WORK_PATH}/${ISO_BASENAME}"
+          #temporario - para testes
+          echo "ISO_PATH=${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" >> $GITHUB_ENV
 
       - name: Calculate ISO MD5 Hash
         shell: bash
