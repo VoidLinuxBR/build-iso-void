@@ -91,8 +91,10 @@ env:
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
   #iso_chililinux_branch: "${{ github.event.client_payload.chililinux_branch || inputs.chililinux_branch}}"
   #iso_build_dir: "${{ github.event.client_payload.build_dir || inputs.build_dir}}"
-  iso_edition: "${{ github.event.client_payload.edition || inputs.edition}}"
-  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag }}"
+  #iso_edition: "${{ github.event.client_payload.edition || inputs.edition}}"
+  #iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag }}"
+  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'xfce' }}"
+  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || 'daily' }}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_basename: "void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
@@ -321,14 +323,24 @@ jobs:
 
       - name: Initial Debug in CONTAINER
         shell: bash
+        env:
+          EVENT_JSON: ${{ toJson(github.event) }} # Carrega o JSON em uma variável de ambiente segura
         run: |
+          # Initial Debug in CONTAINER
+          #echo "Workflow started"
+          #echo "Event Name: ${{ github.event_name }}"
+          #echo "Event Action: ${{ github.event.action }}"
+          #echo "Edition: ${{ github.event.client_payload.edition || inputs.edition }}"
+          #echo "Tmate from payload: ${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
+          #echo "Full github event: ${{ toJson(github.event) }}"
           # Initial Debug in CONTAINER
           echo "Workflow started"
           echo "Event Name: ${{ github.event_name }}"
           echo "Event Action: ${{ github.event.action }}"
-          echo "Edition: ${{ github.event.client_payload.edition || inputs.edition }}"
-          echo "Tmate from payload: ${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
-          echo "Full github event: ${{ toJson(github.event) }}"
+          echo "Edition: ${{ env.iso_edition }}"
+          echo "Tmate : ${{ env.tmate }}"
+          echo "--- Full Github Event JSON ---"
+          echo "$EVENT_JSON" # Imprime a variável de ambiente, o que é seguro para o shell
 
       - name: Display the current user in CONTAINER
         shell: bash
