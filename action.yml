@@ -361,7 +361,8 @@ runs:
           #tar -cvJf void-live-base-custom-x86_64-6.6.51_1-20240920-1810.tar.xz arquivo1.txt arquivo2.txt
           #efetivo
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
-          eval "$BUILD_COMMAND"
+          #eval "$BUILD_COMMAND"
+          dd if=/dev/zero of=teste.iso bs=1M count=1 status=none
           popd
         }
 
