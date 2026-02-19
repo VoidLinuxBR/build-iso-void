@@ -362,7 +362,7 @@ runs:
           #efetivo
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
           #eval "$BUILD_COMMAND"
-          dd if=/dev/zero of=teste.iso bs=1M count=1 status=none
+          dd if=/dev/zero of=voidbr-live-base-x86_64-6.12.73_1-20260219-2316.iso bs=1M count=1 status=none
           popd
         }
 
