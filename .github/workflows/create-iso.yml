@@ -93,7 +93,7 @@ env:
   #iso_build_dir: "${{ github.event.client_payload.build_dir || inputs.build_dir}}"
   #iso_edition: "${{ github.event.client_payload.edition || inputs.edition}}"
   #iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag }}"
-  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'xfce' }}"
+  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
   iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || 'daily' }}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_basename: "void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
