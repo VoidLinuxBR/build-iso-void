@@ -358,13 +358,15 @@ runs:
         cleanup_and_move_files() {
           OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
-
-          echo "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME" >> "$GITHUB_ENV"  # Exporta OUTPUT_ISO_PATH_NAME para outras etapas
-          echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"  # Exporta OUTPUT_ISO_PATH_NAME para outras etapas
+          msg "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME"
+          msg "ISO_BASENAME=$ISO_BASENAME"
+          echo "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME" >> "$GITHUB_ENV"
+          echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"
 
           if [[ -n "$OUTPUT_ISO_PATH_NAME" ]]; then
             mv -fv "$OUTPUT_ISO_PATH_NAME" "$WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
             # Set environment variables
+            msg "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME"
             echo "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_ENV"
           fi
         }
@@ -380,6 +382,8 @@ runs:
       id: set-tag-name
       shell: bash
       run: |
+        source /tmp/send_telegram_message.sh
+        msg "Extrair data do nome do arquivo .iso e definir tag_name"
         FILENAME="$ISO_BASENAME"
         TAG_NAME="$(echo "$FILENAME" | grep -oP '\d{8}')-$(date +%H%M)"
         msg "ISO_FILENAME=$FILENAME"
@@ -391,6 +395,7 @@ runs:
       if: ${{ inputs.teste_input != true }}
       shell: bash
       run: |
-        # Set outputs
-        echo "iso_path=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_OUTPUT"
+        source /tmp/send_telegram_message.sh
+        msg "Set ISO path"
+        echo "iso_path=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_OUTPUT
         echo "ISO_PATH=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_ENV
