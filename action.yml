@@ -231,26 +231,26 @@ runs:
         # clean '/__t/' directory
         rm -rf /__t/* || true
 
-#    - name: Checkout chili-void-bashrc
-#      if: ${{ inputs.teste_input != true }}
-#      shell: bash
-#      run: |
-#        #Checkout chili-void-bashrc
-#        source /tmp/send_telegram_message.sh
-#        msg "Checkout chili-void-bashrc"
-#        replicate '='
-#        #REPO="${{ inputs.iso_profiles_repo }}"
-#        REPO="https://github.com/chililinux/chili-void-bashrc"
-#        echo "Repository: $REPO"
-#
-#        rm -rf "$BASHRC_PATH" || true
-#        if ! git clone --depth 1 "$REPO" "$BASHRC_PATH"; then
-#          echo "Falha ao clonar o repositorio $REPO em $BASHRC_PATH"
-#          exit 1
-#        fi
-#        # ativando 'git config --global --add safe.directory'
-#        git config --global --add safe.directory "$BASHRC_PATH" || true
-#        replicate '='
+    #    - name: Checkout chili-void-bashrc
+    #      if: ${{ inputs.teste_input != true }}
+    #      shell: bash
+    #      run: |
+    #        #Checkout chili-void-bashrc
+    #        source /tmp/send_telegram_message.sh
+    #        msg "Checkout chili-void-bashrc"
+    #        replicate '='
+    #        #REPO="${{ inputs.iso_profiles_repo }}"
+    #        REPO="https://github.com/chililinux/chili-void-bashrc"
+    #        echo "Repository: $REPO"
+    #
+    #        rm -rf "$BASHRC_PATH" || true
+    #        if ! git clone --depth 1 "$REPO" "$BASHRC_PATH"; then
+    #          echo "Falha ao clonar o repositorio $REPO em $BASHRC_PATH"
+    #          exit 1
+    #        fi
+    #        # ativando 'git config --global --add safe.directory'
+    #        git config --global --add safe.directory "$BASHRC_PATH" || true
+    #        replicate '='
 
     - name: Ajustar wheel
       shell: bash
