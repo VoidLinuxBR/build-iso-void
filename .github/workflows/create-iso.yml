@@ -234,21 +234,6 @@ jobs:
             </pre>
             <b>Link:</b> <a href='${link_action}'>Visualizar no GitHub</a>"
 
-            MESSAGE="🚀 <b>${{ github.workflow }} - $message</b>
-            <b>Job&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>#${GITHUB_RUN_NUMBER}</code>
-            <b>Job URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <a href='${link_action}'>Link</a>
-            <b>Workflow&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>${{ github.workflow }}</code>
-            <b>Triggered&nbsp;&nbsp;&nbsp;:</b> <code>${started_by_user}/${triggered_by_user}</code>
-            <b>Inicio&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>${{ env.START_TIME }}</code>
-            <b>Distroname&nbsp;&nbsp;:</b> <code>${iso_distroname}</code>
-            <b>Iso Profile&nbsp;:</b> <code>${iso_profile}</code>
-            <b>Edition&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>${iso_edition}</code>
-            <b>Build dir&nbsp;&nbsp;&nbsp;:</b> <code>${iso_build_dir}</code>
-            <b>Release&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>${iso_release_tag}</code>
-            <b>Kernel&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>${iso_kernel}</code>
-            <b>Tmate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>${{ env.DEBUG }}</code>
-            <b>ISO Name&nbsp;&nbsp;&nbsp;&nbsp;:</b> <code>voidbr-live-${iso_edition}-x86_64</code>"
-
             # Remove as tags HTML e exibe o resultado no terminal
             echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
             # Envia a mensagem original com HTML para o Telegram
