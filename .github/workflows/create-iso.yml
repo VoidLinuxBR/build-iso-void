@@ -131,7 +131,6 @@ jobs:
           echo "START_TIME='$START_TIME'"           >> shared_file.txt
           echo "START_TIMESTAMP='$START_TIMESTAMP'" >> shared_file.txt
 
-
       - name: Create Global Helpers Script - Definir a função send_telegram_message no script temporário
         shell: bash
         env:
@@ -257,11 +256,12 @@ jobs:
           sudo mkdir -p /mnt/var_cache_manjaro_tools_iso
           sudo mkdir -p /mnt/lfs
 
-      - name: Enviar notificação para o Telegram
+      - name: Enviar notificação inicial para o Telegram
         shell: bash
         run: |
-          #Enviar notificação para o Telegram
           source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Enviar notificação inicial para o Telegram"
 
           echo "ISO_BRANCH='$iso_branch'" >> GITHUB_ENV
           echo "ISO_BRANCH='$iso_branch'" >> shared_file.txt
@@ -293,6 +293,7 @@ jobs:
 
           MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow ${{ github.workflow }}</b>"
           send_telegram_message "$MESSAGE"
+          replicate
 
       #      - name: Cria um arquivo de variaveis para compartilhar entre jobs
       #        shell: bash
@@ -306,9 +307,12 @@ jobs:
         id: get-repo-name
         shell: bash
         run: |
-          #Obter nome do repositório
-          #echo "::set-output name=repo_name::$(basename $GITHUB_REPOSITORY)"
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Obter nome do repositório"
+          msg "repo_name=$(basename $GITHUB_REPOSITORY)"
           echo "repo_name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
+          replicate
 
       - name: Upload script as artifact
         uses: actions/upload-artifact@v4
@@ -325,7 +329,9 @@ jobs:
       - name: Display the current user in HOST
         shell: bash
         run: |
-          # Display the current user in host
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Display the current user in HOST"
           echo "#########################################"
           echo "Current host is: $(hostname)"
           echo "Current user is: $(whoami)"
@@ -338,6 +344,7 @@ jobs:
           echo "#########################################"
           ls
           echo "#########################################"
+          replicate
 
   build:
     name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
@@ -363,7 +370,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: telegram-script
-          path: /tmp/  # O download-artifact vai colocar o arquivo em /tmp/send_telegram_message.sh dentro do container
+          path: /tmp/ # O download-artifact vai colocar o arquivo em /tmp/send_telegram_message.sh dentro do container
 
       - name: Download artifact shared-file
         uses: actions/download-artifact@v4
@@ -373,15 +380,21 @@ jobs:
       - name: Exibir e carregar variáveis do arquivo shared_file.txt no CONTAINER
         shell: bash
         run: |
-          #Exibir e carregar variáveis do arquivo shared_file.txt no CONTAINER
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Exibir e carregar variáveis do arquivo shared_file.txt no CONTAINER"
           cat shared_file.txt
           # Atribuir o conteúdo do arquivo à variável START_TIME
           #START_TIME="$(<shared_file.txt)"
           source shared_file.txt
           # Definir a variável START_TIME para outros jobs
+          msg "START_TIME=$START_TIME"
+          msg "START_TIMESTAMP=$START_TIMESTAMP"
+          msg "ISO_BRANCH=$ISO_BRANCH"
           echo "START_TIME=$START_TIME"           >> $GITHUB_ENV
           echo "START_TIMESTAMP=$START_TIMESTAMP" >> $GITHUB_ENV
           echo "ISO_BRANCH=$ISO_BRANCH"           >> $GITHUB_ENV
+          replicate
 
       - name: Checkout repository chililinux/build-iso-void
         uses: actions/checkout@v4
@@ -399,7 +412,9 @@ jobs:
       - name: Install Required Packages and Libraries no CONTAINER
         shell: bash
         run: |
-          #Install Required Packages and Libraries in CONTAINER
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Install Required Packages and Libraries no CONTAINER"
           {
           echo 'repository=https://repo-fastly.voidlinux.org/current'
           echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
@@ -412,6 +427,7 @@ jobs:
           echo 'repository=https://void.voidbr.org/voidlinux/current/multilib'
           echo 'repository=https://void.voidbr.org/voidlinux/current/multilib/nonfree'
           } > /etc/xbps.d/00-repository-main.conf
+          replicate
 
           xbps-install -Sy
           xbps-install -yu xbps
@@ -449,37 +465,43 @@ jobs:
             dosfstools \
             xfsprogs
           vinstall -Scc
+          replicate
 
       - name: Create user builduser in CONTAINER
         shell: bash
         run: |
-          #source /tmp/send_telegram_message.sh
-          #replicate
-          #msg "- name: Create user builduser in CONTAINER"
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Create user builduser in CONTAINER"
           if ! getent passwd builduser >/dev/null; then
             useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser || true
           fi
           id builduser
-          #replicate
+          replicate
 
       - name: Initial Debug in CONTAINER
         env:
           EVENT_JSON: ${{ toJson(github.event) }}
         shell: bash
         run: |
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Initial Debug in CONTAINER"
           echo "Workflow started"
           echo "Event Name: ${{ github.event_name }}"
           echo "Event Action: ${{ github.event.action }}"
           echo "Edition: ${{ github.event.client_payload.edition || inputs.edition }}"
           echo "Tmate from payload: ${{ github.event.client_payload.tmate || inputs.tmate != false && inputs.tmate }}"
-
           echo "Full github event:"
           printf '%s\n' "$EVENT_JSON"
+          replicate
 
       - name: Display the current user in CONTAINER
         shell: bash
         run: |
-          #Display the current user in CONTAINER
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Display the current user in CONTAINER"
           echo "#########################################"
           echo "Current container is: $(hostname)"
           echo "Current user is: $(whoami)"
@@ -494,6 +516,7 @@ jobs:
           echo "#########################################"
           tree -d /mnt
           echo "#########################################"
+          replicate
 
       - name: Set release tag manually
         id: date
@@ -522,7 +545,6 @@ jobs:
       - name: Set ISO path on create-iso
         shell: bash
         run: |
-          # Set ISO path
           source /tmp/send_telegram_message.sh
           replicate
           msg "- name: Set ISO path on create-iso"
@@ -571,7 +593,8 @@ jobs:
         run: |
           #Prepare ISO for release (7z)
           source /tmp/send_telegram_message.sh
-
+          replicate
+          nsg "- name: Prepare ISO for release (7z)"
           #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           # Prepara a mensagem
           #MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>
@@ -592,11 +615,8 @@ jobs:
 
           MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>"
           send_telegram_message "$MESSAGE"
-
-
           replicate '='
           ls -lah
-
           release=$(basename "${ISO_PATH}" .iso)
           release_name="${release}"
 
@@ -633,14 +653,14 @@ jobs:
         if: ${{ inputs.teste_input != true }}
         shell: bash
         run: |
-          # Verificar se o arquivo .iso foi gerado corretamente
           source /tmp/send_telegram_message.sh
-          replicate '='
+          replicate
+          msg "- name: Verificar se o arquivo .iso foi gerado corretamente"
           pushd "${{ env.WORK_PATH }}" || true
           msg_info 'ls -lah --color=auto'
           ls -lah --color=auto
-          replicate '='
           popd || true
+          replicate
 
       - name: Upload ISO as artifact
         if: ${{ inputs.teste_input != true }}
@@ -712,7 +732,7 @@ jobs:
         run: |
           source /tmp/send_telegram_message.sh
           replicate
-          msg name: "Configurar chave SSH e Adicionar chave do host remoto ao known_hosts"
+          msg "- name: Configurar chave SSH e Adicionar chave do host remoto ao known_hosts"
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
           printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
@@ -731,6 +751,9 @@ jobs:
         if: ${{ inputs.teste_input != true }}
         shell: bash
         run: |
+          source /tmp/send_telegram_message.sh
+          msg "- name: Enviar arquivo ISO para o servidor via SCP com porta customizada"
+
           # Envia a ISO e o MD5 usando os caminhos absolutos confirmados
           #scp -P 65002 \
           #    -v \
@@ -752,11 +775,12 @@ jobs:
               "${{ env.ISO_PATH }}.md5" \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
 
-      - name: Telegram Alert Fail
+      - name: Telegram Alert Fail - Send a Telegram alert if the build fails
         if: failure()
         shell: bash
         run: |
-          #Telegram Alert Fail - Send a Telegram alert if the build fails
+          source /tmp/send_telegram_message.sh
+          msg "- name: Telegram Alert Fail - Send a Telegram alert if the build fails"
           #link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           #MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>
           #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
@@ -779,7 +803,9 @@ jobs:
       - name: Capturar hora de término e calcular duração
         shell: bash
         run: |
-          #Capturar hora de término e calcular duração
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Capturar hora de término e calcular duração"
           sh_calc_duration_via_normal() {
             # Configurações
             START_TIME="${{ env.START_TIME }}"
@@ -868,3 +894,4 @@ jobs:
 
           MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
           send_telegram_message "$MESSAGE"
+          replicate
