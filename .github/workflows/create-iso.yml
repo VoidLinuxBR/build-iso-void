@@ -56,7 +56,7 @@ on:
           - kde
           - xfce
           - all
-        default: "xfce"
+        default: "teste"
       vol_id:
         type: string
         description: "Nome do VOLUME da ISO"
