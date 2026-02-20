@@ -584,7 +584,7 @@ jobs:
           msg name: "Configurar chave SSH e Adicionar chave do host remoto ao known_hosts"
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
           chmod 700 /root/.ssh
           chmod 600 /root/.ssh/id_rsa
 
