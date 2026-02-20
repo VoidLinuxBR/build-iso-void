@@ -46,6 +46,7 @@ on:
         type: choice
         description: "Edition"
         options:
+          - teste
           - base
           - awesome
           - cinnamon

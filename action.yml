@@ -361,8 +361,11 @@ runs:
           #tar -cvJf void-live-base-custom-x86_64-6.6.51_1-20240920-1810.tar.xz arquivo1.txt arquivo2.txt
           #efetivo
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
-          #eval "$BUILD_COMMAND"
-          dd if=/dev/zero of=voidbr-live-base-x86_64-6.12.73_1-20260219-2316.iso bs=1M count=1 status=none
+          if [[ "$EDITION" == 'teste' ]]; then
+            dd if=/dev/zero of=voidbr-live-base-x86_64-6.12.73_1-20260219-2316.iso bs=1M count=1 status=none
+          else
+            eval "$BUILD_COMMAND"
+          fi
           popd
         }
 
