@@ -161,7 +161,7 @@ jobs:
           echo "ISO_BRANCH='$iso_branch'" >> shared_file.txt
           link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
-          MESSAGE="🚀 <b>[step 1/3] build-iso-void - INICIANDO WORKFLOW</b>
+          MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow ${{ github.workflow }}</b>
           <b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
           <b>Job URL:</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
           <b>Workflow:</b> <code>${{ github.workflow }}</code>
@@ -450,11 +450,15 @@ jobs:
         run: |
           #Prepare ISO for release (7z)
           source /tmp/send_telegram_message.sh
+          link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
           # Prepara a mensagem
           MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>
-          <b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          <b>Workflow:</b>${{ github.workflow }}</code>
-          <b>Inicio:</b> <code>${START_TIME}</code>"
+          <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
+          <b>Edition  :</b> <code>${iso_edition}</code>
+          <b>Workflow :</b>${{ github.workflow }}</code>
+          <b>Inicio   :</b> <code>${START_TIME}</code>"
 
           # Remove as tags HTML e exibe o resultado no terminal
           echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
@@ -630,8 +634,10 @@ jobs:
           #Telegram Alert Fail - Send a Telegram alert if the build fails
           link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-          MESSAGE="🚨 <b>FALHA ao criar ISO:</b>
+          MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>
           <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
+          <b>Workflow :</b> <code>${{ github.workflow }}</code>
           <b>Iso      :</b> <code>${{ github.event.action }}</code>
           <b>URL erro :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>"
 
@@ -717,7 +723,7 @@ jobs:
 
           # Prepara a mensagem
           link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          MESSAGE="⏳ <b>[step 3/3] Job <code>#${GITHUB_RUN_NUMBER}</code> finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
+          MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
           <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
           <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
           <b>Workflow :</b> <code>${{ github.workflow }}</code>
