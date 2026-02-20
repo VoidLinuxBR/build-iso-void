@@ -349,7 +349,7 @@ jobs:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
         - /mnt/var_cache_manjaro_tools_iso:/var/cache/manjaro-tools/iso
         - /mnt/lfs:/mnt/lfs
-        - /tmp/send_telegram_message.sh:/tmp/send_telegram_message.sh
+        - /tmp:/tmp
 
     steps:
       - name: Download artifact shared-file
