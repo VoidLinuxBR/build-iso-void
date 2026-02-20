@@ -88,7 +88,7 @@ env:
   triggered_by_user: "${{ github.triggering_actor }}"
   repo_path: "${{ secrets.PKGBUILD_DIR }}"
   iso_distroname: "${{ github.event.client_payload.distroname || inputs.distroname || 'voidbr' }}"
-  iso_profile: "${{ github.event.client_payload.profile || inputs.profile || 'profile' }}"
+  iso_profile: "${{ github.event.client_payload.iso_profiles_repo || inputs.iso_profiles_repo || 'profile' }}"
   #iso_manjaro_branch: "${{ github.event.client_payload.manjaro_branch || inputs.manjaro_branch}}"
   #iso_biglinux_branch: "${{ github.event.client_payload.biglinux_branch || inputs.biglinux_branch}}"
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
@@ -213,7 +213,7 @@ jobs:
             <b>Iniciado/Triggered:</b> <code>${started_by_user}/${triggered_by_user}</code>
             <b>Inicio:</b> <code>${{ env.START_TIME }}</code>
             <b>Distroname:</b> <code>${iso_distroname}</code>
-            <b>Iso Profile:</b> <code>${{ github.event.client_payload.iso_profiles_repo || inputs.iso_profiles_repo }}</code>
+            <b>Iso Profile:</b> <code>${iso_profile}</code>
             <b>Edition:</b> <code>${iso_edition}</code>
             <b>Build dir:</b> <code>${iso_build_dir}</code>
             <b>Release:</b> <code>${iso_release_tag}</code>
