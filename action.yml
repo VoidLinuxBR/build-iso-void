@@ -40,7 +40,7 @@ inputs:
   edition:
     description: "Edition of the ISO"
     required: true
-    default: "teste"
+    default: "xfce"
     options:
       - base
       - xfce
