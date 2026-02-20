@@ -146,13 +146,14 @@ jobs:
           export TERM=${TERM:-xterm-256color}
 
           #Definindo variáveis de cores
+          export reset="\033[0m"
+          export rst="\033[0m"
           export green="\033[01;32m"
           export red="\033[01;31m"
           export blue="\033[01;34m"
           export cyan="\033[01;36m"
           export pink="\033[01;35m"
           export yellow="\033[01;33m"
-          export reset="\033[0m"
           alias ls='ls -lha --color=auto'
           alias dir='ls -lha --color=auto'
 
@@ -165,7 +166,7 @@ jobs:
           msg_tab() {
             local msg="$1"
             msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
-            echo -e "   =>${cyan}running: ${yellow}${msg}${reset}"
+            echo -e "BIV=>${yellow}${msg}${rst}"
           }
 
           msg_raw() {
@@ -277,6 +278,8 @@ jobs:
           replicate
           msg "- name: Enviar notificação inicial para o Telegram"
 
+          msg_tab "ISO_BRANCH='$iso_branch'"
+          msg_tab "ISO_BRANCH='$iso_branch'"
           echo "ISO_BRANCH='$iso_branch'" >> GITHUB_ENV
           echo "ISO_BRANCH='$iso_branch'" >> shared_file.txt
 
@@ -324,7 +327,7 @@ jobs:
           source /tmp/send_telegram_message.sh
           replicate
           msg "- name: Obter nome do repositório"
-          msg "repo_name=$(basename $GITHUB_REPOSITORY)"
+          msg_tab "repo_name=$(basename $GITHUB_REPOSITORY)"
           echo "repo_name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
           replicate
 
@@ -441,7 +444,6 @@ jobs:
           echo 'repository=https://void.voidbr.org/voidlinux/current/multilib'
           echo 'repository=https://void.voidbr.org/voidlinux/current/multilib/nonfree'
           } > /etc/xbps.d/00-repository-main.conf
-          replicate
 
           xbps-install -Sy
           xbps-install -yu xbps
@@ -608,7 +610,7 @@ jobs:
           #Prepare ISO for release (7z)
           source /tmp/send_telegram_message.sh
           replicate
-          nsg "- name: Prepare ISO for release (7z)"
+          msg "- name: Prepare ISO for release (7z)"
           #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           # Prepara a mensagem
           #MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>
