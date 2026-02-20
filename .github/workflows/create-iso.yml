@@ -305,7 +305,7 @@ jobs:
           #  -d text="${MESSAGE}" \
           #  -d parse_mode="HTML"
 
-          MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow</b>"
+          MESSAGE="🚀 <b>[step 1/3] - Iniciando WorkFlow</b>"
           send_telegram_message "$MESSAGE"
           replicate
 
@@ -627,7 +627,7 @@ jobs:
           #  -d text="${MESSAGE}" \
           #  -d parse_mode="HTML"
 
-          MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>"
+          MESSAGE="⏳ <b>[step 2/3] - Prepare ISO for release (7z)</b>"
           send_telegram_message "$MESSAGE"
           replicate '='
           ls -lah
@@ -811,7 +811,7 @@ jobs:
           #  -d text="${MESSAGE}" \
           #  -d parse_mode="HTML"
 
-          MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>"
+          MESSAGE="🚨 <b>[step x/3] - Falha ao criar ISO:</b>"
           send_telegram_message "$MESSAGE"
 
       - name: Capturar hora de término e calcular duração
@@ -906,7 +906,7 @@ jobs:
           #  -d text="${MESSAGE}" \
           #  -d parse_mode="HTML"
 
-          MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
+          MESSAGE="⏳ <b>[step 3/3] - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
           send_telegram_message "$MESSAGE"
           replicate
 
