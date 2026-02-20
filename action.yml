@@ -80,6 +80,7 @@ runs:
       shell: bash
       env:
         TELEGRAM_TOKEN: "${{ inputs.telegram_token }}"
+        TELEGRAM_VOIDBR_ISO_TOKEN_BOT: "${{ inputs.voidbr_iso_token_bot }}"
         TELEGRAM_CHAT_ID: "${{ inputs.telegram_chat_id }}"
         TELEGRAM_MESSAGE_THREAD_ID: "${{ inputs.telegram_message_thread_id }}"
       run: |
@@ -149,7 +150,7 @@ runs:
           # Remove as tags HTML e exibe o resultado no terminal
           echo -e "${red}$(sed 's/<[^>]*>//g' <<< "$message")${reset}"
           # Envia a mensagem original com HTML para o Telegram
-          curl -s -X POST "https://api.telegram.org/bot${{ inputs.telegram_token }}/sendMessage" \
+          curl -s -X POST "https://api.telegram.org/bot${{ inputs.telegram_voidbr_iso_token_bot }}/sendMessage" \
             -d chat_id="${{ inputs.telegram_chat_id }}" \
             -d message_thread_id="${{ inputs.telegram_message_thread_id }}" \
             -d text="$message" \
@@ -260,32 +261,34 @@ runs:
     - name: Ajustar ambiente
       shell: bash
       run: |
-        echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >>"/etc/sudoers.d/wheel"
-        #Ajustar ambiente
         source /tmp/send_telegram_message.sh
-        msg "Ajustar ambiente"
+        msg "- name: Ajustar ambiente"
         replicate '='
-        ln -sfv "$WORK_PATH" /work_path         || true
+        echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >>"/etc/sudoers.d/wheel"
+        ln -sfv "$WORK_PATH" /work_path || true
         #cp -Rpa "$BASHRC_PATH"/etc/. /etc/ || true
 
         configure_users_path() {
           local apaths=('/root' '/github/home' '/home/builduser')
+          local auser=('root' 'builduser' 'vcatafesta')
           local cpath
 
           for cpath in "${apaths[@]}"; do
             replicate '#'
             msg "Ajustar ambiente de $cpath"
-            pushd "$cpath"                      || true
-            cp -Rpa "$BASHRC_PATH"/etc/skel/. . || true
+            pushd "$cpath"         || true
+            cp -Rpa "/etc/skel/. . || true
             popd || true
           done
-          replicate '#'
 
-          msg "Ajustar permissões do user 'builduser'"
-          pushd /home/builduser/      || true
-          sudo chown builduser: . -Rv || true
-          popd || true
-          replicate '='
+          for cuser in "${auser[@]}"; do
+            replicate '#'
+            msg "Ajustar permissões do user '$cuser'"
+            pushd /home/$cuser            || true
+            sudo chown $cuser:$cuser . -R || true
+            ls -la /home/$cuser           || true
+            popd || true
+            replicate '='
         }
         configure_users_path
 
