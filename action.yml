@@ -270,12 +270,12 @@ runs:
 
         configure_users_path() {
           local apaths=('/root' '/github/home' '/home/builduser')
-          local auser=('root' 'builduser' 'vcatafesta')
+          local auser=('builduser' 'vcatafesta')
           local cpath
 
           for cpath in "${apaths[@]}"; do
             replicate '#'
-            msg "Ajustar ambiente de $cpath"
+            msg "Ajustando ambiente em $cpath"
             pushd "$cpath"         || true
             cp -Rpa /etc/skel/. .  || true
             popd || true
@@ -283,7 +283,7 @@ runs:
 
           for cuser in "${auser[@]}"; do
             replicate '#'
-            msg "Ajustar permissões do user '$cuser'"
+            msg "Ajustando permissões user '$cuser'"
             pushd /home/$cuser            || true
             sudo chown $cuser:$cuser . -R || true
             ls -la /home/$cuser           || true
