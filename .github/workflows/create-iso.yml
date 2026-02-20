@@ -591,10 +591,6 @@ jobs:
           msg "Testar chave se válida:"
           ssh-keygen -l -f /root/.ssh/id_rsa
 
-          # Isso aqui remove espaços inúteis e garante que a chave termine com uma linha em branco
-          sed -i 's/[[:space:]]*$//' /root/.ssh/id_rsa
-          echo "" >> /root/.ssh/id_rsa
-
           # Adiciona o host aos conhecidos para não travar
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts2
