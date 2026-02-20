@@ -288,7 +288,7 @@ jobs:
           #  -d text="${MESSAGE}" \
           #  -d parse_mode="HTML"
 
-          send_telegram_msg "$MESSAGE"
+          send_telegram_message "$MESSAGE"
 
       #      - name: Cria um arquivo de variaveis para compartilhar entre jobs
       #        shell: bash
