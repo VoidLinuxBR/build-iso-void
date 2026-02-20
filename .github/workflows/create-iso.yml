@@ -56,7 +56,7 @@ on:
           - kde
           - xfce
           - all
-        default: "base"
+        default: "xfce"
       vol_id:
         type: string
         description: "Nome do VOLUME da ISO"
@@ -518,8 +518,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           #name: Full_ISO_${{ steps.prepare-iso.outputs.release_name }}
-          #name: ${{ steps.prepare-iso.outputs.release_name }}
-          name: ${{ env.ISO_BASENAME }}
+          #name: ${{ env.ISO_BASENAME }}
+          name: ${{ steps.prepare-iso.outputs.release_name }}
           path: |
             #${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
