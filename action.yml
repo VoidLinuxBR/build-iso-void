@@ -122,9 +122,9 @@ runs:
         WORK_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}"
         PROFILE_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-mklive"
         BASHRC_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-bashrc"
-        msg "WORK_PATH=$WORK_PATH"
-        msg "PROFILE_PATH=$PROFILE_PATH"
-        msg "BASHRC_PATH=$BASHRC_PATH"
+        msg_tab "WORK_PATH=$WORK_PATH"
+        msg_tab "PROFILE_PATH=$PROFILE_PATH"
+        msg_tab "BASHRC_PATH=$BASHRC_PATH"
         echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
         echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
         echo "BASHRC_PATH=$BASHRC_PATH"   >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
