@@ -94,10 +94,10 @@ env:
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
   #iso_chililinux_branch: "${{ github.event.client_payload.chililinux_branch || inputs.chililinux_branch}}"
   #iso_build_dir: "${{ github.event.client_payload.build_dir || inputs.build_dir}}"
-  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'teste' }}"
-  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || 'daily' }}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
-  iso_basename: "void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
+  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'teste' }}"
+  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || $(date '+%Y-%m-%d_%H-%M') }}"
+  iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.73_1_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
@@ -362,8 +362,7 @@ jobs:
           replicate
 
   build:
-    #name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
-    name: Build ISO voidbr-live-${iso_edition}-x86_64_${iso_release_tag}
+    name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.73_1_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
     runs-on: ubuntu-latest
     needs: [setup] # Espera o job "setup" terminar
     env:
@@ -910,4 +909,3 @@ jobs:
           MESSAGE="⏳ <b>[step 3/3] - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
           send_telegram_message "$MESSAGE"
           replicate
-
