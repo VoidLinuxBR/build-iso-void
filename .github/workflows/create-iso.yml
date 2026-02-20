@@ -716,8 +716,10 @@ jobs:
           iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}") || true
 
           # Prepara a mensagem
+          link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           MESSAGE="⏳ <b>[step 3/3] Job <code>#${GITHUB_RUN_NUMBER}</code> finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
           <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
           <b>Workflow :</b> <code>${{ github.workflow }}</code>
           <b>Inicio   :</b> <code>${START_TIME}</code>
           <b>Fim      :</b> <code>${END_TIME}</code>
