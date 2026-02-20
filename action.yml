@@ -288,7 +288,8 @@ runs:
             sudo chown $cuser:$cuser . -R || true
             ls -la /home/$cuser           || true
             popd || true
-            replicate '='
+          done
+          replicate '='
         }
         configure_users_path
 
