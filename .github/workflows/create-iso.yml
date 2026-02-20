@@ -330,14 +330,14 @@ jobs:
       - name: Create user builduser in CONTAINER
         shell: bash
         run: |
-          source /tmp/send_telegram_message.sh
-          replicate
-          msg "- name: Create user builduser in CONTAINER"
+          #source /tmp/send_telegram_message.sh
+          #replicate
+          #msg "- name: Create user builduser in CONTAINER"
           if ! getent passwd builduser >/dev/null; then
             useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser || true
           fi
           id builduser
-          replicate
+          #replicate
 
       - name: Initial Debug in CONTAINER
         env:
