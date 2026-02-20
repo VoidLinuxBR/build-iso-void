@@ -96,7 +96,7 @@ env:
   #iso_build_dir: "${{ github.event.client_payload.build_dir || inputs.build_dir}}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'teste' }}"
-  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || $(date '+%Y-%m-%d_%H-%M') }}"
+  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || '20260220-1713' }}"
   iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.73_1_${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
