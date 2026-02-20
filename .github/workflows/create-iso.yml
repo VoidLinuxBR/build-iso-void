@@ -110,6 +110,27 @@ jobs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
     steps:
+      - name: Obter a hora atual
+        id: time
+        shell: bash
+        run: |
+          #Obter a hora atual
+          #echo "::set-output name=time::$(date +'%Y.%m.%d-%H%M')"
+          echo "time=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Capturar hora de início do workflow
+        id: start-time
+        shell: bash
+        run: |
+          START_TIME=$(date +"%Y-%m-%d %H:%M:%S")  # Hora completa
+          START_TIMESTAMP=$(date +%s)  # Timestamp em segundos
+          echo "Início do Workflow: $START_TIME"
+          echo "START_TIME=$START_TIME"             >> $GITHUB_ENV
+          echo "START_TIMESTAMP=$START_TIMESTAMP"   >> $GITHUB_ENV
+          echo "START_TIME='$START_TIME'"           >> shared_file.txt
+          echo "START_TIMESTAMP='$START_TIMESTAMP'" >> shared_file.txt
+
+
       - name: Create Global Helpers Script - Definir a função send_telegram_message no script temporário
         shell: bash
         env:
@@ -211,26 +232,6 @@ jobs:
           export -f send_telegram_message
           EOF
           chmod +x /tmp/send_telegram_message.sh
-
-      - name: Obter a hora atual
-        id: time
-        shell: bash
-        run: |
-          #Obter a hora atual
-          #echo "::set-output name=time::$(date +'%Y.%m.%d-%H%M')"
-          echo "time=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
-
-      - name: Capturar hora de início do workflow
-        id: start-time
-        shell: bash
-        run: |
-          START_TIME=$(date +"%Y-%m-%d %H:%M:%S")  # Hora completa
-          START_TIMESTAMP=$(date +%s)  # Timestamp em segundos
-          echo "Início do Workflow: $START_TIME"
-          echo "START_TIME=$START_TIME"             >> $GITHUB_ENV
-          echo "START_TIMESTAMP=$START_TIMESTAMP"   >> $GITHUB_ENV
-          echo "START_TIME='$START_TIME'"           >> shared_file.txt
-          echo "START_TIMESTAMP='$START_TIMESTAMP'" >> shared_file.txt
 
       - name: Install dependencies in HOST
         shell: bash
