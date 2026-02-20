@@ -205,6 +205,20 @@ jobs:
 
             link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
+            MESSAGE="🚀 <b>${{ github.workflow }}</b>
+            <pre>
+            Job         : #${GITHUB_RUN_NUMBER}
+            Workflow    : ${{ github.workflow }}
+            Triggered   : ${started_by_user}
+            Inicio      : ${{ env.START_TIME }}
+            Distroname  : ${iso_distroname}
+            Edition     : ${iso_edition}
+            Release     : ${iso_release_tag}
+            Tmate       : ${{ env.DEBUG }}
+            ISO Name    : voidbr-live-${iso_edition}-x86_64
+            </pre>
+            <b>Link:</b> <a href='${link_action}'>Visualizar no GitHub</a>"
+
             MESSAGE="${{ github.workflow }} - $message
             <b>Job         :</b> <code>#${GITHUB_RUN_NUMBER}</code>
             <b>Job URL     :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
@@ -219,20 +233,6 @@ jobs:
             <b>Kernel      :</b> <code>${iso_kernel}</code>
             <b>Tmate       :</b> <code>${{ env.DEBUG }}</code>
             <b>ISO Name    :</b> <code>voidbr-live-${iso_edition}-x86_64_${iso_release_tag}</code>"
-
-            MESSAGE="🚀 <b>${{ github.workflow }}</b>
-            <pre>
-            Job         : #${GITHUB_RUN_NUMBER}
-            Workflow    : ${{ github.workflow }}
-            Triggered   : ${started_by_user}
-            Inicio      : ${{ env.START_TIME }}
-            Distroname  : ${iso_distroname}
-            Edition     : ${iso_edition}
-            Release     : ${iso_release_tag}
-            Tmate       : ${{ env.DEBUG }}
-            ISO Name    : voidbr-live-${iso_edition}-x86_64
-            </pre>
-            <b>Link:</b> <a href='${link_action}'>Visualizar no GitHub</a>"
 
             # Remove as tags HTML e exibe o resultado no terminal
             echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
