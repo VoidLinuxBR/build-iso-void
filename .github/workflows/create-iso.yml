@@ -330,11 +330,14 @@ jobs:
       - name: Create user builduser in CONTAINER
         shell: bash
         run: |
-          #Create user builduser in container
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Create user builduser in CONTAINER"
           if ! getent passwd builduser >/dev/null; then
             useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser || true
           fi
           id builduser
+          replicate
 
       - name: Initial Debug in CONTAINER
         env:
@@ -581,11 +584,11 @@ jobs:
           msg name: "Configurar chave SSH e Adicionar chave do host remoto ao known_hosts"
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
-          # Limpa e grava a chave garantindo o formato Unix
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > /root/.ssh/id_rsa
+          printf '%s\n' "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa
+          chmod 700 /root/.ssh
           chmod 600 /root/.ssh/id_rsa
 
-          msg "testar chave"
+          msg "Testar chave se válida:"
           ssh-keygen -l -f /root/.ssh/id_rsa
 
           # Isso aqui remove espaços inúteis e garante que a chave termine com uma linha em branco
