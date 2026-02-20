@@ -277,7 +277,7 @@ runs:
             replicate '#'
             msg "Ajustar ambiente de $cpath"
             pushd "$cpath"         || true
-            cp -Rpa "/etc/skel/. . || true
+            cp -Rpa /etc/skel/. .  || true
             popd || true
           done
 
