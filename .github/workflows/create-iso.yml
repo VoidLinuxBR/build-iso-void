@@ -308,6 +308,12 @@ jobs:
           #echo "::set-output name=repo_name::$(basename $GITHUB_REPOSITORY)"
           echo "repo_name=$(basename $GITHUB_REPOSITORY)" >> $GITHUB_OUTPUT
 
+      - name: Upload script as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: telegram-script
+          path: /tmp/send_telegram_message.sh
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -349,9 +355,14 @@ jobs:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
         - /mnt/var_cache_manjaro_tools_iso:/var/cache/manjaro-tools/iso
         - /mnt/lfs:/mnt/lfs
-        - /tmp:/tmp
 
     steps:
+      - name: Download Telegram Script
+        uses: actions/download-artifact@v4
+        with:
+          name: telegram-script
+          path: /tmp/  # O download-artifact vai colocar o arquivo em /tmp/send_telegram_message.sh dentro do container
+
       - name: Download artifact shared-file
         uses: actions/download-artifact@v4
         with:
