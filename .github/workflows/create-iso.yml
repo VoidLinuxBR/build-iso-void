@@ -924,3 +924,4 @@ jobs:
           MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
           send_telegram_message "$MESSAGE"
           replicate
+
