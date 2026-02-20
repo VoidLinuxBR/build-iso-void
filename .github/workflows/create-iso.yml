@@ -263,21 +263,21 @@ jobs:
           echo "ISO_BRANCH='$iso_branch'" >> GITHUB_ENV
           echo "ISO_BRANCH='$iso_branch'" >> shared_file.txt
 
-          link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow ${{ github.workflow }}</b>
-          <b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          <b>Job URL:</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          <b>Workflow:</b> <code>${{ github.workflow }}</code>
-          <b>Iniciado/Triggered:</b> <code>${started_by_user}/${triggered_by_user}</code>
-          <b>Inicio:</b> <code>${{ env.START_TIME }}</code>
-          <b>Distroname:</b> <code>${iso_distroname}</code>
-          <b>Iso Profile:</b> <code>${{ github.event.client_payload.iso_profiles_repo || inputs.iso_profiles_repo }}</code>
-          <b>Edition:</b> <code>${iso_edition}</code>
-          <b>Build dir:</b> <code>${iso_build_dir}</code>
-          <b>Release:</b> <code>${iso_release_tag}</code>
-          <b>Kernel:</b> <code>${iso_kernel}</code>
-          <b>Tmate:</b> <code>${{ env.DEBUG }}</code>
-          <b>ISO Name:</b> <code>voidbr-live-${iso_edition}-x86_64_${iso_release_tag}</code>"
+          #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          #MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow ${{ github.workflow }}</b>
+          #<b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          #<b>Job URL:</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
+          #<b>Workflow:</b> <code>${{ github.workflow }}</code>
+          #<b>Iniciado/Triggered:</b> <code>${started_by_user}/${triggered_by_user}</code>
+          #<b>Inicio:</b> <code>${{ env.START_TIME }}</code>
+          #<b>Distroname:</b> <code>${iso_distroname}</code>
+          #<b>Iso Profile:</b> <code>${{ github.event.client_payload.iso_profiles_repo || inputs.iso_profiles_repo }}</code>
+          #<b>Edition:</b> <code>${iso_edition}</code>
+          #<b>Build dir:</b> <code>${iso_build_dir}</code>
+          #<b>Release:</b> <code>${iso_release_tag}</code>
+          #<b>Kernel:</b> <code>${iso_kernel}</code>
+          #<b>Tmate:</b> <code>${{ env.DEBUG }}</code>
+          #<b>ISO Name:</b> <code>voidbr-live-${iso_edition}-x86_64_${iso_release_tag}</code>"
 
           ## Remove as tags HTML e exibe o resultado no terminal
           #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
@@ -288,6 +288,7 @@ jobs:
           #  -d text="${MESSAGE}" \
           #  -d parse_mode="HTML"
 
+          MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow ${{ github.workflow }}</b>"
           send_telegram_message "$MESSAGE"
 
       #      - name: Cria um arquivo de variaveis para compartilhar entre jobs
