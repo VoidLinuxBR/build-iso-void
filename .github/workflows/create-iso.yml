@@ -175,7 +175,7 @@ jobs:
           }
           export -f replicate
 
-          send_telegram_message() {
+          function send_telegram_message() {
             local message="$1"
             local parse_mode="$2"
 
@@ -569,24 +569,28 @@ jobs:
         run: |
           #Prepare ISO for release (7z)
           source /tmp/send_telegram_message.sh
-          link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
 
+          #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           # Prepara a mensagem
-          MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>
-          <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          <b>Edition  :</b> <code>${iso_edition}</code>
-          <b>Workflow :</b>${{ github.workflow }}</code>
-          <b>Inicio   :</b> <code>${START_TIME}</code>"
+          #MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>
+          #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
+          #<b>Edition  :</b> <code>${iso_edition}</code>
+          #<b>Workflow :</b>${{ github.workflow }}</code>
+          #<b>Inicio   :</b> <code>${START_TIME}</code>"
 
           # Remove as tags HTML e exibe o resultado no terminal
-          echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
+          #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
           # Envia a mensagem original com HTML para o Telegram
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
-            -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="${MESSAGE_THREAD_ID}" \
-            -d text="${MESSAGE}" \
-            -d parse_mode="HTML"
+          #curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
+          #  -d chat_id="${CHAT_ID}" \
+          #  -d message_thread_id="${MESSAGE_THREAD_ID}" \
+          #  -d text="${MESSAGE}" \
+          #  -d parse_mode="HTML"
+
+          MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>"
+          send_telegram_message "$MESSAGE"
+
 
           replicate '='
           ls -lah
@@ -751,24 +755,24 @@ jobs:
         shell: bash
         run: |
           #Telegram Alert Fail - Send a Telegram alert if the build fails
-          link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-          MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>
-          <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          <b>Workflow :</b> <code>${{ github.workflow }}</code>
-          <b>Iso      :</b> <code>${{ github.event.action }}</code>
-          <b>URL erro :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>"
-
+          #link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          #MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>
+          #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
+          #<b>Workflow :</b> <code>${{ github.workflow }}</code>
+          #<b>Iso      :</b> <code>${{ github.event.action }}</code>
+          #<b>URL erro :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>"
           # Remove as tags HTML e exibe o resultado no terminal
-          echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
-
+          #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
           # Envia a mensagem para o Telegram com formatação HTML
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
-            -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="${MESSAGE_THREAD_ID}" \
-            -d text="${MESSAGE}" \
-            -d parse_mode="HTML"
+          #curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
+          #  -d chat_id="${CHAT_ID}" \
+          #  -d message_thread_id="${MESSAGE_THREAD_ID}" \
+          #  -d text="${MESSAGE}" \
+          #  -d parse_mode="HTML"
+
+          MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>"
+          send_telegram_message "$MESSAGE"
 
       - name: Capturar hora de término e calcular duração
         shell: bash
@@ -841,23 +845,24 @@ jobs:
           iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}") || true
 
           # Prepara a mensagem
-          link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
-          <b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          <b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          <b>Workflow :</b> <code>${{ github.workflow }}</code>
-          <b>Inicio   :</b> <code>${START_TIME}</code>
-          <b>Fim      :</b> <code>${END_TIME}</code>
-          <b>Nome ISO :</b> <code>${ISO_BASENAME}</code>
-          <b>Tam ISO  :</b> <code>${iso_size}</code>
-          <b>Download :</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
-
+          #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          #MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
+          #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
+          #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
+          #<b>Workflow :</b> <code>${{ github.workflow }}</code>
+          #<b>Inicio   :</b> <code>${START_TIME}</code>
+          #<b>Fim      :</b> <code>${END_TIME}</code>
+          #<b>Nome ISO :</b> <code>${ISO_BASENAME}</code>
+          #<b>Tam ISO  :</b> <code>${iso_size}</code>
+          #<b>Download :</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
           # Remove as tags HTML e exibe o resultado no terminal
-          echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
-
+          #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
           # Envia a mensagem para o Telegram com formatação HTML
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
-            -d chat_id="${CHAT_ID}" \
-            -d message_thread_id="${MESSAGE_THREAD_ID}" \
-            -d text="${MESSAGE}" \
-            -d parse_mode="HTML"
+          #curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
+          #  -d chat_id="${CHAT_ID}" \
+          #  -d message_thread_id="${MESSAGE_THREAD_ID}" \
+          #  -d text="${MESSAGE}" \
+          #  -d parse_mode="HTML"
+
+          MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
+          send_telegram_message "$MESSAGE"
