@@ -88,6 +88,7 @@ env:
   triggered_by_user: "${{ github.triggering_actor }}"
   repo_path: "${{ secrets.PKGBUILD_DIR }}"
   iso_distroname: "${{ github.event.client_payload.distroname || inputs.distroname || 'voidbr' }}"
+  iso_profile: "${{ github.event.client_payload.profile || inputs.profile || 'profile' }}"
   #iso_manjaro_branch: "${{ github.event.client_payload.manjaro_branch || inputs.manjaro_branch}}"
   #iso_biglinux_branch: "${{ github.event.client_payload.biglinux_branch || inputs.biglinux_branch}}"
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
