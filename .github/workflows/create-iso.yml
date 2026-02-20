@@ -331,7 +331,9 @@ jobs:
         shell: bash
         run: |
           #Create user builduser in container
-          useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser || true
+          if ! getent passwd builduser >/dev/null; then
+            useradd -m -G wheel,audio,video,cdrom,optical,kvm,xbuilder builduser || true
+          fi
           id builduser
 
       - name: Initial Debug in CONTAINER
@@ -576,7 +578,8 @@ jobs:
         run: |
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
+          # Limpa e grava a chave garantindo o formato Unix
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > /root/.ssh/id_rsa
           chmod 600 /root/.ssh/id_rsa
 
           # Isso aqui remove espaços inúteis e garante que a chave termine com uma linha em branco
