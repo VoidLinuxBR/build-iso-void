@@ -576,9 +576,12 @@ jobs:
         run: |
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
           mkdir -p /root/.ssh
-          # O printf garante que quebras de linha sejam respeitadas e espaços limpos
-          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa
           chmod 600 /root/.ssh/id_rsa
+
+          # Isso aqui remove espaços inúteis e garante que a chave termine com uma linha em branco
+          sed -i 's/[[:space:]]*$//' /root/.ssh/id_rsa
+          echo "" >> /root/.ssh/id_rsa
 
           # Adiciona o host aos conhecidos para não travar
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts
