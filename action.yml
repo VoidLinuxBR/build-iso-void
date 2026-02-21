@@ -52,6 +52,7 @@ inputs:
       - plasma
       - xfce
       - mate
+      - fullx
       - all
   tmate:
     description: "Enable debugging with tmate"

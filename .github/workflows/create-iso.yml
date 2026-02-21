@@ -56,6 +56,7 @@ on:
           - plasma
           - xfce
           - mate
+          - fullx
           - all
         default: "base"
       vol_id:
@@ -411,10 +412,15 @@ jobs:
   build:
     name: Build ISO ${{ github.event.client_payload.edition || inputs.edition || 'base' }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        edition: ${{ (inputs.edition || 'base') == 'all' && fromJson('["base","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'base')) }}
     needs: [setup] # Espera o job "setup" terminar
     env:
       #REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
       REPO_NAME: "${{ github.repository }}"
+      iso_edition: ${{ matrix.edition }}
     container:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
@@ -597,7 +603,8 @@ jobs:
           #release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
           #github_token: ${{ secrets.ORGANIZATION_TOKEN }}
           vol_id: "${{env.vol_id}}"
-          edition: "${{env.iso_edition}}"
+          #edition: "${{env.iso_edition}}"
+          edition: ${{ matrix.edition }}
           release_tag: "${{env.RELEASE_TAG}}"
           github_token: "${{env.GITHUB_TOKEN}}"
           tmate: "${{ env.DEBUG }}"
