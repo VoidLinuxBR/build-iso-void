@@ -499,8 +499,8 @@ jobs:
           xbps-install -Sy
           xbps-install -yu xbps
           xbps-install -yu \
-            xtools \
             bash \
+            xtools \
             sudo \
             openssh \
             tmate \

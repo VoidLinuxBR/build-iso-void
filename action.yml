@@ -102,24 +102,6 @@ runs:
         ls -la /mnt || true
         replicate '='
 
-    - name: Setup build environment
-      shell: bash
-      run: |
-        # Setup build environment
-        source /tmp/send_telegram_message.sh
-        msg "Setup build environment"
-        {
-        echo 'repository=https://repo-fastly.voidlinux.org/current'
-        echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
-        echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
-        echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
-        } >> /etc/xbps.d/00-repository-main.conf
-
-        # atualizar e instalar pacotes adicionais
-        xbps-install -Sy -f \
-          tree \
-          duf > /dev/null
-
     - name: Configurar o ambiente
       shell: bash
       run: |
