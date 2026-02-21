@@ -56,7 +56,6 @@ on:
           - plasma
           - xfce
           - mate
-          - fluxbox
           - all
         default: "base"
       vol_id:
@@ -642,7 +641,7 @@ jobs:
           # Calculate ISO MD5 Hash
           source /tmp/send_telegram_message.sh
           replicate '='
-          ls -lah
+          ls -lah --color=auto || true
           replicate '='
           msg "Calculating MD5 hash for ISO file ${ISO_PATH}"
 
@@ -801,6 +800,9 @@ jobs:
         run: |
           source /tmp/send_telegram_message.sh
           msg "- name: Enviar arquivo ISO para o servidor via SCP com porta customizada"
+          ls -la "${{ env.ISO_PATH }}" --color=auto || true
+          ls -la "${{ env.ISO_PATH }}.md5" --color=auto || true
+          ls -la ${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" || true
 
           # Envia a ISO e o MD5 usando os caminhos absolutos confirmados
           # SCP cirúrgico:
