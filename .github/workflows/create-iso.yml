@@ -803,14 +803,6 @@ jobs:
           msg "- name: Enviar arquivo ISO para o servidor via SCP com porta customizada"
 
           # Envia a ISO e o MD5 usando os caminhos absolutos confirmados
-          #scp -P 65002 \
-          #    -v \
-          #    -o StrictHostKeyChecking=no \
-          #    -i /root/.ssh/id_rsa \
-          #    "${{ env.ISO_PATH }}" \
-          #    "${{ env.ISO_PATH }}.md5" \
-          #    ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
-
           # SCP cirúrgico:
           # 1. Usa o curinga (*) para pegar tanto a ISO única quanto partes .7z
           # 2. BatchMode=yes para não travar pedindo senha
@@ -819,10 +811,11 @@ jobs:
               -o StrictHostKeyChecking=no \
               -o BatchMode=yes \
               -i /root/.ssh/id_rsa \
-              ${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
-              "${{ env.ISO_PATH }}.iso" \
+              #${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
+              "${{ env.ISO_PATH }}" \
               "${{ env.ISO_PATH }}.md5" \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
+          replicate
 
       - name: Telegram Alert Fail - Send a Telegram alert if the build fails
         if: failure()
