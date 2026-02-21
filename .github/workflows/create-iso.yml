@@ -98,7 +98,7 @@ env:
   #iso_build_dir: "${{ github.event.client_payload.build_dir || inputs.build_dir}}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
-  iso_release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || '20260000-0000' }}"
+  release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || '20260000-0000' }}"
   iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.73_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20260220-1713' }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
@@ -256,7 +256,7 @@ jobs:
             Inicio      : ${{ env.START_TIME }}
             Distroname  : ${iso_distroname}
             Edition     : ${iso_edition}
-            Release     : ${iso_release_tag}
+            Release     : ${release_tag}
             Tmate       : ${{ env.DEBUG }}
             ISO Name    : voidbr-live-${iso_edition}-x86_64
             </pre>
@@ -272,10 +272,10 @@ jobs:
             <b>Iso Profile :</b> <code>${iso_profile}</code>
             <b>Edition     :</b> <code>${iso_edition}</code>
             <b>Build dir   :</b> <code>${iso_build_dir}</code>
-            <b>Release     :</b> <code>${iso_release_tag}</code>
+            <b>Release     :</b> <code>${release_tag}</code>
             <b>Kernel      :</b> <code>${iso_kernel}</code>
             <b>Tmate       :</b> <code>${{ env.DEBUG }}</code>
-            <b>ISO Name    :</b> <code>voidbr-live-${iso_edition}-x86_64_${iso_release_tag}</code>
+            <b>ISO Name    :</b> <code>voidbr-live-${iso_edition}-x86_64_${release_tag}</code>
             <b>Fim      :</b> <code>${END_TIME}</code>
             <b>Nome ISO :</b> <code>${ISO_BASENAME}</code>
             <b>Tam ISO  :</b> <code>${iso_size}</code>
@@ -340,10 +340,10 @@ jobs:
           #<b>Iso Profile:</b> <code>${{ github.event.client_payload.iso_profiles_repo || inputs.iso_profiles_repo }}</code>
           #<b>Edition:</b> <code>${iso_edition}</code>
           #<b>Build dir:</b> <code>${iso_build_dir}</code>
-          #<b>Release:</b> <code>${iso_release_tag}</code>
+          #<b>Release:</b> <code>${release_tag}</code>
           #<b>Kernel:</b> <code>${iso_kernel}</code>
           #<b>Tmate:</b> <code>${{ env.DEBUG }}</code>
-          #<b>ISO Name:</b> <code>voidbr-live-${iso_edition}-x86_64_${iso_release_tag}</code>"
+          #<b>ISO Name:</b> <code>voidbr-live-${iso_edition}-x86_64_${release_tag}</code>"
 
           ## Remove as tags HTML e exibe o resultado no terminal
           #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
@@ -585,7 +585,7 @@ jobs:
         shell: bash
         run: |
           # Set release tag manually
-          RELEASE_TAG="${iso_release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
+          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
 
       - name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
@@ -613,7 +613,7 @@ jobs:
           # Localiza a ISO no workspace sem tentar mover o arquivo
           #temporario - para testes
           #WORK_PATH='/__w/build-iso/build-iso'
-          #ISO_BASENAME="${iso_distroname}_${ISO_BRANCH^^}_${iso_edition}_${iso_release_tag}.iso"
+          #ISO_BASENAME="${iso_distroname}_${ISO_BRANCH^^}_${iso_edition}_${release_tag}.iso"
           #{
           #  echo "WORK_PATH=$WORK_PATH"
           #  echo "ISO_BASENAME=$ISO_BASENAME"

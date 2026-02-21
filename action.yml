@@ -59,6 +59,10 @@ inputs:
   github_token:
     description: "GitHub token for authentication"
     required: true
+  iso_basename:
+    description: "Nome base da ISO"
+    required: true
+
 
 outputs:
   iso_path:
@@ -236,6 +240,7 @@ runs:
         VOL_ID: "${{ inputs.vol_id }}"
         EDITION: "${{ inputs.edition }}"
         RELEASE_TAG: "${{ inputs.release_tag }}"
+        ISO_BASENAME: "${{ inputs.iso_basename }}"
       run: |
         #BUILD ISO Image
         source /tmp/send_telegram_message.sh
@@ -283,9 +288,8 @@ runs:
           #efetivo
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
           if [[ "$EDITION" == 'teste' ]]; then
-             msg_raw "Criando iso de teste : voidbr-live-teste-x86_64-6.12.73_1-20260000-0000.iso"
-            #dd if=/dev/zero of=voidbr-live-teste-x86_64-6.12.73_1-20260219-2316.iso bs=1M count=1 status=none
-            dd if=/dev/zero of=voidbr-live-teste-x86_64-6.12.73_1-20260000-0000.iso bs=2300M count=1 status=none
+            msg_raw "Criando iso de teste : $ISO_BASENAME"
+            dd if=/dev/zero of=$ISO_BASENAME bs=2300M count=1 status=none
           else
             eval "$BUILD_COMMAND"
           fi
