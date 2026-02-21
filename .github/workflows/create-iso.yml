@@ -29,9 +29,9 @@ name: 💿 Build ISO VoidBR
 
 # Gatilhos para o workflow
 on:
-  push:
-    branches:
-      - main
+  #push:
+  #  branches:
+  #    - main
   repository_dispatch: # aguarda um evento externo para iniciar o workflow (útil para automações externas que acionam o GitHub Actions).
     types:
       - "ISO-*"
@@ -50,11 +50,13 @@ on:
           - base
           - awesome
           - cinnamon
-          - enlightnment
+          - enlightenment
           - fluxbox
           - gnome
-          - kde
+          - plasma
           - xfce
+          - mate
+          - fluxbox
           - all
         default: "base"
       vol_id:
@@ -579,6 +581,19 @@ jobs:
           #temporario - para testes
           echo "ISO_PATH=${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" >> $GITHUB_ENV
 
+      - name: Verificar se o arquivo .iso foi gerado corretamente
+        if: ${{ inputs.teste_input != true }}
+        shell: bash
+        run: |
+          source /tmp/send_telegram_message.sh
+          replicate
+          msg "- name: Verificar se o arquivo .iso foi gerado corretamente"
+          pushd "${{ env.WORK_PATH }}" || true
+          msg_info 'ls -lah --color=auto'
+          ls -lah --color=auto
+          popd || true
+          replicate
+
       - name: Calculate ISO MD5 Hash
         shell: bash
         run: |
@@ -613,24 +628,6 @@ jobs:
           source /tmp/send_telegram_message.sh
           replicate
           msg "- name: Prepare ISO for release (7z)"
-          #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          # Prepara a mensagem
-          #MESSAGE="⏳ <b>[step 2/3] build-iso-void - Prepare ISO for release (7z)</b>
-          #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          #<b>Edition  :</b> <code>${iso_edition}</code>
-          #<b>Workflow :</b>${{ github.workflow }}</code>
-          #<b>Inicio   :</b> <code>${START_TIME}</code>"
-
-          # Remove as tags HTML e exibe o resultado no terminal
-          #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
-          # Envia a mensagem original com HTML para o Telegram
-          #curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
-          #  -d chat_id="${CHAT_ID}" \
-          #  -d message_thread_id="${MESSAGE_THREAD_ID}" \
-          #  -d text="${MESSAGE}" \
-          #  -d parse_mode="HTML"
-
           MESSAGE="⏳ <b>[step 2/3] - Prepare ISO for release (7z)</b>"
           send_telegram_message "$MESSAGE"
           replicate '='
@@ -666,19 +663,6 @@ jobs:
           msg_info "release            : ${release}"
           msg_info "release_name       : ${release_name}"
           replicate '='
-
-      - name: Verificar se o arquivo .iso foi gerado corretamente
-        if: ${{ inputs.teste_input != true }}
-        shell: bash
-        run: |
-          source /tmp/send_telegram_message.sh
-          replicate
-          msg "- name: Verificar se o arquivo .iso foi gerado corretamente"
-          pushd "${{ env.WORK_PATH }}" || true
-          msg_info 'ls -lah --color=auto'
-          ls -lah --color=auto
-          popd || true
-          replicate
 
       - name: Upload ISO as artifact
         if: ${{ inputs.teste_input != true }}
