@@ -415,7 +415,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        edition: ${{ (inputs.edition || 'base') == 'all' && fromJson('["base","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'base')) }}
+        edition: ${{ (inputs.edition || 'base') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'base')) }}
     needs: [setup] # Espera o job "setup" terminar
     env:
       #REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
