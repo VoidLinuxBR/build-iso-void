@@ -1,3 +1,3 @@
-# build-iso-void
+# voidbr-build-iso
 
-Criação de ISO do VoidLinux
+Criação de ISO do VoidBR

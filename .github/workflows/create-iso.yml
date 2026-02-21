@@ -288,7 +288,7 @@ jobs:
           echo "ISO_BRANCH='$iso_branch'" >> shared_file.txt
 
           #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          #MESSAGE="🚀 <b>[step 1/3] build-iso-void - Iniciando WorkFlow ${{ github.workflow }}</b>
+          #MESSAGE="🚀 <b>[step 1/3] - Iniciando WorkFlow ${{ github.workflow }}</b>
           #<b>Job:</b> <code>#${GITHUB_RUN_NUMBER}</code>
           #<b>Job URL:</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
           #<b>Workflow:</b> <code>${{ github.workflow }}</code>
@@ -417,7 +417,7 @@ jobs:
           echo "ISO_BRANCH=$ISO_BRANCH"           >> $GITHUB_ENV
           replicate
 
-      - name: Checkout repository chililinux/build-iso-void
+      - name: Checkout repository voidbr-build-iso
         uses: actions/checkout@v4
         with:
           #fetch-depth: 0    # All commit history is downloaded
@@ -784,7 +784,7 @@ jobs:
           source /tmp/send_telegram_message.sh
           msg "- name: Telegram Alert Fail - Send a Telegram alert if the build fails"
           #link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          #MESSAGE="🚨 <b>[step x/3] build-iso-void - Falha ao criar ISO:</b>
+          #MESSAGE="🚨 <b>[step x/3] - Falha ao criar ISO:</b>
           #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
           #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
           #<b>Workflow :</b> <code>${{ github.workflow }}</code>
@@ -876,7 +876,7 @@ jobs:
 
           # Prepara a mensagem
           #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          #MESSAGE="⏳ <b>[step 3/3] build-iso-void - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
+          #MESSAGE="⏳ <b>[step 3/3] - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
           #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
           #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
           #<b>Workflow :</b> <code>${{ github.workflow }}</code>
