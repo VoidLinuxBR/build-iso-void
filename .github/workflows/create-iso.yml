@@ -820,6 +820,7 @@ jobs:
               -o BatchMode=yes \
               -i /root/.ssh/id_rsa \
               ${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
+              "${{ env.ISO_PATH }}.iso" \
               "${{ env.ISO_PATH }}.md5" \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
 
