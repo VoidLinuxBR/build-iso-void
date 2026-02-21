@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 # shellcheck shell=bash disable=SC1091,SC2039,SC2166
 #
-#  build-iso-void
+#  void-build-iso
 #  Created: 2024/09/22 - 07:39
 #  Altered: 2024/09/22 - 07:39
+#  Updated: sex 20 fev 2026 21:38:45 -04
 #
 #  Copyright (c) 2024-2024, Vilmar Catafesta <vcatafesta@gmail.com>
 #  All rights reserved.
@@ -31,7 +32,7 @@
 ##############################################################################
 #export LANGUAGE=pt_BR
 export TEXTDOMAINDIR=/usr/share/locale
-export TEXTDOMAIN=build-iso-void
+export TEXTDOMAIN=void-build-iso
 
 # Definir a variável de controle para restaurar a formatação original
 reset=$(tput sgr0)
@@ -361,7 +362,7 @@ get_url_actions() {
 main() {
 	declare -g ORGANIZATION='chililinux'
 	declare -g REPO_NAME=$(git config --get remote.origin.url | sed 's/.*[:/]\([^/]*\/[^.]*\).*/\1/')
-	declare -g REPO_WORKFLOW='chililinux/build-iso-void'
+	declare -g REPO_WORKFLOW='voidlinuxbr/voidbr-build-iso'
 	declare -g REPO_PATH="$(get_repo_root_path)"
 	declare -g TOKEN_RELEASE="$(gettokengithub_by_key)"
 	declare -g IS_BUILD_ISO_RESUME=true
