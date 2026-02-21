@@ -285,7 +285,7 @@ runs:
           if [[ "$EDITION" == 'teste' ]]; then
              msg_raw "Criando iso de teste : voidbr-live-base-x86_64-6.12.73_1-2026000-0000.iso"
             #dd if=/dev/zero of=voidbr-live-base-x86_64-6.12.73_1-20260219-2316.iso bs=1M count=1 status=none
-            dd if=/dev/zero of=voidbr-live-base-x86_64-6.12.73_1-2026000-0000.iso bs=2001M count=1 status=none
+            dd if=/dev/zero of=voidbr-live-base-x86_64-6.12.73_1-2026000-0000.iso bs=2300M count=1 status=none
           else
             eval "$BUILD_COMMAND"
           fi
