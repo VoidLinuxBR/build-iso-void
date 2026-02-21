@@ -724,7 +724,7 @@ jobs:
       - name: Create Release
         if: ${{ inputs.teste_input != true }}
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}*
