@@ -806,12 +806,12 @@ jobs:
           # SCP cirúrgico:
           # 1. Usa o curinga (*) para pegar tanto a ISO única quanto partes .7z
           # 2. BatchMode=yes para não travar pedindo senha
+          #${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
           scp -P 65002 \
               -v \
               -o StrictHostKeyChecking=no \
               -o BatchMode=yes \
               -i /root/.ssh/id_rsa \
-              #${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
               "${{ env.ISO_PATH }}" \
               "${{ env.ISO_PATH }}.md5" \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
