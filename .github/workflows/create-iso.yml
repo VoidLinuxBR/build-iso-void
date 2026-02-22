@@ -750,6 +750,20 @@ jobs:
           prerelease: false
           fail_on_unmatched_files: false
 
+      - name: Set Release Download URL
+        shell: bash
+        run: |
+          RELEASE_TAG="${ISO_TAG_NAME}-${GITHUB_RUN_ID}"
+          FILE_NAME="${{ steps.prepare-iso.outputs.release_name }}"
+
+          DOWNLOAD_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${RELEASE_TAG}/${FILE_NAME}"
+
+          echo "DOWNLOAD_URL=$DOWNLOAD_URL" >> $GITHUB_ENV
+
+          echo "Release tag  : $RELEASE_TAG"
+          echo "File name    : $FILE_NAME"
+          echo "Download URL : $DOWNLOAD_URL"
+
       - name: Get Artifact URL
         id: get-artifact-url
         env:
