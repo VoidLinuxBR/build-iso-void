@@ -264,7 +264,7 @@ jobs:
             Kernel      : $KERNEL_VERSION
             Release     : $release_tag
             Tmate       : $DEBUG
-            ISO Name    : iso_basename
+            ISO Name    : $ISO_BASENAME
             </pre>
             <b>Link:</b> <a href='${link_action}'>Visualizar no GitHub</a>"
 
@@ -282,7 +282,7 @@ jobs:
             <b>Release     :</b> <code>${release_tag}</code>
             <b>Kernel      :</b> <code>${KERNEL_VERSION}</code>
             <b>Tmate       :</b> <code>${DEBUG}</code>
-            <b>ISO Name    :</b> <code>${iso_basename}</code>
+            <b>ISO Name    :</b> <code>${ISO_BASENAME}</code>
             <b>Tam ISO     :</b> <code>${iso_size}</code>
             <b>Download    :</b> <a href='${{ env.artifact_url }}'>${file_name}</a>"
 
