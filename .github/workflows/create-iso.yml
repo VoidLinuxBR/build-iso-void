@@ -57,7 +57,7 @@ on:
           - mate
           - fullx
           - all
-        default: "base"
+        default: "teste"
       vol_id:
         type: string
         description: "Nome do VOLUME da ISO"
