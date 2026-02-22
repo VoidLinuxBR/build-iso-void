@@ -117,7 +117,7 @@ jobs:
         run: |
           # Set release tag manually
           RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
-          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Set ISO_BASENAME
         run: |
