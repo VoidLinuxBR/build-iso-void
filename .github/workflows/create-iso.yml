@@ -442,6 +442,23 @@ jobs:
         - /mnt/lfs/${{ matrix.edition }}:/mnt/lfs
 
     steps:
+      - name: Check DEBUG Condition
+        if: ${{ env.DEBUG == 'true' }}
+        shell: bash
+        run: |
+          #Check DEBUG Condition
+          source /tmp/send_telegram_message.sh
+          replicate '='
+          echo "DEBUG is true. Activating TMATE."
+          replicate '='
+
+      - name: Setup TMATE Session in CONTAINER
+        uses: mxschmitt/action-tmate@v3
+        if: env.DEBUG == 'true'
+        with:
+          install-dependencies: false
+          detached: true
+
       - name: Download Telegram Script
         uses: actions/download-artifact@v4
         with:
