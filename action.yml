@@ -266,7 +266,7 @@ runs:
             DATA_HORA="$(date +'%Y%m%d-%H%M')"
             TEST_FILENAME="voidbr-live-teste-x86_64-x86_64-6.12.74_1_${DATA_HORA}.iso"
             msg_raw "Criando iso de teste : $TEST_FILENAME"
-            dd if=/dev/zero of="$TEST_FILENAME" bs=2300M count=1 status=none
+            dd if=/dev/zero of="$TEST_FILENAME" bs=1M count=1 status=none
             ls -la --color=auto || true
             replicate
             {
