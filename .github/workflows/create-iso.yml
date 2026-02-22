@@ -73,10 +73,6 @@ on:
         description: "Enable debugging with tmate"
         required: false
         default: false
-      release_tag:
-        type: string
-        description: "Release tag for the ISO"
-        required: false
 
   schedule:
     #- cron: "0 6 * * *" # Roda todo dia às 06:00 UTC
@@ -101,12 +97,11 @@ env:
   #iso_chililinux_branch: "${{ github.event.client_payload.chililinux_branch || inputs.chililinux_branch}}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
-  release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
-  KERNEL_VERSION: '<keep calm>'
-  OUTPUT_FILE: '<keep calm>'
+  KERNEL_VERSION: "<keep calm>"
+  OUTPUT_FILE: "<keep calm>"
 
 jobs:
   setup:
@@ -115,6 +110,14 @@ jobs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
     steps:
+      - name: Set release tag manually
+        id: date
+        shell: bash
+        run: |
+          # Set release tag manually
+          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+
       - name: Obter a hora atual
         id: time
         shell: bash
@@ -261,7 +264,7 @@ jobs:
             Distroname  : $iso_distroname
             Edition     : $iso_edition
             Kernel      : $KERNEL_VERSION
-            Release     : $release_tag
+            Release     : $RELEASE_TAG
             Tmate       : $DEBUG
             ISO Name    : $ISO_BASENAME
             </pre>
@@ -278,7 +281,7 @@ jobs:
             <b>Iso Profile :</b> <code>${iso_profile}</code>
             <b>Edition     :</b> <code>${iso_edition}</code>
             <b>Build dir   :</b> <code>${PROFILE_PATH}</code>
-            <b>Release     :</b> <code>${release_tag}</code>
+            <b>Release     :</b> <code>${RELEASE_TAG}</code>
             <b>Kernel      :</b> <code>${KERNEL_VERSION}</code>
             <b>Tmate       :</b> <code>${DEBUG}</code>
             <b>ISO Name    :</b> <code>${ISO_BASENAME}</code>
@@ -401,7 +404,7 @@ jobs:
       #REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
       REPO_NAME: "${{ github.repository }}"
       iso_edition: ${{ matrix.edition }}
-      iso_basename: voidbr-live-${{ matrix.edition }}-x86_64-x86_64-6.12.74_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}
+      iso_basename: voidbr-live-${{ matrix.edition }}-x86_64-x86_64-6.12.74_1_${{ env.RELEASE_TAG }}
     container:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
@@ -586,15 +589,6 @@ jobs:
           echo "#########################################"
           replicate
 
-      - name: Set release tag manually
-        id: date
-        shell: bash
-        run: |
-          # Set release tag manually
-          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
-          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
-
-      #- name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
       - name: Build ISO ${{ matrix.edition }}
         if: ${{ inputs.teste_input != true }}
         uses: ./
