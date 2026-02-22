@@ -74,6 +74,12 @@ outputs:
   release_name:
     description: "Name of the release"
     value: ${{ steps.prepare-iso.outputs.release_name }}
+  KERNEL_VERSION:
+    description: "Kernel version detected"
+    value: ${{ steps.build.outputs.KERNEL_VERSION }}
+  OUTPUT_FILE:
+    description: "Filename iso generated for mkiso"
+    value: ${{ steps.build.outputs.OUTPUT_FILE }}
 
 runs:
   using: "composite"
@@ -277,11 +283,12 @@ runs:
           msg "Capturando kernel version from : $FILE_KERNEL_EDITION"
           [[ -e $FILE_KERNEL_EDITION ]] && source $FILE_KERNEL_EDITION
           msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
-          msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
           msg_raw "KERNEL_VERSION      : $KERNELVERSION"
-          export KERNEL_VERSION="$KERNELVERSION"
-          echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_ENV"
+          msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
+          echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "OUTPUT_FILE=$OUTPUT_FILE"       >> "$GITHUB_OUTPUT"
           cat "$GITHUB_ENV"
+          cat "$GITHUB_OUTPUT"
           popd
           replicate
         }
