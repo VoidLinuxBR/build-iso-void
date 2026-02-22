@@ -282,17 +282,22 @@ runs:
         export -f build_iso
 
         export_kernel_vars() {
+          local FILE_KERNEL_EDITION="$PROFILE_PATH/kernel-${EDITION}.txt"
+
           source /tmp/send_telegram_message.sh
           replicate
-
-          FILE_KERNEL_EDITION="$PROFILE_PATH/kernel-${EDITION}.txt"
-          msg "Capturando kernel version from : $PROFILE_PATH/$FILE_KERNEL_EDITION"
-          [[ -e "$FILE_KERNEL_EDITION" ]] && source "$FILE_KERNEL_EDITION"
-          msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
-          msg_raw "KERNEL_VERSION      : $KERNELVERSION"
-          msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
+          msg "Capturando kernel version from : $FILE_KERNEL_EDITION"
+          if [[ -e "$FILE_KERNEL_EDITION" ]]; then
+            source "$FILE_KERNEL_EDITION"
+          else
+            KERNELVERSION='deu ruim'
+            OUTPUT_FILE='deu ruim'
+          fi
           echo "KERNEL_VERSION=$KERNELVERSION" >> "$GITHUB_ENV"
           echo "OUTPUT_FILE=$OUTPUT_FILE"      >> "$GITHUB_ENV"
+          msg_raw "FILE_KERNEL_EDITION : $FILE_KERNEL_EDITION"
+          msg_raw "KERNEL_VERSION      : ${{env.KERNEL_VERSION}}"
+          msg_raw "OUTPUT_FILE         : ${{env.OUTPUT_FILE}}"
           replicate
         }
         export -f export_kernel_vars
