@@ -824,9 +824,10 @@ jobs:
               -o StrictHostKeyChecking=no \
               -o BatchMode=yes \
               -i /root/.ssh/id_rsa \
-              "${{ env.ISO_PATH }}" \
-              "${{ env.ISO_PATH }}.md5" \
+              ${{ env.ISO_PATH }} \
+              ${{ env.ISO_PATH }}.md5 \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
+
           replicate
 
       - name: Telegram Alert Fail - Send a Telegram alert if the build fails
