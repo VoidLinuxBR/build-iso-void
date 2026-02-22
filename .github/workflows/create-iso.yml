@@ -102,6 +102,7 @@ env:
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   KERNEL_VERSION: "<keep calm>"
   OUTPUT_FILE: "<keep calm>"
+  RELEASE_TAG: ""
 
 jobs:
   setup:
