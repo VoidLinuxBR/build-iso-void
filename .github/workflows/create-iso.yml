@@ -610,7 +610,7 @@ jobs:
           github_token: ${{env.GITHUB_TOKEN}}
           tmate: ${{ env.DEBUG }}
           iso_basename: ${{ env.iso_basename }}
-          iso_testename: ${{ env.iso_testname }}
+          iso_testename: ${{ env.iso_testename }}
 
       #ponto de retorno do action.yml
       - name: Set ISO path on create-iso

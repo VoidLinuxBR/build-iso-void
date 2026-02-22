@@ -278,7 +278,7 @@ runs:
           #efetivo
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
           if [[ "$EDITION" == 'teste' ]]; then
-            msg_raw "Criando iso de teste : $ISO_BASENAME"
+            msg_raw "Criando iso de teste : $ISO_TESTENAME"
             dd if=/dev/zero of=$ISO_TESTENAME bs=2300M count=1 status=none
           else
             eval "$BUILD_COMMAND"
