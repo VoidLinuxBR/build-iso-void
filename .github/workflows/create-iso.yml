@@ -263,7 +263,7 @@ jobs:
             <pre>
             Job         : #${GITHUB_RUN_NUMBER}
             Workflow    : ${{ github.workflow }}
-            Triggered   : ${{ started_by_user }}
+            Triggered   : ${started_by_user}
             Inicio      : $START_TIME
             Distroname  : $iso_distroname
             Edition     : $iso_edition
