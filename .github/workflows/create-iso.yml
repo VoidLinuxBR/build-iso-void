@@ -403,7 +403,7 @@ jobs:
     env:
       REPO_NAME: "${{ github.repository }}"
       iso_edition: ${{ matrix.edition }}
-      iso_basename: voidbr-live-${{matrix.edition}}-x86_64-${KERNEL_VERSION}_${RELEASE_TAG}
+      iso_basename: voidbr-live-${{matrix.edition}}-x86_64-${{env.KERNEL_VERSION}}_${{envlRELEASE_TAG}}
     container:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
