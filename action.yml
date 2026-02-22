@@ -269,6 +269,10 @@ runs:
             dd if=/dev/zero of="$TEST_FILENAME" bs=2300M count=1 status=none
             ls -la --color=auto || true
             replicate
+            echo {
+              KERNELVERSION='teste'
+              OUTPUTFILE="$TEST_FILENAME"
+            } > kernel-teste.txt
           else
             eval "$BUILD_COMMAND"
           fi
