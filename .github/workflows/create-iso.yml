@@ -256,7 +256,7 @@ jobs:
             Inicio      : ${{ env.START_TIME }}
             Distroname  : ${iso_distroname}
             Edition     : ${iso_edition}
-            Kernel      : ${ env.KERNEL_VERSION }}
+            Kernel      : ${{ env.KERNEL_VERSION }}
             Release     : ${release_tag}
             Tmate       : ${{ env.DEBUG }}
             ISO Name    : voidbr-live-${iso_edition}-x86_64
@@ -274,7 +274,7 @@ jobs:
             <b>Edition     :</b> <code>${iso_edition}</code>
             <b>Build dir   :</b> <code>${iso_build_dir}</code>
             <b>Release     :</b> <code>${release_tag}</code>
-            <b>Kernel      :</b> <code>${ env.KERNEL_VERSION }}</code>
+            <b>Kernel      :</b> <code>${{ env.KERNEL_VERSION }}</code>
             <b>Tmate       :</b> <code>${{ env.DEBUG }}</code>
             <b>ISO Name    :</b> <code>voidbr-live-${iso_edition}-x86_64_${release_tag}</code>
             <b>Fim      :</b> <code>${END_TIME}</code>
