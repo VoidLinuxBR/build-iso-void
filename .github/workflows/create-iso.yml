@@ -31,7 +31,6 @@ concurrency:
   group: build-iso-${{ github.workflow }}
   cancel-in-progress: false
 
-
 # Gatilhos para o workflow
 on:
   #push:
