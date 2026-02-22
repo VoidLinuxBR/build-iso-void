@@ -111,7 +111,7 @@ jobs:
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
     steps:
       - name: Set release tag manually
-        id: date
+        id: time
         shell: bash
         run: |
           # Set release tag manually
