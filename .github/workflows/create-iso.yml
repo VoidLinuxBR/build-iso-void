@@ -106,6 +106,8 @@ env:
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
+  KERNEL_VERSION: 'na'
+  OUTPUT_FILE: 'na'
 
 jobs:
   setup:
