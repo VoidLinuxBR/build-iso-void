@@ -285,8 +285,8 @@ runs:
           msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
           msg_raw "KERNEL_VERSION      : $KERNELVERSION"
           msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
-          echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_OUTPUT"
-          echo "OUTPUT_FILE=$OUTPUT_FILE"       >> "$GITHUB_OUTPUT"
+          echo "KERNEL_VERSION=$KERNELVERSION" >> "$GITHUB_OUTPUT"
+          echo "OUTPUT_FILE=$OUTPUT_FILE"      >> "$GITHUB_OUTPUT"
           popd
           replicate
         }
