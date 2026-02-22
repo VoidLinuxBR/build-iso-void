@@ -111,14 +111,6 @@ jobs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
     steps:
-      - name: Set release tag manually
-        id: time
-        shell: bash
-        run: |
-          # Set release tag manually
-          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
-          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
-
       - name: Obter a hora atual
         id: time
         shell: bash
@@ -418,6 +410,14 @@ jobs:
         - /mnt/lfs/${{ matrix.edition }}:/mnt/lfs
 
     steps:
+      - name: Set release tag manually
+        id: time
+        shell: bash
+        run: |
+          # Set release tag manually
+          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+
       - name: Check DEBUG Condition
         if: ${{ env.DEBUG == 'true' }}
         shell: bash
