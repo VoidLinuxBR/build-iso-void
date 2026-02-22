@@ -281,7 +281,7 @@ runs:
           msg_raw "KERNEL_VERSION      : $KERNELVERSION"
           export KERNEL_VERSION="$KERNELVERSION"
           echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_ENV"
-
+          cat "$GITHUB_ENV"
           popd
           replicate
         }
