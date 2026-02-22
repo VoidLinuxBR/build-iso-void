@@ -74,12 +74,6 @@ outputs:
   release_name:
     description: "Name of the release"
     value: ${{ steps.prepare-iso.outputs.release_name }}
-  KERNEL_VERSION:
-    description: "Kernel version detected"
-    value: ${{ steps.build_id.outputs.KERNEL_VERSION }}
-  OUTPUT_FILE:
-    description: "Filename iso generated for mkiso"
-    value: ${{ steps.build_id.outputs.OUTPUT_FILE }}
 
 runs:
   using: "composite"

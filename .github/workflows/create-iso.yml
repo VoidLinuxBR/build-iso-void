@@ -632,12 +632,6 @@ jobs:
           tmate: ${{ env.DEBUG }}
           iso_basename: ${{ env.iso_basename }}
 
-      - name: Import VARS from action.yml to env
-        shell: bash
-        run: |
-          echo "KERNEL_VERSION=${{ steps.build_id.outputs.KERNEL_VERSION }}" >> "$GITHUB_ENV"
-          echo "OUTPUT_FILE=${{ steps.build_id.outputs.OUTPUT_FILE }}" >> "$GITHUB_ENV"
-
       #ponto de retorno do action.yml
       - name: Set ISO path on create-iso
         shell: bash
