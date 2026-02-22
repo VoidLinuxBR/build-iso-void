@@ -810,7 +810,7 @@ jobs:
           msg "- name: Enviar arquivo ISO para o servidor via SCP com porta customizada"
           ls -la "${{ env.ISO_PATH }}" --color=auto || true
           ls -la "${{ env.ISO_PATH }}.md5" --color=auto || true
-          ls -la ${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" || true
+          ls -la "${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" || true
 
           # Envia a ISO e o MD5 usando os caminhos absolutos confirmados
           # SCP cirúrgico:
