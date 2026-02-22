@@ -103,6 +103,7 @@ env:
   KERNEL_VERSION: "6.12.74_1"
   OUTPUT_FILE: "<keep calm>"
   RELEASE_TAG: "00000000-0000"
+  ISO_BASENAME: ''
 
 jobs:
   setup:
@@ -125,7 +126,7 @@ jobs:
         id: set_basename
         shell: bash
         run: |
-          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> $GITHUB_OUTPUT
+          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Obter a hora atual
         id: time
