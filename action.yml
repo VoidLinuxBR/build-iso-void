@@ -280,8 +280,8 @@ runs:
 
         # No action.yml
         cleanup_and_move_files() {
-          msg_tab "cleanup_and_move_files"
-          msg_raw "PROFILE_PATH : $PROFILE_PATH"
+          msg "cleanup_and_move_files"
+          msg_raw "PROFILE_PATH           : $PROFILE_PATH"
 
           OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
@@ -328,8 +328,10 @@ runs:
         source /tmp/send_telegram_message.sh
         replicate
         msg "- name: Set ISO path"
-        msg_tab "iso_path=$WORK_PATH/$ISO_BASENAME"
-        msg_tab "ISO_PATH=$WORK_PATH/$ISO_BASENAME"
+        msg_raw "iso_path : $WORK_PATH/$ISO_BASENAME"
+        msg_raw "ISO_PATH : $WORK_PATH/$ISO_BASENAME"
+
         echo "iso_path=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_OUTPUT
         echo "ISOPATH=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_ENV
+
         replicate
