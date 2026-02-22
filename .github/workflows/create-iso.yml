@@ -524,8 +524,9 @@ jobs:
           echo
           } > /etc/xbps.d/00-repository-main.conf
 
-          xbps-install -Syu xbps
-          xbps-install -Syu \
+          xbps-install -Syu
+          xbps-install -yu xbps
+          xbps-install -yu \
             bash \
             xtools \
             sudo \
@@ -537,7 +538,6 @@ jobs:
             jq \
             github-cli \
             kmod \
-            ncurses \
             which \
             vpm \
             libstdc++ \
@@ -559,6 +559,7 @@ jobs:
             dosfstools \
             xfsprogs
           vinstall -Scc
+          xbps-install -Syu ncurses
           replicate
 
       - name: Create user builduser in CONTAINER
