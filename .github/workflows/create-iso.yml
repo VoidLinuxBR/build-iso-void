@@ -119,7 +119,7 @@ jobs:
         shell: bash
         run: |
           # Set release tag manually
-          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
+          RELEASE_TAG="${release_tag:-$(date '+%Y%m%d-%H%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
 
