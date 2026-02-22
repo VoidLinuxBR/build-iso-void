@@ -72,7 +72,7 @@ on:
         type: boolean
         description: "Enable debugging with tmate"
         required: false
-        default: false
+        default: true
       release_tag:
         type: string
         description: "Release tag for the ISO"
