@@ -415,7 +415,8 @@ jobs:
           replicate
 
   build:
-    name: Build ISO ${{ github.event.client_payload.edition || inputs.edition || 'base' }}
+    #name: Build ISO ${{ github.event.client_payload.edition || inputs.edition || 'base' }}
+    name: Build ISO ${{ matrix.edition }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
