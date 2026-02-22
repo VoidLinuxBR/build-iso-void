@@ -293,7 +293,7 @@ jobs:
             <b>Tmate       :</b> <code>${DEBUG}</code>
             <b>ISO Name    :</b> <code>${ISO_BASENAME}</code>
             <b>Tam ISO     :</b> <code>${iso_size}</code>
-            <b>Download    :</b> <a href='${{ env.artifact_url }}'>${file_name}</a>"
+            <b>Download    :</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
 
             # Remove as tags HTML e exibe o resultado no terminal
             echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
