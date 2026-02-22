@@ -287,8 +287,6 @@ runs:
           msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
           echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_OUTPUT"
           echo "OUTPUT_FILE=$OUTPUT_FILE"       >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_ENV"
-          cat "$GITHUB_OUTPUT"
           popd
           replicate
         }
