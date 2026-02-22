@@ -291,9 +291,9 @@ jobs:
             <b>Release     :</b> <code>${RELEASE_TAG}</code>
             <b>Kernel      :</b> <code>${KERNEL_VERSION}</code>
             <b>Tmate       :</b> <code>${DEBUG}</code>
-            <b>ISO Name    :</b> <code>${ISO_BASENAME}</code>
             <b>Tam ISO     :</b> <code>${iso_size}</code>
-            <b>Download    :</b> <a href='${DOWNLOAD_URL}'>${ISO_BASENAME}</a>"
+            <b>Download    :</b> <a href='${DOWNLOAD_URL_ISO}'>${ISO_BASENAME}</a>
+            <b>Download    :</b> <a href='${DOWNLOAD_URL_MD5}'>${ISO_BASENAME}.md5</a>"
 
             # Remove as tags HTML e exibe o resultado no terminal
             echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
@@ -755,8 +755,10 @@ jobs:
         run: |
           TAG="${{ env.ISO_TAG_NAME }}-${{ github.run_id }}"
           FILE_NAME="${{ steps.prepare-iso.outputs.release_name }}"
-          DOWNLOAD_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE_NAME}.iso"
-          echo "DOWNLOAD_URL=$DOWNLOAD_URL" >> $GITHUB_ENV
+          DOWNLOAD_URL_ISO="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE_NAME}.iso"
+          DOWNLOAD_URL_MD5="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE_NAME}.iso.md5"
+          echo "DOWNLOAD_URL_ISO=$DOWNLOAD_URL_ISO" >> $GITHUB_ENV
+          echo "DOWNLOAD_URL_MD5=$DOWNLOAD_URL_MD5" >> $GITHUB_ENV
 
 
       - name: Get Artifact URL
