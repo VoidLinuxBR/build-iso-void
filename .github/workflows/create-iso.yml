@@ -102,8 +102,6 @@ env:
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   KERNEL_VERSION: "6.12.74_1"
   OUTPUT_FILE: "<keep calm>"
-  #RELEASE_TAG: "00000000-0000"
-  #ISO_BASENAME: ""
 
 jobs:
   setup:
@@ -111,22 +109,18 @@ jobs:
     outputs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
-      RELEASE_TAG: ${{ steps.set_release.outputs.RELEASE_TAG }}
-      ISO_BASENAME: ${{ steps.set_basename.outputs.ISO_BASENAME }}
+      RELEASE_TAG: ${{ steps.set_vars.outputs.RELEASE_TAG }}
+      ISO_BASENAME: ${{ steps.set_var.outputs.ISO_BASENAME }}
+      ISO_BASENAME: ${{ steps.set_var.outputs.ISO_BASENAME }}
     steps:
-      - name: Set release tag manually
-        id: set_release
+      - name: Set VARS manually
+        id: set_vars
         shell: bash
         run: |
           # Set release tag manually
           RELEASE_TAG="${release_tag:-$(date '+%Y%m%d-%H%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
-
-      - name: Set ISO_BASENAME
-        id: set_basename
-        shell: bash
-        run: |
           echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_ENV"
 
@@ -927,26 +921,6 @@ jobs:
             artifact_size_in_bytes=$(stat -c%s "${{ env.ISO_FULLNAME }}")
           fi
           iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}") || true
-
-          # Prepara a mensagem
-          #link_action=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          #MESSAGE="⏳ <b>[step 3/3] - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>
-          #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          #<b>Workflow :</b> <code>${{ github.workflow }}</code>
-          #<b>Inicio   :</b> <code>${START_TIME}</code>
-          #<b>Fim      :</b> <code>${END_TIME}</code>
-          #<b>Nome ISO :</b> <code>${ISO_BASENAME}</code>
-          #<b>Tam ISO  :</b> <code>${iso_size}</code>
-          #<b>Download :</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
-          # Remove as tags HTML e exibe o resultado no terminal
-          #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
-          # Envia a mensagem para o Telegram com formatação HTML
-          #curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
-          #  -d chat_id="${CHAT_ID}" \
-          #  -d message_thread_id="${MESSAGE_THREAD_ID}" \
-          #  -d text="${MESSAGE}" \
-          #  -d parse_mode="HTML"
 
           MESSAGE="⏳ <b>[step 3/3] - Finalizado em:</b> <code>${hours}h ${minutes}m ${seconds}s</code>"
           send_telegram_message "$MESSAGE"
