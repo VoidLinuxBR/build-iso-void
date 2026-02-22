@@ -102,7 +102,7 @@ env:
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   KERNEL_VERSION: "6.12.74_1"
   OUTPUT_FILE: "<keep calm>"
-  RELEASE_TAG: ""
+  RELEASE_TAG: "00000000-0000"
 
 jobs:
   setup:
@@ -395,7 +395,7 @@ jobs:
     env:
       REPO_NAME: "${{ github.repository }}"
       iso_edition: ${{ matrix.edition }}
-      iso_basename: voidbr-live-${{matrix.edition}}-x86_64-${{env.KERNEL_VERSION}}_${{envlRELEASE_TAG}}
+      iso_basename: voidbr-live-${{matrix.edition}}-x86_64-6.12.74_1_00000000-0000
     container:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
