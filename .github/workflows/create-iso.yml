@@ -427,7 +427,7 @@ jobs:
       #REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
       REPO_NAME: "${{ github.repository }}"
       iso_edition: ${{ matrix.edition }}
-      iso_basename: voidbr-live-${{ matrix.edition }}-x86_64-x86_64-6.12.74_1_${{ env.RELEASE_TAG }}
+      iso_basename: voidbr-live-${{ matrix.edition }}-x86_64-x86_64-6.12.74_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}
     container:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
