@@ -103,7 +103,7 @@ env:
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
   release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
-  iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.74_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
+  #iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.74_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
@@ -427,6 +427,7 @@ jobs:
       #REPO_NAME: ${{ needs.set-repo-name.outputs.REPOSITORY_NAME }} # Acesso à variável de ambiente definida no job anterior
       REPO_NAME: "${{ github.repository }}"
       iso_edition: ${{ matrix.edition }}
+      iso_basename: voidbr-live-${{ matrix.edition }}-x86_64-x86_64-6.12.74_1_${{ env.RELEASE_TAG }}
     container:
       #image: vcatafesta/voidlinux-docker:latest
       #image: vcatafesta/voidlinux-docker:1.1
