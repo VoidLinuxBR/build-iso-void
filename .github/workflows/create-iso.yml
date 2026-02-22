@@ -753,11 +753,10 @@ jobs:
       - name: Set Release Download URL
         shell: bash
         run: |
-          TAG="${{ env.ISO_TAG_NAME }}-${{ github.run_id }}"
-          FILE_NAME="${{ steps.prepare-iso.outputs.release_name }}"
-          DOWNLOAD_URL_ISO="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE_NAME}.iso"
-          DOWNLOAD_URL_ZIP="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}.zip"
-          DOWNLOAD_URL_GZ="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/.tar.gz"
+          TAG="${{ env.ISO_TAG_NAME }}-${{ github.run_id }}" FILE_NAME="${{ steps.prepare-iso.outputs.release_name }}" 
+          DOWNLOAD_URL_ISO="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE_NAME}.iso" 
+          DOWNLOAD_URL_ZIP="https://github.com/${GITHUB_REPOSITORY}/archives/refs/tags/${TAG}.zip"
+          DOWNLOAD_URL_GZ="https://github.com/${GITHUB_REPOSITORY}/archives/refs/tags/${TAG}.tar.gz"
           echo "DOWNLOAD_URL_ISO=$DOWNLOAD_URL_ISO" >> $GITHUB_ENV
           echo "DOWNLOAD_URL_ZIP=$DOWNLOAD_URL_ZIP" >> $GITHUB_ENV
           echo "DOWNLOAD_URL_GZ=$DOWNLOAD_URL_GZ" >> $GITHUB_ENV
