@@ -120,10 +120,10 @@ jobs:
           RELEASE_TAG="${release_tag:-$(date '+%Y%m%d-%H%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
-          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_OUTPUT"
-          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_ENV"
           echo "KERNEL_VERSION=6.12.74_1" >> "$GITHUB_OUTPUT"
           echo "KERNEL_VERSION=6.12.74_1" >> "$GITHUB_ENV"
+          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_ENV"
 
       - name: Obter a hora atual
         id: time
