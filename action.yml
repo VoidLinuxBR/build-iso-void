@@ -278,16 +278,16 @@ runs:
           else
             eval "$BUILD_COMMAND"
           fi
+          popd
 
-          FILE_KERNEL_EDITION="kernel-${EDITION}.txt"
-          msg "Capturando kernel version from : $FILE_KERNEL_EDITION"
+          FILE_KERNEL_EDITION="$PROFILE_PATH/kernel-${EDITION}.txt"
+          msg "Capturando kernel version from : $PROFILE_PATH/$FILE_KERNEL_EDITION"
           [[ -e $FILE_KERNEL_EDITION ]] && source $FILE_KERNEL_EDITION
           msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
           msg_raw "KERNEL_VERSION      : $KERNELVERSION"
           msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
           echo "KERNEL_VERSION=$KERNELVERSION" >> "$GITHUB_OUTPUT"
           echo "OUTPUT_FILE=$OUTPUT_FILE"      >> "$GITHUB_OUTPUT"
-          popd
           replicate
         }
 
