@@ -63,8 +63,8 @@ inputs:
   github_token:
     description: "GitHub token for authentication"
     required: true
-  iso_basename:
-    description: "Nome base da ISO"
+  iso_testename:
+    description: "Nome teste da ISO"
     required: true
 
 outputs:
@@ -78,10 +78,10 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Export ISO_BASENAME
+    - name: Export ISO_TESTENAME
       shell: bash
       run: |
-        echo "ISO_BASENAME=${{ inputs.iso_basename }}" >> $GITHUB_ENV
+        echo "ISO_TESTENAME=${{ inputs.iso_testename }}" >> $GITHUB_ENV
 
     - name: Debug teste_input
       shell: bash
@@ -279,13 +279,14 @@ runs:
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
           if [[ "$EDITION" == 'teste' ]]; then
             msg_raw "Criando iso de teste : $ISO_BASENAME"
-            dd if=/dev/zero of=$ISO_BASENAME bs=2300M count=1 status=none
+            dd if=/dev/zero of=$ISO_TESTENAME bs=2300M count=1 status=none
           else
             eval "$BUILD_COMMAND"
             msg "KERNEL_VERSION=$KERNELVERSION"
             echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_ENV"
           fi
           popd
+          replicate
         }
 
         # No action.yml
