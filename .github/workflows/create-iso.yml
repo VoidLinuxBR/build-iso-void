@@ -102,8 +102,7 @@ env:
   #iso_build_dir: "${{ github.event.client_payload.build_dir || inputs.build_dir}}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
-  release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
-  #iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.74_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
+  release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
@@ -264,14 +263,14 @@ jobs:
             <pre>
             Job         : #${GITHUB_RUN_NUMBER}
             Workflow    : ${{ github.workflow }}
-            Triggered   : ${started_by_user}
-            Inicio      : ${{ env.START_TIME }}
-            Distroname  : ${iso_distroname}
-            Edition     : ${iso_edition}
-            Kernel      : ${{ env.KERNEL_VERSION }}
-            Release     : ${release_tag}
-            Tmate       : ${{ env.DEBUG }}
-            ISO Name    : voidbr-live-${iso_edition}-x86_64
+            Triggered   : ${{ started_by_user }}
+            Inicio      : $START_TIME
+            Distroname  : $iso_distroname
+            Edition     : $iso_edition
+            Kernel      : $KERNEL_VERSION
+            Release     : $release_tag
+            Tmate       : $DEBUG
+            ISO Name    : iso_basename
             </pre>
             <b>Link:</b> <a href='${link_action}'>Visualizar no GitHub</a>"
 
@@ -279,20 +278,19 @@ jobs:
             <b>Job         :</b> <code>#${GITHUB_RUN_NUMBER}</code>
             <b>Job URL     :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
             <b>Workflow    :</b> <code>${{ github.workflow }}</code>
-            <b>Triggered   :</b> <code>${started_by_user}/${triggered_by_user}</code>
-            <b>Inicio      :</b> <code>${{ env.START_TIME }}</code>
+            <b>Triggered   :</b> <code>${{ started_by_user}/${triggered_by_user }}</code>
+            <b>Inicio      :</b> <code>${START_TIME}</code>
+            <b>Fim         :</b> <code>${END_TIME}</code>
             <b>Distroname  :</b> <code>${iso_distroname}</code>
             <b>Iso Profile :</b> <code>${iso_profile}</code>
             <b>Edition     :</b> <code>${iso_edition}</code>
             <b>Build dir   :</b> <code>${iso_build_dir}</code>
             <b>Release     :</b> <code>${release_tag}</code>
-            <b>Kernel      :</b> <code>${{ env.KERNEL_VERSION }}</code>
-            <b>Tmate       :</b> <code>${{ env.DEBUG }}</code>
-            <b>ISO Name    :</b> <code>voidbr-live-${iso_edition}-x86_64_${release_tag}</code>
-            <b>Fim      :</b> <code>${END_TIME}</code>
-            <b>Nome ISO :</b> <code>${{env.iso_basename}}</code>
-            <b>Tam ISO  :</b> <code>${iso_size}</code>
-            <b>Download :</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
+            <b>Kernel      :</b> <code>${KERNEL_VERSION}</code>
+            <b>Tmate       :</b> <code>${DEBUG}</code>
+            <b>ISO Name    :</b> <code>${iso_basename}</code>
+            <b>Tam ISO     :</b> <code>${iso_size}</code>
+            <b>Download    :</b> <a href='${{ env.artifact_url }}'>${file_name}</a>"
 
             # Remove as tags HTML e exibe o resultado no terminal
             echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
@@ -446,7 +444,6 @@ jobs:
       volumes:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
         - /mnt/var_cache_manjaro_tools_iso:/var/cache/manjaro-tools/iso
-        #- /mnt/lfs:/mnt/lfs
         - /mnt/lfs/${{ matrix.edition }}:/mnt/lfs
 
     steps:
