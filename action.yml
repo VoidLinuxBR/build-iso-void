@@ -293,8 +293,10 @@ runs:
         cleanup_and_move_files() {
           OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
-          msg "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME"
-          msg "ISO_BASENAME=$ISO_BASENAME"
+          msg_tab 'cleanup_and_move_files'
+          msg_tab "PROFILE_PATH=$PROFILE_PATH"
+          msg_tab "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME"
+          msg_tab "ISO_BASENAME=$ISO_BASENAME"
           echo "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME" >> "$GITHUB_ENV"
           echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"
 
