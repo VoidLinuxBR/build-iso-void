@@ -110,8 +110,7 @@ jobs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
       RELEASE_TAG: ${{ steps.set_vars.outputs.RELEASE_TAG }}
-      ISO_BASENAME: ${{ steps.set_var.outputs.ISO_BASENAME }}
-      ISO_BASENAME: ${{ steps.set_var.outputs.ISO_BASENAME }}
+      ISO_BASENAME: ${{ steps.set_vars.outputs.ISO_BASENAME }}
     steps:
       - name: Set VARS manually
         id: set_vars
