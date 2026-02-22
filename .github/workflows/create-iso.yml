@@ -753,16 +753,10 @@ jobs:
       - name: Set Release Download URL
         shell: bash
         run: |
-          TAG="${{ env.ISO_TAG_NAME }}-${GITHUB_RUN_ID}"
+          TAG="${{ env.ISO_TAG_NAME }}-${{ github.run_id }}"
           FILE_NAME="${{ steps.prepare-iso.outputs.release_name }}"
-
-          echo "TAG calculada: $TAG"
-          echo "Arquivo       : $FILE_NAME"
-
           DOWNLOAD_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE_NAME}"
-
           echo "DOWNLOAD_URL=$DOWNLOAD_URL" >> $GITHUB_ENV
-          echo "Download URL  : $DOWNLOAD_URL"
 
 
       - name: Get Artifact URL
