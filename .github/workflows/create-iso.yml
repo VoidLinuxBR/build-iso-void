@@ -278,7 +278,7 @@ jobs:
             <b>Tmate       :</b> <code>${{ env.DEBUG }}</code>
             <b>ISO Name    :</b> <code>voidbr-live-${iso_edition}-x86_64_${release_tag}</code>
             <b>Fim      :</b> <code>${END_TIME}</code>
-            <b>Nome ISO :</b> <code>${ISO_BASENAME}</code>
+            <b>Nome ISO :</b> <code>${{env.ISO_BASENAME}}</code>
             <b>Tam ISO  :</b> <code>${iso_size}</code>
             <b>Download :</b> <a href='${{ env.artifact_url }}'>${file_name}.zip</a>"
 
@@ -602,13 +602,9 @@ jobs:
         uses: ./
         id: build
         with:
-          #vol_id: ${{ github.event.client_payload.vol_id || inputs.vol_id }}
-          #edition: ${{ github.event.client_payload.edition || inputs.edition }}
-          #release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
-          #github_token: ${{ secrets.ORGANIZATION_TOKEN }}
           vol_id: "${{env.vol_id}}"
           #edition: "${{env.iso_edition}}"
-          edition: ${{ matrix.edition }}
+          edition: "${{ matrix.edition }}"
           release_tag: "${{env.RELEASE_TAG}}"
           github_token: "${{env.GITHUB_TOKEN}}"
           tmate: "${{ env.DEBUG }}"
