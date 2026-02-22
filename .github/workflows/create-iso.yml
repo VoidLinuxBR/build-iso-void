@@ -100,7 +100,6 @@ env:
   iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
   release_tag: "${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
   iso_basename: "voidbr-live-${{ github.event.client_payload.edition || inputs.edition }}-x86_64-x86_64-6.12.74_1_${{ github.event.client_payload.release_tag || inputs.release_tag || '20261111-1111' }}"
-  iso_testename: "voidbr-live-teste-x86_64-x86_64-6.12.74_1_20261111-1111"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
@@ -610,7 +609,6 @@ jobs:
           github_token: ${{env.GITHUB_TOKEN}}
           tmate: ${{ env.DEBUG }}
           iso_basename: ${{ env.iso_basename }}
-          iso_testename: ${{ env.iso_testename }}
 
       #ponto de retorno do action.yml
       - name: Set ISO path on create-iso
