@@ -27,15 +27,15 @@
 ##############################################################################
 name: 💿 Build ISO VoidBR
 
-#concurrency:
-#  group: build-iso-${{ github.workflow }}
-#  cancel-in-progress: false
+concurrency:
+  group: build-iso-${{ github.workflow }}
+  cancel-in-progress: false
 
 # Gatilhos para o workflow
 on:
-  #push:
-  #  branches:
-  #    - main
+  push:
+    branches:
+      - main
   repository_dispatch: # aguarda um evento externo para iniciar o workflow (útil para automações externas que acionam o GitHub Actions).
     types:
       - "ISO-*"
