@@ -279,8 +279,8 @@ runs:
           #[[ ${{ inputs.tmate }} == true ]] && ./mkiso || ./mkiso > /dev/null
           if [[ "$EDITION" == 'teste' ]]; then
             replicate
-            msg_raw "Criando iso de teste : voidbr-live-teste-x86_64-x86_64-6.12.74_1_20261111-1111"
-            dd if=/dev/zero of='voidbr-live-teste-x86_64-x86_64-6.12.74_1_20261111-1111' bs=2300M count=1 status=none
+            msg_raw "Criando iso de teste : voidbr-live-teste-x86_64-x86_64-6.12.74_1_20261111-1111.iso"
+            dd if=/dev/zero of='voidbr-live-teste-x86_64-x86_64-6.12.74_1_20261111-1111.iso' bs=2300M count=1 status=none
             ls -la --color=auto || true
             replicate
           else
