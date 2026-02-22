@@ -621,7 +621,8 @@ jobs:
           RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
 
-      - name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
+      #- name: Build ISO voidbr-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
+      - name: Build ISO ${{ matrix.edition }}
         if: ${{ inputs.teste_input != true }}
         uses: ./
         id: build
