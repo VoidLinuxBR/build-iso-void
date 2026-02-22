@@ -76,10 +76,10 @@ outputs:
     value: ${{ steps.prepare-iso.outputs.release_name }}
   KERNEL_VERSION:
     description: "Kernel version detected"
-    value: ${{ steps.build.outputs.KERNEL_VERSION }}
+    value: ${{ steps.build_id.outputs.KERNEL_VERSION }}
   OUTPUT_FILE:
     description: "Filename iso generated for mkiso"
-    value: ${{ steps.build.outputs.OUTPUT_FILE }}
+    value: ${{ steps.build_id.outputs.OUTPUT_FILE }}
 
 runs:
   using: "composite"
@@ -210,8 +210,8 @@ runs:
         }
         configure_users_path
 
-    #- name: Build ISO void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
     - name: Build ISO ${{ inputs.edition }}
+      id: build_id
       if: ${{ inputs.teste_input != true }}
       shell: bash
       env:
