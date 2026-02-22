@@ -27,9 +27,9 @@
 ##############################################################################
 name: 💿 Build ISO VoidBR
 
-concurrency:
-  group: build-iso-${{ github.workflow }}
-  cancel-in-progress: false
+#concurrency:
+#  group: build-iso-${{ github.workflow }}
+#  cancel-in-progress: false
 
 # Gatilhos para o workflow
 on:
