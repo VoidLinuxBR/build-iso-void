@@ -111,6 +111,14 @@ jobs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
     steps:
+      - name: Set release tag manually
+        id: time
+        shell: bash
+        run: |
+          # Set release tag manually
+          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+
       - name: Set ISO_BASENAME
         run: |
           echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> $GITHUB_ENV
@@ -413,14 +421,6 @@ jobs:
         - /mnt/lfs/${{ matrix.edition }}:/mnt/lfs
 
     steps:
-      - name: Set release tag manually
-        id: time
-        shell: bash
-        run: |
-          # Set release tag manually
-          RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
-          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
-
       - name: Check DEBUG Condition
         if: ${{ env.DEBUG == 'true' }}
         shell: bash
