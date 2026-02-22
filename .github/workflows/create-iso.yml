@@ -121,12 +121,14 @@ jobs:
           # Set release tag manually
           RELEASE_TAG="${release_tag:-$(date '+%Y-%m-%d_%H-%M')}"
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
 
       - name: Set ISO_BASENAME
         id: set_basename
         shell: bash
         run: |
           echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_ENV"
 
       - name: Obter a hora atual
         id: time
