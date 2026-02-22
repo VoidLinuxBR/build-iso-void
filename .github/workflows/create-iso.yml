@@ -41,11 +41,6 @@ on:
       - "ISO-*"
   workflow_dispatch:
     inputs:
-      teste_input:
-        type: boolean
-        description: "Enable only test"
-        required: false
-        default: false
       edition:
         type: choice
         description: "Edition"
@@ -68,6 +63,11 @@ on:
         description: "Nome do VOLUME da ISO"
         required: true
         default: "VOIDBR_LIVE"
+      teste_input:
+        type: boolean
+        description: "Enable only test"
+        required: false
+        default: false
       tmate:
         type: boolean
         description: "Enable debugging with tmate"
