@@ -820,15 +820,14 @@ jobs:
           # 1. Usa o curinga (*) para pegar tanto a ISO única quanto partes .7z
           # 2. BatchMode=yes para não travar pedindo senha
           #${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}* \
-          scp -P 65002 \
+          #-o BatchMode=yes \
+          scp -P ${{ secrets.SERVER_PORT }} \
               -v \
               -o StrictHostKeyChecking=no \
-              -o BatchMode=yes \
               -i /root/.ssh/id_rsa \
-              ${{ env.ISO_PATH }} \
-              ${{ env.ISO_PATH }}.md5 \
+              ${{ env.ISO_FULLNAME }} \
+              ${{ env.ISO_FULLNAME }}.md5 \
               ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/${{ secrets.SERVER_USER }}/void/iso
-
           replicate
 
       - name: Telegram Alert Fail - Send a Telegram alert if the build fails
