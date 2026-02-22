@@ -110,8 +110,10 @@ jobs:
     outputs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
+      RELEASE_TAG: ${{ steps.set_release.outputs.RELEASE_TAG }}
     steps:
       - name: Set release tag manually
+        id: set_release
         shell: bash
         run: |
           # Set release tag manually
