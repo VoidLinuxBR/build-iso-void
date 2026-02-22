@@ -27,6 +27,10 @@
 ##############################################################################
 name: 💿 Build ISO VoidBR
 
+concurrency:
+  group: build-iso-${{ github.workflow }}
+  cancel-in-progress: false
+
 # Gatilhos para o workflow
 on:
   #push:
@@ -721,7 +725,8 @@ jobs:
         with:
           #name: Full_ISO_${{ steps.prepare-iso.outputs.release_name }}
           #name: ${{ env.ISO_BASENAME }}
-          name: ${{ steps.prepare-iso.outputs.release_name }}
+          #name: ${{ steps.prepare-iso.outputs.release_name }}
+          name: ${{ steps.prepare-iso.outputs.release_name }}-${{ github.run_id }}
           path: |
             #${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
@@ -739,7 +744,8 @@ jobs:
             #${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}*
             ${{ steps.prepare-iso.outputs.upload_path }}
             ${{ env.ISO_PATH }}.md5
-          tag_name: ${{ env.ISO_TAG_NAME }}
+          #tag_name: ${{ env.ISO_TAG_NAME }}
+          tag_name: ${{ env.ISO_TAG_NAME }}-${{ github.run_id }}
           name: ${{ steps.prepare-iso.outputs.release_name }}
           generate_release_notes: true
           body: |

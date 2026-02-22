@@ -269,8 +269,8 @@ runs:
           msg_raw "PROFILE_PATH             : ${yellow}$PROFILE_PATH"
           msg_raw "ISO profiles path        : ${yellow}$PROFILE_PATH/$EDITION"
           msg_raw "${red}########################################################################################${reset}"
-
           pushd "$PROFILE_PATH"
+
           #teste
           #echo "Arquivo 1 de teste" > arquivo1.txt
           #echo "Arquivo 2 de teste" > arquivo2.txt
