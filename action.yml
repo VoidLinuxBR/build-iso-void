@@ -278,6 +278,8 @@ runs:
             dd if=/dev/zero of=$ISO_BASENAME bs=2300M count=1 status=none
           else
             eval "$BUILD_COMMAND"
+            msg "KERNEL_VERSION=$KERNELVERSION"
+            echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_ENV"
           fi
           popd
         }
