@@ -81,7 +81,7 @@ runs:
     - name: Export ISO_BASENAME
       shell: bash
       run: |
-        echo "ISO_BASENAME=${{ inputs.iso_baseename }}" >> $GITHUB_ENV
+        echo "ISO_BASENAME=${{ inputs.iso_baeename }}" >> $GITHUB_ENV
 
     - name: Debug teste_input
       shell: bash
@@ -204,7 +204,8 @@ runs:
         }
         configure_users_path
 
-    - name: Build ISO void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
+    #- name: Build ISO void-live-${{ github.event.client_payload.edition || inputs.edition}}-x86_64_${{ github.event.client_payload.release_tag || inputs.release_tag }}
+    - name: Build ISO ${{ inputs.edition }}
       if: ${{ inputs.teste_input != true }}
       shell: bash
       env:
@@ -279,21 +280,25 @@ runs:
 
         # No action.yml
         cleanup_and_move_files() {
+          msg_tab "cleanup_and_move_files"
+          msg_raw "PROFILE_PATH : $PROFILE_PATH"
+
           OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
-          msg_tab 'cleanup_and_move_files'
-          msg_tab "PROFILE_PATH=$PROFILE_PATH"
-          msg_tab "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME"
-          msg_tab "ISO_BASENAME=$ISO_BASENAME"
+
+          [[ -z "$OUTPUT_ISO_PATH_NAME" ]] && { echo "ERRO: ISO não encontrada"; exit 1; exit 1; }
+
+          msg_raw "Arquivo ISO encontrado : $OUTPUT_ISO_PATH_NAME"
+          msg_raw "OUTPUT_ISO_PATH_NAME   : $OUTPUT_ISO_PATH_NAME"
+          msg_raw "ISO_BASENAME           : $ISO_BASENAME"
+
           echo "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME" >> "$GITHUB_ENV"
           echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"
 
-          if [[ -n "$OUTPUT_ISO_PATH_NAME" ]]; then
-            mv -fv "$OUTPUT_ISO_PATH_NAME" "$WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
-            # Set environment variables
-            msg "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME"
-            echo "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_ENV"
-          fi
+          msg_run "mv -fv $OUTPUT_ISO_PATH_NAME $WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
+          # Set environment variables
+          msg_raw "ISO_FULLNAME : $WORK_PATH/$ISO_BASENAME"
+          echo "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_ENV"
         }
 
         main() {
