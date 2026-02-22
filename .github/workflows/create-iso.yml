@@ -524,9 +524,8 @@ jobs:
           echo
           } > /etc/xbps.d/00-repository-main.conf
 
-          xbps-install -Sy
-          xbps-install -yu xbps
-          xbps-install -yu \
+          xbps-install -Syu xbps
+          xbps-install -Syu \
             bash \
             xtools \
             sudo \
