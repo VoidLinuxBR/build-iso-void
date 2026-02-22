@@ -96,7 +96,7 @@ env:
   #iso_bigcommunity_branch: "${{ github.event.client_payload.community_branch || inputs.community_branch}}"
   #iso_chililinux_branch: "${{ github.event.client_payload.chililinux_branch || inputs.chililinux_branch}}"
   #iso_kernel: "${{ github.event.client_payload.kernel || inputs.kernel }}"
-  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'base' }}"
+  iso_edition: "${{ github.event.client_payload.edition || inputs.edition || 'teste' }}"
   vol_id: "${{ github.event.client_payload.vol_id || inputs.vol_id }}"
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"

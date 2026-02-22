@@ -40,7 +40,7 @@ inputs:
   edition:
     description: "Edition of the ISO"
     required: true
-    default: "base"
+    default: "teste"
     options:
       - teste
       - base
