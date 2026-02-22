@@ -78,6 +78,11 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Export ISO_BASENAME
+      shell: bash
+      run: |
+        echo "ISO_BASENAME=${{ inputs.iso_basename }}" >> $GITHUB_ENV
+
     - name: Debug teste_input
       shell: bash
       run: |
@@ -225,7 +230,6 @@ runs:
         VOL_ID: "${{ inputs.vol_id }}"
         EDITION: "${{ inputs.edition }}"
         RELEASE_TAG: "${{ inputs.release_tag }}"
-        ISO_BASENAME: "${{ inputs.iso_basename }}"
       run: |
         #BUILD ISO Image
         source /tmp/send_telegram_message.sh
