@@ -111,6 +111,7 @@ jobs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
       RELEASE_TAG: ${{ steps.set_release.outputs.RELEASE_TAG }}
+      ISO_BASENAME:
     steps:
       - name: Set release tag manually
         id: set_release
@@ -121,8 +122,9 @@ jobs:
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Set ISO_BASENAME
+        id: set_basename
         run: |
-          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> $GITHUB_ENV
+          echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> $GITHUB_OUTPUT
 
       - name: Obter a hora atual
         id: time
