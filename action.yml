@@ -279,17 +279,25 @@ runs:
             eval "$BUILD_COMMAND"
           fi
           popd
+          replicate
+        }
+        export -f build_iso
+
+        export_kernel_vars() {
+          source /tmp/send_telegram_message.sh
+          replicate
 
           FILE_KERNEL_EDITION="$PROFILE_PATH/kernel-${EDITION}.txt"
           msg "Capturando kernel version from : $PROFILE_PATH/$FILE_KERNEL_EDITION"
-          [[ -e $FILE_KERNEL_EDITION ]] && source $FILE_KERNEL_EDITION
+          [[ -e "$FILE_KERNEL_EDITION" ]] && source "$FILE_KERNEL_EDITION"
           msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
           msg_raw "KERNEL_VERSION      : $KERNELVERSION"
           msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
-          echo "KERNEL_VERSION=$KERNELVERSION" >> "$GITHUB_OUTPUT"
-          echo "OUTPUT_FILE=$OUTPUT_FILE"      >> "$GITHUB_OUTPUT"
+          echo "KERNEL_VERSION=$KERNELVERSION" >> "$GITHUB_ENV"
+          echo "OUTPUT_FILE=$OUTPUT_FILE"      >> "$GITHUB_ENV"
           replicate
         }
+        export -f export_kernel_vars
 
         # No action.yml
         cleanup_and_move_files() {
@@ -313,12 +321,11 @@ runs:
           msg_raw "ISO_FULLNAME : $WORK_PATH/$ISO_BASENAME"
           echo "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_ENV"
         }
+        export -f cleanup_and_move_files
 
-        main() {
-          build_iso
-          cleanup_and_move_files
-        }
-        main
+        build_iso
+        cleanup_and_move_files
+        export_kernel_vars
 
     - name: Extrair data do nome do arquivo .iso e definir tag_name
       if: ${{ inputs.teste_input != true }}
