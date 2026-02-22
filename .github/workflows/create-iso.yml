@@ -111,6 +111,7 @@ jobs:
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
       RELEASE_TAG: ${{ steps.set_vars.outputs.RELEASE_TAG }}
       ISO_BASENAME: ${{ steps.set_vars.outputs.ISO_BASENAME }}
+      KERNEL_VERSION: ${{ steps.set_vars.outputs.KERNEL_VERSION }}
     steps:
       - name: Set VARS manually
         id: set_vars
@@ -122,6 +123,8 @@ jobs:
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
           echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "ISO_BASENAME=voidbr-live-$iso_edition-x86_64-$KERNEL_VERSION_$RELEASE_TAG" >> "$GITHUB_ENV"
+          echo "KERNEL_VERSION=6.12.74_1" >> "$GITHUB_OUTPUT"
+          echo "KERNEL_VERSION=6.12.74_1" >> "$GITHUB_ENV"
 
       - name: Obter a hora atual
         id: time
