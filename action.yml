@@ -271,9 +271,16 @@ runs:
             replicate
           else
             eval "$BUILD_COMMAND"
-            msg "KERNEL_VERSION=$KERNELVERSION"
-            echo "KERNEL_VERSION=$KERNEL_VERSION" >> "$GITHUB_ENV"
           fi
+
+          FILE_KERNEL_EDITION="kernel-${EDITION}.txt"
+          msg "Capturando kernel version from : $FILE_KERNEL_EDITION"
+          [[ -e $FILE_KERNEL_EDITION ]] && source $FILE_KERNEL_EDITION
+          msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
+          msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
+          msg_raw "KERNEL_VERSION      : $KERNELVERSION"
+          echo "KERNEL_VERSION=$KERNELVERSION" >> $GITHUB_ENV
+
           popd
           replicate
         }
