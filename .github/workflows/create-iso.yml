@@ -247,6 +247,14 @@ jobs:
             local message="$1"
             local parse_mode="$2"
 
+            FILE_KERNEL_EDITION="kernel-${EDITION}.txt"
+            [[ -e $FILE_KERNEL_EDITION ]] && source $FILE_KERNEL_EDITION
+            msg_raw "FILE_KERNEL_EDITION : kernel-${EDITION}.txt"
+            msg_raw "OUTPUT_FILE         : $OUTPUT_FILE"
+            msg_raw "KERNEL_VERSION      : $KERNELVERSION"
+            export KERNEL_VERSION="$KERNELVERSION"
+            echo "KERNEL_VERSION=$KERNELVERSION" >> $GITHUB_ENV
+
             # Define parse_mode como "MarkdownV2" se não for especificado
             [[ -z $parse_mode ]] && parse_mode="HTML"
 
