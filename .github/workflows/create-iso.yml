@@ -253,6 +253,21 @@ jobs:
           }
           export -f replicate
 
+          function send_telegram_msg() {
+            local message="$1"
+            local parse_mode="$2"
+
+            # Remove as tags HTML e exibe o resultado no terminal
+            echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
+            # Envia a mensagem original com HTML para o Telegram
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ROOTFS_TOKEN_BOT}/sendMessage" \
+              -d chat_id="${CHAT_ID}" \
+              -d message_thread_id="${MESSAGE_THREAD_ID_ROOTFS}" \
+              -d text="${MESSAGE}" \
+              -d parse_mode="HTML"
+          }
+          export -f send_telegram_msg
+
           function send_telegram_message() {
             local message="$1"
             local parse_mode="$2"
