@@ -742,13 +742,16 @@ jobs:
           #name: ${{ env.ISO_BASENAME }}
           #name: ${{ steps.prepare-iso.outputs.release_name }}
           #name: ${{ steps.prepare-iso.outputs.release_name }}-${{ github.run_id }}
-          name: ${{ steps.prepare-iso.outputs.release_name }}-${{ matrix.editon }}-${{ github.run_id }}
+          name: ${{ steps.prepare-iso.outputs.release_name }}-${{ matrix.edition }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             #${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
             ${{ steps.prepare-iso.outputs.upload_path }}
           if-no-files-found: warn
           include-hidden-files: false
+
+      - run: |
+          echo "Artifact name: ${{ steps.prepare-iso.outputs.release_name }}-${{ matrix.edition }}-${{ github.run_id }}-${{ github.run_attempt }}"
 
       - name: Create Release
         if: ${{ inputs.teste_input != true }}
