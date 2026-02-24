@@ -101,7 +101,7 @@ env:
   DEBUG: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   tmate: "${{ github.event.client_payload.tmate || inputs.tmate || false }}"
   OUTPUT_FILE: "<keep calm>"
-  wf_url: "https://github.com/${{ github.repository }}/blob/main/.github/workflows/create-rootfs.yml"
+  wf_url: "https://github.com/${{ github.repository }}/blob/main/.github/workflows/create-iso.yml"
   wf_file: "create-iso.yml"
 
 jobs:
@@ -421,6 +421,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        arch: [x86_64, aarch64]
         edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
     needs: [setup] # Espera o job "setup" terminar
     env:
@@ -729,14 +730,15 @@ jobs:
           msg_info "release_name       : ${release_name}"
           replicate '='
 
-      - name: Upload ISO as artifact
+      - name: Upload ISO + MD5 as artifact
         if: ${{ inputs.teste_input != true }}
         uses: actions/upload-artifact@v4
         with:
           #name: Full_ISO_${{ steps.prepare-iso.outputs.release_name }}
           #name: ${{ env.ISO_BASENAME }}
           #name: ${{ steps.prepare-iso.outputs.release_name }}
-          name: ${{ steps.prepare-iso.outputs.release_name }}-${{ github.run_id }}
+          #name: ${{ steps.prepare-iso.outputs.release_name }}-${{ github.run_id }}
+          name: ${{ steps.prepare-iso.outputs.release_name }}-${{ matrix.editon }}-${{ github.run_id }}
           path: |
             #${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
