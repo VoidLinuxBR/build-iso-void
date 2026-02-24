@@ -33,9 +33,9 @@ name: 💿 Build ISO VoidBR
 
 # Gatilhos para o workflow
 on:
-  push:
-    branches:
-      - main
+  #push:
+  #  branches:
+  #    - main
   repository_dispatch: # aguarda um evento externo para iniciar o workflow (útil para automações externas que acionam o GitHub Actions).
     types:
       - "ISO-*"
@@ -734,6 +734,10 @@ jobs:
         if: ${{ inputs.teste_input != true }}
         uses: actions/upload-artifact@v4
         with:
+          ###############################################################################################
+          # O actions/upload-artifact compacta automaticamente os arquivos/diretórios que você indicar em path:.
+          # O formato de saída é sempre um ZIP, não há opção oficial para trocar por .tar.gz, .7z, etc.
+          ###############################################################################################
           #name: Full_ISO_${{ steps.prepare-iso.outputs.release_name }}
           #name: ${{ env.ISO_BASENAME }}
           #name: ${{ steps.prepare-iso.outputs.release_name }}
@@ -743,7 +747,6 @@ jobs:
             #${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
             ${{ steps.prepare-iso.outputs.upload_path }}
-            #${{ env.ISO_FULLNAME }}.md5
           if-no-files-found: warn
           include-hidden-files: false
 
