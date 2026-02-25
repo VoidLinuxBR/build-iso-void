@@ -825,13 +825,22 @@ jobs:
         run: |
           source /tmp/send_telegram_message.sh
           replicate
-          msg "- name: Configurar chave SSH e Adicionar chave do host remoto ao known_hosts"
+          msg_raw "- name: Configurar chave SSH e Adicionar chave do host remoto ao known_hosts"
           #Configurar chave SSH e Adicionar chave do host remoto ao known_hosts
+          rm -rf /root/.ssh
           mkdir -p /root/.ssh
           printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > /root/.ssh/id_rsa_${{matrix.edition}}
           chmod 700 /root/.ssh
           chmod 600 /root/.ssh/id_rsa_${{matrix.edition}}
+
+          msg "Gera chave publica a partir da privada:"
           ssh-keygen -y -f /root/.ssh/id_rsa_${{matrix.edition}} > /root/.ssh/id_rsa_${{matrix.edition}}.pub
+
+          msg "Mostra chave privada"
+          cat /root/.ssh/.ssh/id_rsa_${{matrix.edition}}
+          msg "Mostra chave publica"
+          cat /root/.ssh/.ssh/id_rsa_${{matrix.edition}}.pub
+
 
           msg "Testar chave se válida:"
           ssh-keygen -l -f /root/.ssh/id_rsa_${{matrix.edition}}
@@ -872,22 +881,6 @@ jobs:
         run: |
           source /tmp/send_telegram_message.sh
           msg "- name: Telegram Alert Fail - Send a Telegram alert if the build fails"
-          #link_action=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          #MESSAGE="🚨 <b>[step x/3] - Falha ao criar ISO:</b>
-          #<b>Job      :</b> <code>#${GITHUB_RUN_NUMBER}</code>
-          #<b>Job URL  :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>
-          #<b>Workflow :</b> <code>${{ github.workflow }}</code>
-          #<b>Iso      :</b> <code>${{ github.event.action }}</code>
-          #<b>URL erro :</b> <a href='https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}'>${link_action}</a>"
-          # Remove as tags HTML e exibe o resultado no terminal
-          #echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
-          # Envia a mensagem para o Telegram com formatação HTML
-          #curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
-          #  -d chat_id="${CHAT_ID}" \
-          #  -d message_thread_id="${MESSAGE_THREAD_ID}" \
-          #  -d text="${MESSAGE}" \
-          #  -d parse_mode="HTML"
-
           MESSAGE="🚨 <b>[step x/3] - Falha ao criar ISO:</b>"
           send_telegram_message "$MESSAGE"
 
