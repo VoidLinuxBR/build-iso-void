@@ -837,10 +837,9 @@ jobs:
           ssh-keygen -y -f /root/.ssh/id_rsa_${{matrix.edition}} > /root/.ssh/id_rsa_${{matrix.edition}}.pub
 
           msg "Mostra chave privada"
-          cat /root/.ssh/.ssh/id_rsa_${{matrix.edition}}
+          cat /root/.ssh/id_rsa_${{matrix.edition}}
           msg "Mostra chave publica"
-          cat /root/.ssh/.ssh/id_rsa_${{matrix.edition}}.pub
-
+          cat /root/.ssh/id_rsa_${{matrix.edition}}.pub
 
           msg "Testar chave se válida:"
           ssh-keygen -l -f /root/.ssh/id_rsa_${{matrix.edition}}
