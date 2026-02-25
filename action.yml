@@ -204,7 +204,7 @@ runs:
         }
         configure_users_path
 
-    - name: Build ISO ${{ inputs.edition }}
+    - name: Build ISO ${{ matrix.edition }}
       id: build_id
       if: ${{ inputs.teste_input != true }}
       shell: bash
@@ -215,7 +215,6 @@ runs:
         EDITION: "${{ inputs.edition }}"
         RELEASE_TAG: "${{ inputs.release_tag }}"
       run: |
-        #BUILD ISO Image
         source /tmp/send_telegram_message.sh
         msg "BUILD ISO Image"
         # Check if directory exists before proceeding
@@ -228,17 +227,17 @@ runs:
           local BUILD_COMMAND
 
           case "$EDITION" in
-            base)         BUILD_COMMAND='bash ./mkiso --automatic'    ;;
-            awesome)      BUILD_COMMAND='bash ./mkiso --automatic -W' ;;
-            cinnamon)     BUILD_COMMAND='bash ./mkiso --automatic -N' ;;
-            enlightnment) BUILD_COMMAND='bash ./mkiso --automatic -E' ;;
-            fluxbox)      BUILD_COMMAND='bash ./mkiso --automatic -F' ;;
-            gnome)        BUILD_COMMAND='bash ./mkiso --automatic -G' ;;
-            plasma)       BUILD_COMMAND='bash ./mkiso --automatic -P' ;;
-            xfce)         BUILD_COMMAND='bash ./mkiso --automatic -Y' ;;
-            mate)         BUILD_COMMAND='bash ./mkiso --automatic -M' ;;
-            all)          BUILD_COMMAND='bash ./mkiso --automatic -A' ;;
-            *)            BUILD_COMMAND='bash ./mkiso --automatic'    ;;
+            base)           BUILD_COMMAND='bash ./mkiso --automatic'    ;;
+            awesome)        BUILD_COMMAND='bash ./mkiso --automatic -W' ;;
+            cinnamon)       BUILD_COMMAND='bash ./mkiso --automatic -N' ;;
+            enlightenment)  BUILD_COMMAND='bash ./mkiso --automatic -E' ;;
+            fluxbox)        BUILD_COMMAND='bash ./mkiso --automatic -F' ;;
+            gnome)          BUILD_COMMAND='bash ./mkiso --automatic -G' ;;
+            plasma)         BUILD_COMMAND='bash ./mkiso --automatic -P' ;;
+            xfce)           BUILD_COMMAND='bash ./mkiso --automatic -Y' ;;
+            mate)           BUILD_COMMAND='bash ./mkiso --automatic -M' ;;
+            all)            BUILD_COMMAND='bash ./mkiso --automatic -A' ;;
+            *)              BUILD_COMMAND='bash ./mkiso --automatic'    ;;
           esac
 
           msg_raw "${red}########################## RESUMO ######################################################${reset}"
@@ -307,7 +306,8 @@ runs:
           msg "cleanup_and_move_files"
           msg_raw "PROFILE_PATH           : $PROFILE_PATH"
 
-          OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
+          #OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
+          OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*${EDITION}*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
 
           [[ -z "$OUTPUT_ISO_PATH_NAME" ]] && { echo "ERRO: ISO não encontrada"; exit 1; exit 1; }
