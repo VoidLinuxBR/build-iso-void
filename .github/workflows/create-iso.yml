@@ -563,6 +563,22 @@ jobs:
           xbps-install -Syu ncurses
           replicate
 
+      - name: Ativar serviço tailscaled no docker/void
+        shell: bash
+        run: |
+          sudo ln -sf /etc/sv/tailscaled/ /var/service/
+          sudo vsv
+
+      - name: Conectar na Tailnet
+        shell: bash
+        run: |
+          #tailscaled --state=mem: &
+          #sleep 2
+          tailscale up --authkey=${TS_AUTHKEY} --hostname=ci-void --accept-routes
+          tailscale status
+        env:
+            TS_AUTHKEY: ${{ secrets.TS_AUTHKEY }}
+
       - name: Create user builduser in CONTAINER
         shell: bash
         run: |
@@ -850,22 +866,6 @@ jobs:
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts
           ssh-keyscan -p 65002 -H ${{ secrets.SERVER_HOST }} >> /root/.ssh/known_hosts2
           replicate
-
-      - name: Ativar serviço tailscaled no docker/void
-        shell: bash
-        run: |
-          sudo ln -sf /etc/sv/tailscaled/ /var/service
-          sudo vsv
-
-      - name: Conectar na Tailnet
-        shell: bash
-        run: |
-          #tailscaled --state=mem: &
-          #sleep 2
-          tailscale up --authkey=${TS_AUTHKEY} --hostname=ci-void --accept-routes
-          tailscale status
-        env:
-            TS_AUTHKEY: ${{ secrets.TS_AUTHKEY }}
 
       - name: Enviar arquivo ISO para o servidor via SCP com porta customizada
         if: ${{ inputs.teste_input != true }}
