@@ -212,7 +212,8 @@ runs:
         DEBUG: "${{ inputs.tmate }}"
         TESTE: "${{ inputs.teste_input }}"
         VOL_ID: "${{ inputs.vol_id }}"
-        EDITION: "${{ inputs.edition }}"
+        #EDITION: "${{ inputs.edition }}"
+        EDITION: "${{ matrix.edition }}"
         RELEASE_TAG: "${{ inputs.release_tag }}"
       run: |
         source /tmp/send_telegram_message.sh
@@ -236,7 +237,7 @@ runs:
             plasma)         BUILD_COMMAND='bash ./mkiso --automatic -P' ;;
             xfce)           BUILD_COMMAND='bash ./mkiso --automatic -Y' ;;
             mate)           BUILD_COMMAND='bash ./mkiso --automatic -M' ;;
-            all)            BUILD_COMMAND='bash ./mkiso --automatic -A' ;;
+            fullx)          BUILD_COMMAND='bash ./mkiso --automatic -A' ;;
             *)              BUILD_COMMAND='bash ./mkiso --automatic'    ;;
           esac
 
