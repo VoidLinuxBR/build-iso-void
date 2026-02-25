@@ -568,7 +568,7 @@ jobs:
       - name: Conectar na Tailnet
         shell: bash
         run: |
-          sudo tailscaled --state=mem: &
+          sudo tailscaled --state=mem: --no-logs-no-support &
           sleep 3
 
           sudo tailscale up \
@@ -576,7 +576,8 @@ jobs:
             --hostname=ci-void \
             --accept-routes \
             --accept-dns=false \
-            --reset
+            --reset \
+            --hardware-attestation=false
 
           tailscale status
         env:
