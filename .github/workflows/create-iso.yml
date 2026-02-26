@@ -262,6 +262,9 @@ jobs:
             local message="$1"
             local parse_mode="$2"
 
+            # Define parse_mode como "MarkdownV2" se não for especificado
+            [[ -z $parse_mode ]] && parse_mode="HTML"
+
             MESSAGE="${{ github.workflow }} - $message
             <pre>
             Job         : #${GITHUB_RUN_NUMBER}
