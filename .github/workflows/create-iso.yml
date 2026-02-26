@@ -282,9 +282,9 @@ jobs:
             # Remove as tags HTML e exibe o resultado no terminal
             echo -e "${green}$(sed 's/<[^>]*>//g' <<< "$MESSAGE")${reset}"
             # Envia a mensagem original com HTML para o Telegram
-            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ROOTFS_TOKEN_BOT}/sendMessage" \
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_VOIDBR_ISO_TOKEN_BOT}/sendMessage" \
               -d chat_id="${CHAT_ID}" \
-              -d message_thread_id="${MESSAGE_THREAD_ID_ROOTFS}" \
+              -d message_thread_id="${MESSAGE_THREAD_ID}" \
               -d text="${MESSAGE}" \
               -d parse_mode="HTML"
           }
