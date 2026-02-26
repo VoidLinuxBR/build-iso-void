@@ -109,7 +109,8 @@ env:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
@@ -430,7 +431,8 @@ jobs:
 
   build:
     name: Build ISO ${{ matrix.edition }}
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
