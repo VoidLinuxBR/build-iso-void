@@ -1028,6 +1028,6 @@ jobs:
           fi
 
           iso_size=$(numfmt --to=iec --suffix=B "${artifact_size_in_bytes}") || true
-          MESSAGE="⏳ <b>[step 3/3] - Finalizado</b>"
+          MESSAGE="✅  <b>[step 3/3] - Finalizado</b>"
           send_telegram_message "$MESSAGE"
           replicate
