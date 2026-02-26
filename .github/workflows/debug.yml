@@ -5,7 +5,7 @@ on:
 
 jobs:
   debug:
-    runs-on: [self-hosted, voidrepo]
+    runs-on: self-hosted
 
     steps:
       - name: Checkout
