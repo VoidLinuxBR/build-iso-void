@@ -456,7 +456,7 @@ jobs:
         - /mnt/var_lib_manjaro_tools_buildiso:/var/lib/manjaro-tools/buildiso
         - /mnt/var_cache_manjaro_tools_iso:/var/cache/manjaro-tools/iso
         - /mnt/lfs/${{ matrix.edition }}:/mnt/lfs
-        - ${{env.voidrepo_void_mirror_iso}}:${{env.voidrepo_void_mirror_iso}}
+        - ${voidrepo_void_mirror_iso}:${voidrepo_void_mirror_iso}
 
     steps:
       - name: Check DEBUG Condition
