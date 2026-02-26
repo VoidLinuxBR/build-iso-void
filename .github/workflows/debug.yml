@@ -18,7 +18,10 @@ jobs:
           uname -a
           df -h
 
-      - name: Start tmate session
+
+      - name: Setup TMATE Session in CONTAINER
         uses: mxschmitt/action-tmate@v3
+        #if: env.DEBUG == 'true'
         with:
-          limit-access-to-actor: true
+          install-dependencies: false
+          detached: true
