@@ -273,9 +273,6 @@ jobs:
             Inicio      : $START_TIME
             Distroname  : $iso_distroname
             Edition     : $iso_edition
-            Kernel      : $KERNEL_VERSION
-            Release     : $RELEASE_TAG
-            Tmate       : $DEBUG
             ISO Name    : $ISO_BASENAME
             </pre>"
 
