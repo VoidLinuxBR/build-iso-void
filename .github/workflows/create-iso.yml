@@ -196,7 +196,7 @@ jobs:
           msg_tab() {
             local msg="$1"
             msg="$(sed 's/<[^>]*>//g' <<< "$msg")" # Remove as tags HTML
-            echo -e "BIV=>${yellow}info   : ${cyan}${msg}${reset}"
+            echo -e "BIV=>${cyan}info   : ${yellow}${msg}${reset}"
           }
 
           msg_raw() {
