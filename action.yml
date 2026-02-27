@@ -113,25 +113,56 @@ runs:
         #Configurar o ambiente
         source /tmp/send_telegram_message.sh
         msg "Configurar o ambiente"
-        WORK_PATH="/__w/$REPO_NAME/$REPO_NAME"
-        PROFILE_PATH="$WORK_PATH/chili-void-mklive"
-        BASHRC_PATH="$WORK_PATH/chili-void-bashrc"
-
+        WORK_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}"
+        PROFILE_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-mklive"
+        BASHRC_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-bashrc"
         msg_tab "WORK_PATH=$WORK_PATH"
         msg_tab "PROFILE_PATH=$PROFILE_PATH"
         msg_tab "BASHRC_PATH=$BASHRC_PATH"
-
-        echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"
-        echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"
-        echo "BASHRC_PATH=$BASHRC_PATH"   >> "$GITHUB_ENV"
+        echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
+        echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
+        echo "BASHRC_PATH=$BASHRC_PATH"   >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
 
     - name: Checkout chili-void-mklive
       if: ${{ inputs.teste_input != true }}
-      uses: actions/checkout@v4
-      with:
-        repository: chililinux/chili-void-mklive
-        path: chili-void-mklive
-        fetch-depth: 1
+      shell: bash
+      run: |
+        #Checkout chili-void-mklive
+        #REPO="${{ inputs.iso_profiles_repo }}"
+        REPO="https://github.com/chililinux/chili-void-mklive"
+        echo "Repository: $REPO"
+
+        rm -rf "$PROFILE_PATH" || true
+        if ! git clone --depth 1 "$REPO" "$PROFILE_PATH"; then
+          echo "Falha ao clonar o repositorio $REPO em $PROFILE_PATH"
+          exit 1
+        fi
+        # ativando 'git config --global --add safe.directory'
+        git config --global --add safe.directory "$PROFILE_PATH" || true
+
+        # clean '/__t/' directory
+        rm -rf /__t/* || true
+
+    #    - name: Checkout chili-void-bashrc
+    #      if: ${{ inputs.teste_input != true }}
+    #      shell: bash
+    #      run: |
+    #        #Checkout chili-void-bashrc
+    #        source /tmp/send_telegram_message.sh
+    #        msg "Checkout chili-void-bashrc"
+    #        replicate '='
+    #        #REPO="${{ inputs.iso_profiles_repo }}"
+    #        REPO="https://github.com/chililinux/chili-void-bashrc"
+    #        echo "Repository: $REPO"
+    #
+    #        rm -rf "$BASHRC_PATH" || true
+    #        if ! git clone --depth 1 "$REPO" "$BASHRC_PATH"; then
+    #          echo "Falha ao clonar o repositorio $REPO em $BASHRC_PATH"
+    #          exit 1
+    #        fi
+    #        # ativando 'git config --global --add safe.directory'
+    #        git config --global --add safe.directory "$BASHRC_PATH" || true
+    #        replicate '='
 
     - name: Ajustar wheel
       shell: bash
@@ -146,6 +177,7 @@ runs:
         replicate '='
         echo "%wheel ALL=(ALL:ALL) NOPASSWD: ALL" >>"/etc/sudoers.d/wheel"
         ln -sfv "$WORK_PATH" /work_path || true
+        #cp -Rpa "$BASHRC_PATH"/etc/. /etc/ || true
 
         configure_users_path() {
           local apaths=('/root' '/github/home' '/home/builduser')
@@ -275,6 +307,7 @@ runs:
           msg "cleanup_and_move_files"
           msg_raw "PROFILE_PATH           : $PROFILE_PATH"
 
+          #OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*${EDITION}*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
 
@@ -287,10 +320,10 @@ runs:
           echo "OUTPUT_ISO_PATH_NAME=$OUTPUT_ISO_PATH_NAME" >> "$GITHUB_ENV"
           echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"
 
-          #msg_run "mv -fv $OUTPUT_ISO_PATH_NAME $WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
-          #msg_raw "ISO_FULLNAME           : $WORK_PATH/$ISO_BASENAME"
-          msg_raw "ISO_FULLNAME           : $OUTPUT_ISO_PATH_NAME"
-          echo "ISO_FULLNAME=$OUTPUT_ISO_PATH_NAME=" >> "$GITHUB_ENV"
+          msg_run "mv -fv $OUTPUT_ISO_PATH_NAME $WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
+          # Set environment variables
+          msg_raw "ISO_FULLNAME : $WORK_PATH/$ISO_BASENAME"
+          echo "ISO_FULLNAME=$WORK_PATH/$ISO_BASENAME" >> "$GITHUB_ENV"
         }
         export -f cleanup_and_move_files
 
@@ -299,12 +332,12 @@ runs:
         export_kernel_vars
 
     - name: Extrair data do nome do arquivo .iso e definir tag_name
-      id: set-tag-name
       if: ${{ inputs.teste_input != true }}
+      id: set-tag-name
       shell: bash
       run: |
         source /tmp/send_telegram_message.sh
-        msg "- name: Extrair data do nome do arquivo .iso e definir tag_name"
+        msg "Extrair data do nome do arquivo .iso e definir tag_name"
         FILENAME="$ISO_BASENAME"
         TAG_NAME="$(echo "$FILENAME" | grep -oP '\d{8}')-$(date +%H%M)"
         msg "ISO_FILENAME=$FILENAME"
@@ -319,10 +352,10 @@ runs:
         source /tmp/send_telegram_message.sh
         replicate
         msg "- name: Set ISO path"
-        #msg_raw "iso_path : $WORK_PATH/$ISO_BASENAME"
-        #msg_raw "ISO_PATH : $WORK_PATH/$ISO_BASENAME"
-        msg_raw "iso_path : $OUTPUT_ISO_PATH_NAME"
-        msg_raw "ISO_PATH : $OUTPUT_ISO_PATH_NAME"
-        echo "iso_path=$OUTPUT_ISO_PATH_NAME" >> $GITHUB_OUTPUT
-        echo "ISOPATH=$OUTPUT_ISO_PATH_NAME"  >> $GITHUB_ENV
+        msg_raw "iso_path : $WORK_PATH/$ISO_BASENAME"
+        msg_raw "ISO_PATH : $WORK_PATH/$ISO_BASENAME"
+
+        echo "iso_path=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_OUTPUT
+        echo "ISOPATH=$WORK_PATH/$ISO_BASENAME" >> $GITHUB_ENV
+
         replicate
