@@ -1083,16 +1083,11 @@ jobs:
           send_telegram_message "$MESSAGE"
           replicate
 
-  cleanup:
-    name: Cleanup runner workspace
-    runs-on: self-hosted
-    needs: [build]
-    if: always()
-    steps:
-      - name: Cleanup current runner
-        if: runner.os == 'Linux'
+      - name: Cleanup current workspace runner
+        if: always() && contains(runner.labels, 'self-hosted')
         run: |
           TARGET="/voidrepo/$RUNNER_NAME/_work"
+
           echo "Runner atual: $RUNNER_NAME"
           echo "Limpando $TARGET"
 
