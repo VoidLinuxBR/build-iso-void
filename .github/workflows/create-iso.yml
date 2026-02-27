@@ -1083,3 +1083,10 @@ jobs:
           MESSAGE="✅  <b>[step 3/3] - Finalizado</b>"
           send_telegram_message "$MESSAGE"
           replicate
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker ps -aq | xargs -r docker rm -f
+          docker volume prune -f
+          docker network prune -f
