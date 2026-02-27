@@ -1094,5 +1094,6 @@ jobs:
         if: always() && runner.environment == 'self-hosted'
         run: |
           echo "Runner atual: $RUNNER_NAME"
-          echo "Limpando : $WORK_PATH"
-          rm -rfv "$WORK_PATH"
+          cd "${{ github.workspace }}"
+          git clean -ffdx || true
+          git reset --hard HEAD || true
