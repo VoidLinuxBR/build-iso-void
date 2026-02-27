@@ -1087,4 +1087,4 @@ jobs:
       - name: Cleanup repo workspace
         if: always()
         run: |
-          rm -rf $GITHUB_WORKSPACE/*
+          rm -rf "$RUNNER_WORKSPACE"/*
