@@ -454,7 +454,7 @@ jobs:
     steps:
       # 1️⃣ Limpa TUDO do workspace do repo
       - name: Hard clean workspace
-        run: rm -rf "$GITHUB_WORKSPACE"/*
+        run: rm -rf "${{ github.workspace }}"/*
 
       - name: Check DEBUG Condition
         if: ${{ env.DEBUG == 'true' }}
@@ -1091,5 +1091,5 @@ jobs:
         if: always() && runner.environment == 'self-hosted'
         run: |
           echo "Runner atual: $RUNNER_NAME"
-          echo "Limpando $GITHUB_WORKKSPACE"
-          rm -rf "$GITHUB_WORKSPACE"/*
+          echo "Limpando ${{ github.workspace }}"
+          rm -rf "${{ github.workspace }}"/*
