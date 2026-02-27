@@ -1075,4 +1075,4 @@ jobs:
         run: |
           echo "Runner atual: $RUNNER_NAME"
           echo "Limpando $WORK_PATH"
-          sudo rm -rf "$WORK_PATH"/*
+          sudo rm -rfv "$WORK_PATH"/*
