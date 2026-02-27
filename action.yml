@@ -115,17 +115,14 @@ runs:
         msg "Configurar o ambiente"
         WORK_PATH="${{ github.workspace }}"
         PROFILE_PATH="$WORK_PATH/chili-void-mklive"
-        MKISO_PATH="$WORK_PATH/chili-void-mklive"
         BASHRC_PATH="$WORK_PATH/chili-void-bashrc"
 
         msg_tab "WORK_PATH=$WORK_PATH"
         msg_tab "PROFILE_PATH=$PROFILE_PATH"
-        msg_tab "MKISO_PATH=$MKISO_PATH"
         msg_tab "BASHRC_PATH=$BASHRC_PATH"
 
         echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"
         echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"
-        echo "MKISO_PATH=$MKISO_PATH"     >> "$GITHUB_ENV"
         echo "BASHRC_PATH=$BASHRC_PATH"   >> "$GITHUB_ENV"
 
     - name: Checkout chili-void-mklive
@@ -221,7 +218,6 @@ runs:
           msg_raw "${red}########################################################################################${reset}"
           msg_raw "BUILD COMMAND            : ${yellow}$BUILD_COMMAND"
           msg_raw "WORK_PATH                : ${yellow}$WORK_PATH"
-          msg_raw "MKISO_PATH               : ${yellow}$MKISO_PATH"
           msg_raw "PROFILE_PATH             : ${yellow}$PROFILE_PATH"
           msg_raw "ISO profiles path        : ${yellow}$PROFILE_PATH/$EDITION"
           msg_raw "${red}########################################################################################${reset}"

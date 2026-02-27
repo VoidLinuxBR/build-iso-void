@@ -674,7 +674,7 @@ jobs:
           source /tmp/send_telegram_message.sh
           replicate
           msg "- name: Verificar se o arquivo .iso foi gerado corretamente"
-          pushd "${{ env.MKISO_PATH }}" || true
+          pushd "${{ env.PROFILE_PATH }}" || true
           msg_run 'ls -lah --color=auto'
           popd || true
           replicate
@@ -685,7 +685,7 @@ jobs:
           source /tmp/send_telegram_message.sh
           replicate
           msg "- name: Calculate ISO MD5 Hash"
-          pushd "${{ env.MKISO_PATH }}" || true
+          pushd "${{ env.PROFILE_PATH }}" || true
           msg_run "ls -lah --color=auto" || true
           msg "Calculating MD5 hash for ISO file ${ISO_PATH}"
           if [[ -f "${{ env.ISO_BASENAME }}" ]]; then
@@ -693,7 +693,7 @@ jobs:
             msg_info "MD5 '$ISO_BASENAME.md5' hash calculated and saved:"
             cat "${{ env.ISO_BASENAME }}.md5"
           else
-            msg_warning "Error: ${{ env.ISO_BASENAME }} file not found at ${{ env.MKISO_PATH }}"
+            msg_warning "Error: ${{ env.ISO_BASENAME }} file not found at ${{ env.PROFILE_PATH }}"
             exit 1
           fi
           msg_run "ls -lah --color=auto"
@@ -774,7 +774,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            #${{ env.MKISO_PATH }}/${{ steps.prepare-iso.outputs.release }}*
+            #${{ env.PROFILE_PATH }}/${{ steps.prepare-iso.outputs.release }}*
             ${{ steps.prepare-iso.outputs.upload_path }}
             ${{ env.ISO_PATH }}.md5
           #tag_name: ${{ env.ISO_TAG_NAME }}
