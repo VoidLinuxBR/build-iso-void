@@ -928,15 +928,14 @@ jobs:
           msg_run "cp -v ${{ env.ISO_FULLNAME }}     $voidrepo_void_mirror_iso/vc.iso"
           msg_run "cp -v ${{ env.ISO_FULLNAME }}.md5 $voidrepo_void_mirror_iso/vc.iso.md5"
 
-          local cmd
           if $DEBUG; then
-            cmd="scp -P ${{ secrets.TS_VOIDREPO_PORT }} \
+            local cmd="scp -P ${{ secrets.TS_VOIDREPO_PORT }} \
               -v \
               -o StrictHostKeyChecking=no \
               -i /root/.ssh/id_rsa_${{matrix.edition}}
             "
           else
-            cmd="scp -P ${{ secrets.TS_VOIDREPO_PORT }} \
+            local cmd="scp -P ${{ secrets.TS_VOIDREPO_PORT }} \
               -o StrictHostKeyChecking=no \
               -i /root/.ssh/id_rsa_${{matrix.edition}}
             "
