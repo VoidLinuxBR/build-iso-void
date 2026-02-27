@@ -1084,9 +1084,7 @@ jobs:
           send_telegram_message "$MESSAGE"
           replicate
 
-      - name: Cleanup
+      - name: Cleanup repo workspace
         if: always()
         run: |
-          docker ps -aq | xargs -r docker rm -f
-          docker volume prune -f
-          docker network prune -f
+          rm -rf $GITHUB_WORKSPACE/*
