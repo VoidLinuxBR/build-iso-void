@@ -683,12 +683,10 @@ jobs:
         shell: bash
         run: |
           source /tmp/send_telegram_message.sh
-          replicate '='
-          msg "- name: Calculate ISO MD5 Hash"
-          msg_run "ls -lah --color=auto" || true
           replicate
-
+          msg "- name: Calculate ISO MD5 Hash"
           pushd "${{ env.MKISO_PATH }}" || true
+          msg_run "ls -lah --color=auto" || true
           msg "Calculating MD5 hash for ISO file ${ISO_PATH}"
           if [[ -f "${{ env.ISO_BASENAME }}" ]]; then
             md5sum "${{ env.ISO_BASENAME }}" > "${{ env.ISO_BASENAME }}.md5"

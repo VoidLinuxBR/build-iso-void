@@ -120,6 +120,7 @@ runs:
 
         msg_tab "WORK_PATH=$WORK_PATH"
         msg_tab "PROFILE_PATH=$PROFILE_PATH"
+        msg_tab "MKISO_PATH=$MKISO_PATH"
         msg_tab "BASHRC_PATH=$BASHRC_PATH"
 
         echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"
@@ -291,8 +292,8 @@ runs:
           echo "ISO_BASENAME=$ISO_BASENAME"                 >> "$GITHUB_ENV"
 
           #msg_run "mv -fv $OUTPUT_ISO_PATH_NAME $WORK_PATH/" || echo "ERRO: Falha ao mover arquivo ISO $OUTPUT_ISO_PATH_NAME"
-          #msg_raw "ISO_FULLNAME : $WORK_PATH/$ISO_BASENAME"
-          msg_raw "ISO_FULLNAME : $OUTPUT_ISO_PATH_NAME"
+          #msg_raw "ISO_FULLNAME           : $WORK_PATH/$ISO_BASENAME"
+          msg_raw "ISO_FULLNAME           : $OUTPUT_ISO_PATH_NAME"
           echo "ISO_FULLNAME=$OUTPUT_ISO_PATH_NAME=" >> "$GITHUB_ENV"
         }
         export -f cleanup_and_move_files
