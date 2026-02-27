@@ -197,7 +197,7 @@ runs:
             msg "Ajustando permissões user '$cuser'"
             pushd /home/$cuser            || true
             sudo chown $cuser:$cuser . -R || true
-            ls -la /home/$cuser           || true
+            #ls -la /home/$cuser           || true
             popd || true
           done
           replicate '='
