@@ -1,4 +1,4 @@
-name: Voidrepo Debug
+name: 🔧 Voidrepo Debug
 
 on:
   workflow_dispatch:
