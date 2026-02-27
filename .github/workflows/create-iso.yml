@@ -932,7 +932,7 @@ jobs:
           $DEBUG && verbose='-v'
 
           if scp -P ${{ secrets.TS_VOIDREPO_PORT }} \
-            $verbose \
+            -v \
             -o StrictHostKeyChecking=no \
             -i /root/.ssh/id_rsa_${{matrix.edition}} \
             ${{ env.ISO_FULLNAME }} \
@@ -965,7 +965,7 @@ jobs:
           $DEBUG && verbose='-v'
 
           if scp -P ${{ secrets.SERVER_PORT }} \
-            $verbose \
+            -v \
             -o StrictHostKeyChecking=no \
             -i /root/.ssh/id_rsa_${{matrix.edition}} \
             ${{ env.ISO_FULLNAME }} \
