@@ -520,18 +520,14 @@ jobs:
         run: |
           set -eu
           set -f
-
           source /tmp/send_telegram_message.sh
-
           replicate
           msg "- name: Install Required Packages and Libraries no CONTAINER"
-
           REPO_FILE='/etc/xbps.d/00-repository-main.conf'
 
           test_repo() {
             local repo="$1"
 
-            # testa arquivo REAL do repositório XBPS
             timeout 20 curl \
               --fail \
               --silent \
@@ -576,10 +572,9 @@ jobs:
           https://void.chililinux.com/voidlinux/current
           '
 
-          ONLINE=''
-          OFFLINE=''
-
           printf '\n==> Testando mirrors XBPS...\n\n'
+
+          : > "$REPO_FILE"
 
           for repo in $REPOS; do
             printf ':: %s ... ' "$repo"
@@ -587,28 +582,15 @@ jobs:
             if test_repo "$repo"; then
               printf '\033[1;32mONLINE\033[0m\n'
 
-              ONLINE="${ONLINE}${repo}
-          "
+              add_repo_group "$repo" >> "$REPO_FILE"
+              echo >> "$REPO_FILE"
             else
               printf '\033[1;31mOFFLINE\033[0m\n'
-
-              OFFLINE="${OFFLINE}${repo}
-          "
             fi
           done
 
-          {
-            printf '%s' "$ONLINE" "$OFFLINE" |
-            while IFS= read -r repo; do
-              [ -n "$repo" ] || continue
-
-              add_repo_group "$repo"
-              echo
-            done
-          } > "$REPO_FILE"
-
           printf '\n==> Ordem final dos mirrors:\n\n'
-          cat "$REPO_FILE"
+          cat "$REPO_FILE"      -
 
           xbps-install -Syu
           xbps-install -yu xbps
