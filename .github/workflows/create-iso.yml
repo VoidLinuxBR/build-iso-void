@@ -644,10 +644,12 @@ jobs:
             dosfstools \
             xfsprogs \
             tailscale
+
           vinstall -Scc
-          xbps-install -Sy ncurses
           rm -f /etc/xbps.d/*.conf
           : > "$REPO_FILE"
+
+          xbps-install -Sy ncurses
           xbps-install -Syu # atualiza restante somente dos repositorios online
           replicate
 
