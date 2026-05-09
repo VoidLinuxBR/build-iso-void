@@ -433,7 +433,8 @@ jobs:
       fail-fast: false
       matrix:
         #arch: [x86_64, aarch64]
-        edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
+        #edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
+        edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","cinnamon"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
     needs: [setup] # Espera o job "setup" terminar
     env:
       REPO_NAME: "${{ github.repository }}"
