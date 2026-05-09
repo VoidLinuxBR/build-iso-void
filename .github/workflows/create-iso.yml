@@ -514,28 +514,81 @@ jobs:
           #Set up volume directory in HOST
           mkdir -p /mnt/lfs
           ln -sf /mnt/lfs /lfs
-
       - name: Install Required Packages and Libraries no CONTAINER
         shell: bash
         run: |
+          set -eu
+          set -f
           source /tmp/send_telegram_message.sh
           replicate
           msg "- name: Install Required Packages and Libraries no CONTAINER"
+          REPO_FILE='/etc/xbps.d/00-repository-main.conf'
+
+          test_repo() {
+            local repo="$1"
+            timeout 15 curl -kIsL "${repo}/x86_64-repodata" \
+              >/dev/null 2>&1
+          }
+
+          add_repo_group() {
+            local base="$1"
+            case "$base" in
+              'https://void.voidbr.org/voidlinux/current')
+                echo "repository=${base}"
+                echo "repository=https://void.voidbr.org/voidlinux/extra"
+                echo "repository=${base}/nonfree"
+                echo "repository=${base}/multilib"
+                echo "repository=${base}/multilib/nonfree"
+              ;;
+
+              'https://repo-fastly.voidlinux.org/current')
+                echo "repository=${base}"
+                echo "repository=${base}/nonfree"
+                echo "repository=${base}/multilib"
+                echo "repository=${base}/multilib/nonfree"
+              ;;
+
+              'https://void.chililinux.com/voidlinux/current')
+                echo "repository=${base}"
+              ;;
+            esac
+          }
+
+          REPOS='
+          https://void.voidbr.org/voidlinux/current
+          https://repo-fastly.voidlinux.org/current
+          https://void.chililinux.com/voidlinux/current
+          '
+          ONLINE=''
+          OFFLINE=''
+          printf '\n==> Testando mirrors...\n\n'
+
+          for repo in $REPOS; do
+            printf ':: %s ... ' "$repo"
+
+            if test_repo "$repo"; then
+              printf '\033[1;32mONLINE\033[0m\n'
+              ONLINE="${ONLINE}${repo}
+          "
+            else
+              printf '\033[1;31mOFFLINE\033[0m\n'
+              OFFLINE="${OFFLINE}${repo}
+          "
+            fi
+          done
+
           {
-          echo 'repository=https://void.voidbr.org/voidlinux/current'
-          echo 'repository=https://void.voidbr.org/voidlinux/extra'
-          echo 'repository=https://void.voidbr.org/voidlinux/current/nonfree'
-          echo 'repository=https://void.voidbr.org/voidlinux/current/multilib'
-          echo
-          echo 'repository=https://void.voidbr.org/voidlinux/current/multilib/nonfree'
-          echo 'repository=https://repo-fastly.voidlinux.org/current'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
-          echo
-          echo 'repository=https://void.chililinux.com/voidlinux/current'
-          echo
-          } > /etc/xbps.d/00-repository-main.conf
+            printf '%s' "$ONLINE" "$OFFLINE" |
+            while IFS= read -r repo; do
+              [ -n "$repo" ] || continue
+
+              add_repo_group "$repo"
+              echo
+            done
+          } > "$REPO_FILE"
+
+          printf '\n==> Ordem final dos mirrors:\n\n'
+          cat "$REPO_FILE"
 
           xbps-install -Syu
           xbps-install -yu xbps
