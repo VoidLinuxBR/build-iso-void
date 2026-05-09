@@ -591,7 +591,7 @@ jobs:
           }
 
           printf '\n==> Testando mirrors XBPS...\n\n'
-
+          rm -f /etc/xbps.d/*.conf
           : > "$REPO_FILE"
 
           for repo in "${REPOS[@]}"; do
@@ -609,7 +609,7 @@ jobs:
           printf '\n==> Ordem final dos mirrors:\n\n'
           cat "$REPO_FILE"
 
-          xbps-install -Syu
+          #xbps-install -Syu
           xbps-install -yu xbps
           xbps-install -yu \
             bash \
@@ -646,6 +646,9 @@ jobs:
             tailscale
           vinstall -Scc
           xbps-install -Syu ncurses
+          rm -f /etc/xbps.d/*.conf
+          : > "$REPO_FILE"
+          xbps-install -Syu # atualiza restante somente dos repositorios online
           replicate
 
       - name: Conectar na Tailnet
