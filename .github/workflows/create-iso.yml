@@ -48,17 +48,17 @@ on:
         description: "Edition"
         options:
           - teste
+          - all
           - base
-          - awesome
+          #- awesome
           - cinnamon
-          - enlightenment
-          - fluxbox
+          #- enlightenment
+          #- fluxbox
+          - fullx
           - gnome
           - plasma
-          - xfce
           - mate
-          - fullx
-          - all
+          - xfce
         default: "teste"
       vol_id:
         type: string
