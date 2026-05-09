@@ -514,38 +514,54 @@ jobs:
           #Set up volume directory in HOST
           mkdir -p /mnt/lfs
           ln -sf /mnt/lfs /lfs
+
       - name: Install Required Packages and Libraries no CONTAINER
         shell: bash
         run: |
           set -eu
           set -f
+
           source /tmp/send_telegram_message.sh
+
           replicate
           msg "- name: Install Required Packages and Libraries no CONTAINER"
+
           REPO_FILE='/etc/xbps.d/00-repository-main.conf'
 
           test_repo() {
             local repo="$1"
-            timeout 15 curl -kIsL "${repo}/x86_64-repodata" \
-              >/dev/null 2>&1
+
+            # testa arquivo REAL do repositório XBPS
+            timeout 20 curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              "${repo}/x86_64-repodata" \
+              >/dev/null
           }
 
           add_repo_group() {
             local base="$1"
+
             case "$base" in
               'https://void.voidbr.org/voidlinux/current')
-                echo "repository=${base}"
-                echo "repository=https://void.voidbr.org/voidlinux/extra"
-                echo "repository=${base}/nonfree"
-                echo "repository=${base}/multilib"
-                echo "repository=${base}/multilib/nonfree"
+                cat << EOF
+          repository=${base}
+          repository=https://void.voidbr.org/voidlinux/extra
+          repository=${base}/nonfree
+          repository=${base}/multilib
+          repository=${base}/multilib/nonfree
+          EOF
               ;;
 
               'https://repo-fastly.voidlinux.org/current')
-                echo "repository=${base}"
-                echo "repository=${base}/nonfree"
-                echo "repository=${base}/multilib"
-                echo "repository=${base}/multilib/nonfree"
+                cat << EOF
+          repository=${base}
+          repository=${base}/nonfree
+          repository=${base}/multilib
+          repository=${base}/multilib/nonfree
+          EOF
               ;;
 
               'https://void.chililinux.com/voidlinux/current')
@@ -559,19 +575,23 @@ jobs:
           https://repo-fastly.voidlinux.org/current
           https://void.chililinux.com/voidlinux/current
           '
+
           ONLINE=''
           OFFLINE=''
-          printf '\n==> Testando mirrors...\n\n'
+
+          printf '\n==> Testando mirrors XBPS...\n\n'
 
           for repo in $REPOS; do
             printf ':: %s ... ' "$repo"
 
             if test_repo "$repo"; then
               printf '\033[1;32mONLINE\033[0m\n'
+
               ONLINE="${ONLINE}${repo}
           "
             else
               printf '\033[1;31mOFFLINE\033[0m\n'
+
               OFFLINE="${OFFLINE}${repo}
           "
             fi
