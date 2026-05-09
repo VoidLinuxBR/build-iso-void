@@ -645,7 +645,7 @@ jobs:
             xfsprogs \
             tailscale
           vinstall -Scc
-          xbps-install -Syu ncurses
+          xbps-install -Sy ncurses
           rm -f /etc/xbps.d/*.conf
           : > "$REPO_FILE"
           xbps-install -Syu # atualiza restante somente dos repositorios online
