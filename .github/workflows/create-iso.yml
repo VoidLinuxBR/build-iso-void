@@ -337,6 +337,22 @@ jobs:
               -d parse_mode="HTML"
           }
           export -f send_telegram_message
+
+          # Retorno: 0 = online, 1 = offline
+          test_repo_online() {
+            [ $# -eq 1 ] || return 1
+            local repo="$1"
+
+            timeout 20 curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              "${repo%/}/x86_64-repodata" \
+              >/dev/null 2>&1
+          }
+          export -f test_repo_online
+
           EOF
           chmod +x /tmp/send_telegram_message.sh
 
@@ -514,83 +530,84 @@ jobs:
           #Set up volume directory in HOST
           mkdir -p /mnt/lfs
           ln -sf /mnt/lfs /lfs
-
-      - name: Install Required Packages and Libraries no CONTAINER
+      - name: Install Required Packages and Configure Online XBPS Repository Mirrors in CONTAINER
         shell: bash
         run: |
           set -eu
           set -f
+
           source /tmp/send_telegram_message.sh
+
           replicate
-          msg "- name: Install Required Packages and Libraries no CONTAINER"
+          msg "- name: Install Required Packages and Configure Online XBPS Repository Mirrors in CONTAINER"
+
           REPO_FILE='/etc/xbps.d/00-repository-main.conf'
 
-          test_repo() {
-            local repo="$1"
-
-            timeout 20 curl \
-              --fail \
-              --silent \
-              --show-error \
-              --location \
-              "${repo}/x86_64-repodata" \
-              >/dev/null
-          }
+          declare -a REPOS=(
+            'https://void.voidbr.org/voidlinux/current'
+            'https://repo-fastly.voidlinux.org/current'
+            'https://void.chililinux.com/voidlinux/current'
+          )
 
           add_repo_group() {
-            local base="$1"
+            local repo="$1"
 
-            case "$base" in
+            declare -a entries=()
+
+            case "$repo" in
               'https://void.voidbr.org/voidlinux/current')
-                cat << EOF
-          repository=${base}
-          repository=https://void.voidbr.org/voidlinux/extra
-          repository=${base}/nonfree
-          repository=${base}/multilib
-          repository=${base}/multilib/nonfree
-          EOF
+                entries=(
+                  "$repo"
+                  'https://void.voidbr.org/voidlinux/extra'
+                  "$repo/nonfree"
+                  "$repo/multilib"
+                  "$repo/multilib/nonfree"
+                )
               ;;
 
               'https://repo-fastly.voidlinux.org/current')
-                cat << EOF
-          repository=${base}
-          repository=${base}/nonfree
-          repository=${base}/multilib
-          repository=${base}/multilib/nonfree
-          EOF
+                entries=(
+                  "$repo"
+                  "$repo/nonfree"
+                  "$repo/multilib"
+                  "$repo/multilib/nonfree"
+                )
               ;;
 
               'https://void.chililinux.com/voidlinux/current')
-                echo "repository=${base}"
+                entries=(
+                  "$repo"
+                )
               ;;
             esac
-          }
 
-          REPOS='
-          https://void.voidbr.org/voidlinux/current
-          https://repo-fastly.voidlinux.org/current
-          https://void.chililinux.com/voidlinux/current
-          '
+            local entry
+
+            for entry in "${entries[@]}"; do
+              printf 'repository=%s\n' "$entry"
+            done
+
+            printf '\n'
+          }
 
           printf '\n==> Testando mirrors XBPS...\n\n'
 
           : > "$REPO_FILE"
 
-          for repo in $REPOS; do
+          for repo in "${REPOS[@]}"; do
             printf ':: %s ... ' "$repo"
 
-            if test_repo "$repo"; then
+            if test_repo_online "$repo"; then
               printf '\033[1;32mONLINE\033[0m\n'
 
               add_repo_group "$repo" >> "$REPO_FILE"
-              echo >> "$REPO_FILE"
             else
               printf '\033[1;31mOFFLINE\033[0m\n'
             fi
           done
 
           printf '\n==> Ordem final dos mirrors:\n\n'
-          cat "$REPO_FILE"      -
+          cat "$REPO_FILE"
 
           xbps-install -Syu
           xbps-install -yu xbps
