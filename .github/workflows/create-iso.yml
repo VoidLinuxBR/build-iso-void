@@ -609,7 +609,7 @@ jobs:
           printf '\n==> Ordem final dos mirrors:\n\n'
           cat "$REPO_FILE"
 
-          #xbps-install -Syu
+          xbps-install -Sy
           xbps-install -yu xbps
           xbps-install -yu \
             bash \
