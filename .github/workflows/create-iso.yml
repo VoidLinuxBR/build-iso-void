@@ -341,7 +341,6 @@ jobs:
           # Retorno: 0 = online e repo válido, 1 = offline/inválido
           test_repo_online() {
             [ $# -eq 1 ] || return 1
-
             local repo="${1%/}"
             local repodata="${repo}/x86_64-repodata"
 
@@ -351,7 +350,6 @@ jobs:
               ;;
 
               http://*|https://*)
-
                 # Testa se o servidor responde
                 timeout 20 curl \
                   --silent \
@@ -588,6 +586,7 @@ jobs:
                   "$repo/multilib/nonfree"
                 )
               ;;
+
               'https://repo-fastly.voidlinux.org/current')
                 entries=(
                   "$repo"
