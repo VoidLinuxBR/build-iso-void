@@ -338,18 +338,39 @@ jobs:
           }
           export -f send_telegram_message
 
-          # Retorno: 0 = online, 1 = offline
+          # Retorno: 0 = online e repo válido, 1 = offline/inválido
           test_repo_online() {
             [ $# -eq 1 ] || return 1
-            local repo="$1"
 
-            timeout 20 curl \
-              --fail \
-              --silent \
-              --show-error \
-              --location \
-              "${repo%/}/x86_64-repodata" \
-              >/dev/null 2>&1
+            local repo="${1%/}"
+            local repodata="${repo}/x86_64-repodata"
+
+            case "$repo" in
+              http://*|https://*)
+
+                # Testa se o servidor responde
+                timeout 20 curl \
+                  --silent \
+                  --show-error \
+                  --location \
+                  --range 0-0 \
+                  "$repo/" \
+                  >/dev/null 2>&1 || return 1
+
+                # Testa se o repodata existe
+                timeout 20 curl \
+                  --fail \
+                  --silent \
+                  --show-error \
+                  --location \
+                  --output /dev/null \
+                  "$repodata"
+                ;;
+
+              *)
+                [ -e "$repodata" ]
+                ;;
+            esac
           }
           export -f test_repo_online
 
@@ -535,24 +556,21 @@ jobs:
         run: |
           set -eu
           set -f
-
           source /tmp/send_telegram_message.sh
-
           replicate
           msg "- name: Install Required Packages and Configure Online XBPS Repository Mirrors in CONTAINER"
-
           REPO_FILE='/etc/xbps.d/00-repository-main.conf'
 
           declare -a REPOS=(
             'https://void.voidbr.org/voidlinux/current'
-            'https://repo-fastly.voidlinux.org/current'
             'https://void.chililinux.com/voidlinux/current'
+            'https://repo-fastly.voidlinux.org/current'
             'https://void.voidlinux.com.br/voidlinux/current'
           )
 
           add_repo_group() {
             local repo="$1"
-
+            local entry
             declare -a entries=()
 
             case "$repo" in
@@ -582,12 +600,9 @@ jobs:
               ;;
             esac
 
-            local entry
-
             for entry in "${entries[@]}"; do
               printf 'repository=%s\n' "$entry"
             done
-
             printf '\n'
           }
 
@@ -597,10 +612,8 @@ jobs:
 
           for repo in "${REPOS[@]}"; do
             printf ':: %s ... ' "$repo"
-
             if test_repo_online "$repo"; then
               printf '\033[1;32mONLINE\033[0m\n'
-
               add_repo_group "$repo" >> "$REPO_FILE"
             else
               printf '\033[1;31mOFFLINE\033[0m\n'
