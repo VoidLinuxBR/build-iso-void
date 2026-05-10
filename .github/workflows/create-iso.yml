@@ -547,6 +547,7 @@ jobs:
             'https://void.voidbr.org/voidlinux/current'
             'https://repo-fastly.voidlinux.org/current'
             'https://void.chililinux.com/voidlinux/current'
+            'https://void.voidlinux.com.br/voidlinux/current'
           )
 
           add_repo_group() {
