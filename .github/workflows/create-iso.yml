@@ -346,6 +346,10 @@ jobs:
             local repodata="${repo}/x86_64-repodata"
 
             case "$repo" in
+              *repo-fastly.voidlinux.org*)
+              return 0
+              ;;
+
               http://*|https://*)
 
                 # Testa se o servidor responde
