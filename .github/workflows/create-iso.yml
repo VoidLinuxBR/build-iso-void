@@ -27,7 +27,8 @@
 #  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##############################################################################
 name: 💿 Build ISO VoidBR
-
+permissions:
+  contents: write
 #concurrency:
 #  group: build-iso-${{ github.workflow }}
 #  cancel-in-progress: false
@@ -47,17 +48,17 @@ on:
         description: "Edition"
         options:
           - teste
+          - all
           - base
-          - awesome
+          #- awesome
           - cinnamon
-          - enlightenment
-          - fluxbox
+          #- enlightenment
+          #- fluxbox
+          - fullx
           - gnome
           - plasma
-          - xfce
           - mate
-          - fullx
-          - all
+          - xfce
         default: "teste"
       vol_id:
         type: string
@@ -111,8 +112,8 @@ env:
 
 jobs:
   setup:
-    #runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     outputs:
       time: ${{ steps.time.outputs.time }} # Saída do job
       REPOSITORY_NAME: ${{ steps.get-repo-name.outputs.repo_name }}
@@ -336,6 +337,45 @@ jobs:
               -d parse_mode="HTML"
           }
           export -f send_telegram_message
+
+          # Retorno: 0 = online e repo válido, 1 = offline/inválido
+          test_repo_online() {
+            [ $# -eq 1 ] || return 1
+            local repo="${1%/}"
+            local repodata="${repo}/x86_64-repodata"
+
+            case "$repo" in
+              *repo-fastly.voidlinux.org*)
+              return 0
+              ;;
+
+              http://*|https://*)
+                # Testa se o servidor responde
+                timeout 20 curl \
+                  --silent \
+                  --show-error \
+                  --location \
+                  --range 0-0 \
+                  "$repo/" \
+                  >/dev/null 2>&1 || return 1
+
+                # Testa se o repodata existe
+                timeout 20 curl \
+                  --fail \
+                  --silent \
+                  --show-error \
+                  --location \
+                  --output /dev/null \
+                  "$repodata"
+                ;;
+
+              *)
+                [ -e "$repodata" ]
+                ;;
+            esac
+          }
+          export -f test_repo_online
+
           EOF
           chmod +x /tmp/send_telegram_message.sh
 
@@ -426,13 +466,14 @@ jobs:
 
   build:
     name: Build ISO ${{ matrix.edition }}
-    #runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
         #arch: [x86_64, aarch64]
-        edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
+        #edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","fluxbox","awesome","cinnamon","enlightenment"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
+        edition: ${{ (inputs.edition || 'teste') == 'all' && fromJson('["base","fullx","xfce","mate","gnome","plasma","cinnamon"]') || fromJson(format('["{0}"]', inputs.edition || 'teste')) }}
     needs: [setup] # Espera o job "setup" terminar
     env:
       REPO_NAME: "${{ github.repository }}"
@@ -513,29 +554,90 @@ jobs:
           mkdir -p /mnt/lfs
           ln -sf /mnt/lfs /lfs
 
-      - name: Install Required Packages and Libraries no CONTAINER
+      - name: Install Required Packages and Configure Online XBPS Repository Mirrors in CONTAINER
         shell: bash
         run: |
+          set -eu
+          set -f
           source /tmp/send_telegram_message.sh
           replicate
-          msg "- name: Install Required Packages and Libraries no CONTAINER"
-          {
-          echo 'repository=https://void.voidbr.org/voidlinux/current'
-          echo 'repository=https://void.voidbr.org/voidlinux/extra'
-          echo 'repository=https://void.voidbr.org/voidlinux/current/nonfree'
-          echo 'repository=https://void.voidbr.org/voidlinux/current/multilib'
-          echo
-          echo 'repository=https://void.voidbr.org/voidlinux/current/multilib/nonfree'
-          echo 'repository=https://repo-fastly.voidlinux.org/current'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/nonfree'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib'
-          echo 'repository=https://repo-fastly.voidlinux.org/current/multilib/nonfree'
-          echo
-          echo 'repository=https://void.chililinux.com/voidlinux/current'
-          echo
-          } > /etc/xbps.d/00-repository-main.conf
+          msg "- name: Install Required Packages and Configure Online XBPS Repository Mirrors in CONTAINER"
+          REPO_FILE='/etc/xbps.d/00-repository-main.conf'
 
-          xbps-install -Syu
+          declare -a REPOS=(
+            'https://void.voidbr.org/voidlinux/current'
+            'https://repo-fastly.voidlinux.org/current'
+            'https://void.chililinux.com/voidlinux/current'
+            'https://void.voidlinux.com.br/voidlinux/current'
+          )
+
+          add_repo_group() {
+            local repo="$1"
+            local entry
+            declare -a entries=()
+
+            case "$repo" in
+              'https://void.voidbr.org/voidlinux/current')
+                entries=(
+                  "$repo"
+                  'https://void.voidbr.org/voidlinux/extra'
+                  "$repo/nonfree"
+                  "$repo/multilib"
+                  "$repo/multilib/nonfree"
+                )
+              ;;
+
+              'https://repo-fastly.voidlinux.org/current')
+                entries=(
+                  "$repo"
+                  "$repo/nonfree"
+                  "$repo/multilib"
+                  "$repo/multilib/nonfree"
+                )
+              ;;
+
+              'https://void.chililinux.com/voidlinux/current')
+                entries=(
+                  "$repo"
+                )
+              ;;
+
+              'https://void.voidlinux.com.br/voidlinux/current')
+                entries=(
+                  "$repo"
+                  'https://void.voidlinux.com.br/voidlinux/extra')
+                  "$repo/nonfree"
+                  "$repo/multilib"
+                  "$repo/multilib/nonfree"
+                )
+              ;;
+
+            esac
+
+            for entry in "${entries[@]}"; do
+              printf 'repository=%s\n' "$entry"
+            done
+            printf '\n'
+          }
+
+          printf '\n==> Testando mirrors XBPS...\n\n'
+          rm -f /etc/xbps.d/*.conf
+          : > "$REPO_FILE"
+
+          for repo in "${REPOS[@]}"; do
+            printf ':: %s ... ' "$repo"
+            if test_repo_online "$repo"; then
+              printf '\033[1;32mONLINE\033[0m\n'
+              add_repo_group "$repo" >> "$REPO_FILE"
+            else
+              printf '\033[1;31mOFFLINE\033[0m\n'
+            fi
+          done
+
+          printf '\n==> Ordem final dos mirrors:\n\n'
+          cat "$REPO_FILE"
+
+          xbps-install -Sy
           xbps-install -yu xbps
           xbps-install -yu \
             bash \
@@ -570,8 +672,13 @@ jobs:
             dosfstools \
             xfsprogs \
             tailscale
+
           vinstall -Scc
-          xbps-install -Syu ncurses
+          rm -f /etc/xbps.d/*.conf
+          : > "$REPO_FILE"
+
+          xbps-install -Sy ncurses
+          xbps-install -Syu # atualiza restante somente dos repositorios online
           replicate
 
       - name: Conectar na Tailnet
@@ -764,7 +871,6 @@ jobs:
           #name: ${{ steps.prepare-iso.outputs.release_name }}-${{ github.run_id }}
           name: ${{ steps.prepare-iso.outputs.release_name }}-${{ matrix.edition }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            #${{ env.ISO_FULLNAME }}
             ${{ env.ISO_FULLNAME }}.md5
             ${{ steps.prepare-iso.outputs.upload_path }}
           if-no-files-found: warn
@@ -779,10 +885,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            #${{ env.WORK_PATH }}/${{ steps.prepare-iso.outputs.release }}*
             ${{ steps.prepare-iso.outputs.upload_path }}
             ${{ env.ISO_PATH }}.md5
-          #tag_name: ${{ env.ISO_TAG_NAME }}
           tag_name: ${{matrix.edition}}-${{ env.ISO_TAG_NAME }}-${{ github.run_id }}
           name: ${{ steps.prepare-iso.outputs.release_name }}-${{ matrix.edition }}-${{ github.run_id }}-${{ github.run_attempt }}
           generate_release_notes: true
@@ -884,12 +988,14 @@ jobs:
           ls -la "${{ env.ISO_PATH }}.md5" --color=auto || true
           ls -la "${{ env.WORK_PATH }}/${{ env.ISO_BASENAME }}" || true
 
-          msg_run "cp -v ${{ env.ISO_FULLNAME }}.md5 $voidrepo_void_mirror_iso/" || true
-          if sed 's/^[ \t]*//'f msg_run "cp -v ${{ env.ISO_FULLNAME }}  $voidrepo_void_mirror_iso/"; then
+          #msg_run "cp -v ${{ env.ISO_FULLNAME }}.md5 $voidrepo_void_mirror_iso/" || true
+          #if sed 's/^[ \t]*//'f msg_run "cp -v ${{ env.ISO_FULLNAME }}  $voidrepo_void_mirror_iso/"; then
+          if msg_run "cp -v ${{ env.ISO_FULLNAME }} $voidrepo_void_mirror_iso/"; then
             send_telegram_msg "✅ ISO copiado para : $voidrepo_void_mirror_iso"
           else
             send_telegram_msg "❌ Falha ao copiar ISO para: $voidrepo_void_mirror_iso"
           fi
+
           replicate
 
       - name: Enviar arquivo ISO para o servidor VOIDREPO via SCP com porta customizada
