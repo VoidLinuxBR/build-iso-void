@@ -551,6 +551,7 @@ jobs:
           #Set up volume directory in HOST
           mkdir -p /mnt/lfs
           ln -sf /mnt/lfs /lfs
+
       - name: Install Required Packages and Configure Online XBPS Repository Mirrors in CONTAINER
         shell: bash
         run: |
@@ -563,8 +564,8 @@ jobs:
 
           declare -a REPOS=(
             'https://void.voidbr.org/voidlinux/current'
-            'https://void.chililinux.com/voidlinux/current'
             'https://repo-fastly.voidlinux.org/current'
+            'https://void.chililinux.com/voidlinux/current'
             'https://void.voidlinux.com.br/voidlinux/current'
           )
 
@@ -583,7 +584,6 @@ jobs:
                   "$repo/multilib/nonfree"
                 )
               ;;
-
               'https://repo-fastly.voidlinux.org/current')
                 entries=(
                   "$repo"
@@ -598,6 +598,17 @@ jobs:
                   "$repo"
                 )
               ;;
+
+              'https://void.voidlinux.com.br/voidlinux/current')
+                entries=(
+                  "$repo"
+                  'https://void.voidlinux.com.br/voidlinux/extra')
+                  "$repo/nonfree"
+                  "$repo/multilib"
+                  "$repo/multilib/nonfree"
+                )
+              ;;
+
             esac
 
             for entry in "${entries[@]}"; do
